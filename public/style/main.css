@@ -1,0 +1,74 @@
+* {
+  box-sizing: border-box; 
+}
+
+html, body {
+  border: none;
+  padding: 0;
+  margin: 0;
+  min-height: 100vh;
+}
+
+html,
+body,
+td,
+input,
+select,
+textarea,
+button {
+  font-size: 100%;
+  color: #333;
+}
+
+.flex {
+  display: flex;
+}
+.flex--wrap {
+  flex-wrap: wrap;
+}
+.flex--justify-center {
+  justify-content: center;
+}
+.flex--align-center {
+  align-items: center;
+}
+.flex__half {
+  flex-basis: 50%;
+}
+
+.boxed {
+  max-width: 1600px;
+  margin: auto;
+}
+.hidden,
+.showJQlink {
+  display: none;
+}
+.text-center {
+  text-align: center;
+}
+.pointer {
+  cursor: pointer;
+}
+
+.board {
+
+}
+.map-container {
+  flex-grow: 1;
+  flex-basis: 70%;
+}
+.sidebar {
+  flex-grow: 1;
+  flex-basis: 30%;
+  background: #f9f9f9;
+}
+
+
+@media only screen and (max-width: 767px) {
+  .flex {
+    flex-direction: column;
+  }
+}
+@media only screen and (max-width: 479px) {
+}

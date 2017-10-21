@@ -1,0 +1,6 @@
+{
+  "name": "Townfactory",
+  "version": "dev.1.0.0",
+  "description": "Un giochino strategico sviluppato con Phaser.io | dev.1.0.0: crea l'area di gioco con Phaser e aggiunge due 'Building' in posizione casuale.",
+  "author": "Francesco Pampaloni <pampalonifrancesco@gmail.com>"
+}
