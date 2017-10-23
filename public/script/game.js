@@ -43,11 +43,17 @@ var GameApp = {
    */
   preload : function () {
     
-    
     // Load db data.
-    game.load.json('resources', '../../data/resources.json');
+    game.load.json('resources', '../data/resources.json');
     // Load game after load complete.
     game.load.onLoadComplete = { dispatch : function(){
+      
+      var JSON_resources = game.cache.getJSON('resources');
+      if (typeof JSON_resources === "undefined" || JSON_resources === null) {
+        GameApp.error('Resources file not found.');
+        return; 
+      }
+      
       //console.log("File loaded! Load game...");
       // Load game data.
       GameApp.data = GameApp.load();
@@ -143,5 +149,19 @@ var GameApp = {
     }
   },
 
+  
+  /**
+   * Send error message.
+   * @memberof GameApp
+   * @name error
+   * @method
+   * @param {string} Error message.
+   */
+  error : function (msg) {
+    game.destroy();
+    document.getElementById('error').innerHTML = msg;
+    document.getElementById('error').style.display = "block";
+  }
+    
 
 };

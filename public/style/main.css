@@ -36,6 +36,19 @@ button {
   flex-basis: 50%;
 }
 
+#error {
+  display: none;
+}
+.error {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 1em;
+  background: #f44336;
+  color: #fff;
+}
+
 .boxed {
   max-width: 1600px;
   margin: auto;
