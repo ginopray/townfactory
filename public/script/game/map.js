@@ -9,23 +9,28 @@
  * @name Map
  * @namespace
  * @classdesc Map class.
+ * @property {object} settings - Map settings.
+ * @property {number} settings.gameWidth - Width (px) of canvas.
+ * @property {number} settings.gameHeight - Height (px) of canvas.
+ * @property {number} settings.tileWidth - The tile width in px.
+ * @property {number} settings.tileHeight - The tile height in px.
  */
 var Map = {
-  /**
-   * Map configuration
-   * @memberof Map
-   * @name config
-   * @constant
-   */
-   config : {},
   
-  
+  settings : {
+    gameWidth : 800,
+    gameHeight : 600,
+    tileWidth : 20,
+    tileHeight : 20
+  },
+
   /**
    * Get the map, based on data stored in "GameApp.data".
    * @memberof Map
-   * @name config
+   * @name get
    * @method
    * @returns boh
+   * @see GameApp
    */
   get : function () {
     

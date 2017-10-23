@@ -1,0 +1,18 @@
+{
+  "list": [
+    {
+      "id": "1",
+      "name": "wood",
+      "level": "1",
+      "image": "",
+      "value": "1"
+    },
+    {
+      "id": "2",
+      "name": "food",
+      "level": "1",
+      "image": "",
+      "value": "1"
+    }
+  ]
+}
