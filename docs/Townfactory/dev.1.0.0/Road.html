@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Namespace: Database</title>
+    <title>JSDoc: Class: Road</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Namespace: Database</h1>
+    <h1 class="page-title">Class: Road</h1>
 
     
 
@@ -28,9 +28,9 @@
 
 <header>
     
-        <h2>Database</h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>Road<span class="signature">()</span><span class="type-signature"></span></h2>
         
-            <div class="class-description">Database functions.</div>
+            <div class="class-description">Create a road instance.</div>
         
     
 </header>
@@ -39,81 +39,13 @@
     <div class="container-overview">
     
         
-            <div class="description">Database functions.</div>
-        
 
-        
-
-
-<dl class="details">
-
+    
+    <h2>Constructor</h2>
     
 
     
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="database.js.html">database.js</a>, <a href="database.js.html#line7">line 7</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id=".get"><span class="type-signature">(static) </span>get<span class="signature">(table, filters)</span><span class="type-signature"> &rarr; {array}</span></h4>
+    <h4 class="name" id="Road"><span class="type-signature"></span>new Road<span class="signature">()</span><span class="type-signature"></span></h4>
     
 
     
@@ -121,7 +53,7 @@
 
 
 <div class="description">
-    Get array of items from database.
+    Road class.
 </div>
 
 
@@ -132,10 +64,15 @@
 
 
 
-    <h5>Parameters:</h5>
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
     
 
-<table class="params">
+<table class="props">
     <thead>
     <tr>
         
@@ -157,7 +94,7 @@
 
         <tr>
             
-                <td class="name"><code>table</code></td>
+                <td class="name"><code>sprite</code></td>
             
 
             <td class="type">
@@ -173,37 +110,12 @@
 
             
 
-            <td class="description last">The file to read</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>filters</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Object with filters</td>
+            <td class="description last">Phaser.io sprite object</td>
         </tr>
 
     
     </tbody>
 </table>
-
-
 
 
 
@@ -237,7 +149,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="database.js.html">database.js</a>, <a href="database.js.html#line15">line 15</a>
+        <a href="game_roads.js.html">game/roads.js</a>, <a href="game_roads.js.html#line32">line 32</a>
     </li></ul></dd>
     
 
@@ -260,56 +172,28 @@
 
 
 
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    Array of items.
-</div>
 
 
 
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">array</span>
 
 
-    </dd>
-</dl>
+    
+    </div>
 
     
 
-
-
-
-    <h5>Example</h5>
     
-    <pre class="prettyprint"><code>// Get all resources.
-var resources = Database.get('resources');
-// Get only level 1 resources with value = 2
-var resources = Resources.get('resources', {
-  level: 1,
-  value: 2
-});
-// Get only level 1 resources with value > 3.
-var resources = Resources.get('resources', {
-  level: {
-    value: 1,
-    //operator: '=',  // Default
-  },
-  value: {
-    value: 3,
-    operator: '>',
-  }
-});</code></pre>
 
+    
 
+    
 
-        
+    
+
+    
+
+    
+
     
 
     

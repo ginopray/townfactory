@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: main.js</title>
+    <title>JSDoc: Source: game/roads.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: main.js</h1>
+    <h1 class="page-title">Source: game/roads.js</h1>
 
     
 
@@ -27,68 +27,48 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * Main.
- * On window.onload, it calls game = new Phaser.Game()
+ * Contains Roads namespace and Road class.
  * @file
- * @see game
- * @see phaser_object
+ * @see Roads
+ * @see Road
  */
-
 
 /**
- * The Phaser.io game object.
- * @name game
- * @global
- * @example
- * game = new Phaser.Game(800, 600, Phaser.AUTO, 'map-canvas', {
- *   preload: GameApp.init,
- *   create: GameApp.start,
- *   update: GameApp.update
- * });
+ * Roads functions.
+ * @name Roads
+ * @namespace
+ * @classdesc Roads functions.
  */
-var game;
-
-
-/**
- * The Phaser.io game data object.
- * Contains groups and other Phaser.io objects.
- * @name phaser_object
- * @property {object} groups - Phaser groups.
- * @property {object} groups.buildings - Buildings group.
- * @property {object} collisions - Collision groups.
- * @property {array} grid - Array of rectangles (tiles).
- * @property {object} inputs - Input geometries.
- * @property {object} inputs.mouse - Mouse geometries.
- * @property {object} inputs.mouse.selection - Mouse selection object.
- * @global
- * @example // Creating buildings group:
- * phaser_object.groups.buildings = game.add.group();
- * // Set 'enableBody' on buildings group:
- * phaser_object.groups.buildings.enableBody = true;
- */
-var phaser_object = {
-  groups : {},
-  collisions : {},
-  grid : [],
-  inputs: {
-    mouse: {
-      selection: {},
-    }
-  }
+var Roads = {
+  
+  /**
+   * Build a road.
+   * @memberof Board
+   * @name build
+   * @method
+   * @param {object} tile - Selected tile.
+   */
+  build : function (tile) {
+    $('#log').text('build a road on ['+tile.x+':'+tile.y+']');
+  },
+  
 };
 
 
-window.onload = function() {  
-  game = new Phaser.Game(Map.settings.gameWidth, Map.settings.gameHeight, Phaser.CANVAS, 'map-canvas',
-    {
-      /*init:     GameApp.init,*/
-      preload:  GameApp.preload,
-      create:   GameApp.create,
-      update:   GameApp.update,
-      render:   GameApp.render,
-    }
-  );
-}
+
+
+/**
+ * Road class.
+ * @name Road
+ * @class
+ * @classdesc Create a road instance.
+ * @property {object} sprite - Phaser.io sprite object
+ */
+var Road = function () {
+  
+  
+};
+
 </code></pre>
         </article>
     </section>

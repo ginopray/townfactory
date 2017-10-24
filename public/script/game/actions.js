@@ -1,7 +1,6 @@
 /**
  * Contains the Actions class.
  * @file
- * @see Map
  */
 
 /**
@@ -62,6 +61,9 @@ var Actions = {
     // Set current action.
     GameApp.data.action.selected = tool;
     
+    // Create helper sprite
+    // Roads.xxx();
+    
     // Update board.
     jQuery('#tools').children().removeClass('tool--selected');
     jQuery('.tool--' + tool).addClass('tool--selected');
@@ -75,8 +77,8 @@ var Actions = {
    * @method
    * @param {object} tile - Selected tile.
    */
-  tool_road : function (tool) {
-    $('#log').text('build a road on ['+tool.x+':'+tool.y+']');
+  tool_road : function (tile) {
+    Roads.build({x: tile.x, y: tile.y});
   },
   
   

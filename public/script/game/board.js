@@ -143,7 +143,7 @@ var Board = {
           'data-tool': tool,
           class: 'tool tool--' + tool,
           text: tool,
-          click: function() {
+          mousedown: function() {
             Actions.set(jQuery(this).attr('data-tool'));
           }
         })

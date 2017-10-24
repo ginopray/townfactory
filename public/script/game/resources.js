@@ -103,8 +103,8 @@ Resource.prototype.spawn  = function (x, y) {
 
   this.sprite.body.bounce.setTo(0.5, 0.5);
   
-  this.sprite.body.velocity.y = -200;
-  this.sprite.body.velocity.x = 200;
+  this.sprite.body.velocity.y = -350;
+  this.sprite.body.velocity.x = 350;
   
   Map.friction(this.sprite);
   

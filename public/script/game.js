@@ -18,6 +18,7 @@
  * @property {number} data.map.height - The height of the map (in tiles).
  * @property {object} data.action - Action data.
  * @property {object} data.action.selected - Current selected action: view, build road....
+ * @property {object} data.roads - Roads data.
  * @see Building
  * @see Data
  * @see Map
@@ -248,7 +249,8 @@ var GameApp = {
         new Building(5, Math.floor(Math.random() * initial_game_size.w) + 1, Math.floor(Math.random() * initial_game_size.h) + 1),
       ],
       resources : [],
-      action : {}
+      action : {},
+      roads : {}
     }
   },
 
