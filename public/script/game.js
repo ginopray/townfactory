@@ -94,6 +94,7 @@ var GameApp = {
     for (var i = 1; i <= 4; i ++) {
       game.load.image('resource-' + i, 'images/game/resources/resource-' + i + '.png');
     }
+    game.load.image('helper-road' + i, 'images/game/tools/helper-road.png');
     
   },
 
@@ -155,12 +156,17 @@ var GameApp = {
     game.physics.arcade.collide(phaser_object.groups.resources, phaser_object.groups.buildings);
     game.physics.arcade.collide(phaser_object.groups.resources, phaser_object.groups.resources);
     
+    var coords = Map.coord2tile({x: game.input.mousePointer.x, y: game.input.mousePointer.y});
+    
     // Update mouse selection position.
     if (typeof phaser_object.inputs.mouse.selection.tile !== "undefined") {
-      var coords = Map.coord2tile({x: game.input.mousePointer.x, y: game.input.mousePointer.y});
       phaser_object.inputs.mouse.selection.tile.x = coords.x * Map.settings.tileWidth;
       phaser_object.inputs.mouse.selection.tile.y = coords.y * Map.settings.tileHeight;
     }
+    
+    // Update helper
+    phaser_object.helper.centerX = (coords.x * Map.settings.tileWidth) + (Map.settings.tileWidth / 2);
+    phaser_object.helper.centerY = (coords.y * Map.settings.tileHeight) + (Map.settings.tileHeight / 2);
     
     Board.update();
     

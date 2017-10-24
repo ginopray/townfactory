@@ -62,7 +62,7 @@ var Actions = {
     GameApp.data.action.selected = tool;
     
     // Create helper sprite
-    // Roads.xxx();
+    Actions.set_helper(tool);
     
     // Update board.
     jQuery('#tools').children().removeClass('tool--selected');
@@ -80,6 +80,24 @@ var Actions = {
   tool_road : function (tile) {
     Roads.build({x: tile.x, y: tile.y});
   },
+  
+  
+  /**
+  * Set the action to do.
+  * @memberof Actions
+  * @name set_helper
+  * @method
+  * @param {string} tool - The tool to use.
+  */
+  set_helper : function (tool) {
+    if (phaser_object.helper) {
+      phaser_object.helper.destroy();
+      phaser_object.helper = false;
+    }
+    if (tool != "view") {
+      phaser_object.helper = game.add.sprite(0, 0, 'helper-' + tool);
+    }
+  }
   
   
 }

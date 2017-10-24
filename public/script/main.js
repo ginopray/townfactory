@@ -29,6 +29,7 @@ var game;
  * @property {object} groups.buildings - Buildings group.
  * @property {object} collisions - Collision groups.
  * @property {array} grid - Array of rectangles (tiles).
+ * @property {object} helper - Helper sprite.
  * @property {object} inputs - Input geometries.
  * @property {object} inputs.mouse - Mouse geometries.
  * @property {object} inputs.mouse.selection - Mouse selection object.
@@ -46,7 +47,8 @@ var phaser_object = {
     mouse: {
       selection: {},
     }
-  }
+  },
+  helper: false
 };
 
 
