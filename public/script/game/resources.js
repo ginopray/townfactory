@@ -14,98 +14,17 @@
 var Resources = {
   
   /**
-   * Get array of resources from database.
-   * @memberof Resources
-   * @name get
-   * @method
-   * @param {object} filters - Object with filters
-   * @returns {array} Array of resources.
-   * @example
-   * // Get all resources.
-   * var resources = Resources.get();
-   * // Get only level 1 resources with value = 2
-   * var resources = Resources.get({
-   *   level: 1,
-   *   value: 2
-   * });
-   * // Get only level 1 resources with value > 3.
-   * var resources = Resources.get({
-   *   level: {
-   *     value: 1,
-   *     //operator: '=',  // Default
-   *   },
-   *   value: {
-   *     value: 3,
-   *     operator: '>',
-   *   }
-   * });
-   */
-  get : function (filters) {
-    var operators = {
-        '=': function(a, b) { return a == b },
-        '<': function(a, b) { return a < b },
-        '>': function(a, b) { return a > b }
-    };
-    var JSON_resources = game.cache.getJSON('resources');
-    var arr = new Array();
-    var field,
-        checked,
-        resource,
-        operator,
-        filter_value;
-    // Filters:
-    if (typeof filters !== "undefined" && filters !== null) {
-      // Loop resources.
-      for (var i in JSON_resources.list) {
-        resource = JSON_resources.list[i];
-        //console.log("Check: " + resource.name);
-        checked = true;
-        // Loop filters.
-        for (field in filters) {
-          // Check field exists.
-          if (typeof resource[field] === "undefined") {
-            //console.log("Checking undefined field: " + field);
-            checked = false;
-            break;
-          }
-          // Get default operator.
-          operator = "=";
-          // Filter can be value or object
-          if (typeof filters[field] === "object") {
-            filter_value = filters[field].value;
-            if (typeof filters[field].operator !== "undefined")
-              operator = filters[field].operator;
-          } else {
-            filter_value = filters[field];
-          }
-          // Check filter.
-          if (!operators[operator](resource[field], filter_value)) {
-            checked = false;
-            break;
-          }
-          arr.push(resource);
-        }
-      }
-    // Return all resources.
-    } else {
-      arr = JSON_resources.list;
-    }
-    return arr;
-  },
-  
-  
-  /**
    * Get random resource ID from list.
    * @memberof Resources
    * @name getRandom
    * @method
-   * @param {number} level - The resource level to select.
+   * @param {number} value - The resource value to select.
    * @returns {number} The resource ID.
    */
-  getRandom : function (level) {
-    // Get level 1 resources.
-    var resources = Resources.get({
-      level : 1
+  getRandom : function (value) {
+    // Get value 1 resources.
+    var resources = Database.get('resources', {
+      value : 1
     });
     // No resources found: return false.
     if (resources.length == 0) return false;
@@ -113,6 +32,23 @@ var Resources = {
     var rand_i = Math.floor(Math.random() * resources.length);
     // Return resource id.
     return resources[rand_i].id;
+  },
+  
+  
+  /**
+   * Create a new istance of a resource.
+   * @memberof Resources
+   * @name create
+   * @method
+   * @param {number} type - The resource type.
+   */
+  create : function (type, x, y) {
+    var resource = new Resource(type);
+    resource.spawn(x, y);
+    // Append new resource to GameApp.data.resources.
+    GameApp.data.resources.push(
+      resource
+    );
   }
 
 };
@@ -125,10 +61,52 @@ var Resources = {
  * @name Resource
  * @class
  * @classdesc Create a resource instance.
- * @param {number} resource_id - Resource ID, defines the resource settings.
- * @property {number} resource_id - Resource ID.
+ * @param {number} type - Resource type.
+ * @property {number} type - Resource ID.
  * @property {object} sprite - Phaser.io sprite object
  */
-var Resource = function (resource_id) {
-  this.resource_id = resource_id;
+var Resource = function (type) {
+  
+  // FIRST!
+  // Setting defaults.
+  var default_resource = Database.get('resources', {
+      id : type
+    });
+  if (default_resource.length == 0) {
+    console.log("no data for resource: " + type, default_resource);
+    return;
+  }
+  
+  // Set defaults!
+  Object.assign(this, default_resource[0]);
+  
+  this.id = 'to define';
+  this.type = type;
 };
+
+/**
+ * Add the resource to the map.
+ * @memberof Resource
+ * @name spawn
+ * @method
+ */
+Resource.prototype.spawn  = function (x, y) {
+  // Create sprite and add it to "buildings" group.
+  this.sprite = phaser_object.groups.resources.create(x, y, 'resource-' + this.type);
+  
+  // Setting the size.
+  this.sprite.width = Map.settings.resourceWidth;
+  this.sprite.height = Map.settings.resourceHeight;
+
+  game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
+  this.sprite.body.collideWorldBounds = true;
+
+  this.sprite.body.bounce.setTo(0.5, 0.5);
+  
+  this.sprite.body.velocity.y = -200;
+  this.sprite.body.velocity.x = 200;
+  
+  Map.friction(this.sprite);
+  
+};
+

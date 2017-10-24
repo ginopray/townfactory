@@ -4,11 +4,19 @@
     <meta charset="UTF-8" />
     <title>Townfactory</title>
     <link rel="stylesheet" type="text/css" href="style/main.css" />
+    
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.js"
+      integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+      crossorigin="anonymous"></script>
     <script src="lib/phaser.min.js"></script>
+    
+    <script src="script/database.js"></script>
     <script src="script/game.js"></script>
     <script src="script/game/board.js"></script>
     <script src="script/game/building.js"></script>
     <script src="script/game/map.js"></script>
+    <script src="script/game/production.js"></script>
     <script src="script/game/resources.js"></script>
     <script src="script/main.js"></script>
   </head>
@@ -17,8 +25,14 @@
       <div class="map-container">
         <div id="map-canvas" class="map-canvas"></div>
       </div>
-      <div class="sidebar">Sidebar:
-        <div class="controls">...</div>
+      <div class="sidebar">
+        <div id="log"></div>
+        <div class="controls">
+          Board commands:
+          <ul>
+            <li><div class="board-command" data-callback="render_toggle">Toggle debug render</div></li>
+          </ul>
+        </div>
       </div>
     </div>
     <div id="error" class="error"></div>

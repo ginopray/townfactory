@@ -27,7 +27,6 @@ var game;
  * @name phaser_object
  * @property {object}  groups - Phaser groups
  * @property {object}  groups.buildings - Buildings group
- * @property {object}  tilemap - Tilemap object
  * @global
  * @example // Creating buildings group:
  * phaser_object.groups.buildings = game.add.group();
@@ -35,17 +34,19 @@ var game;
  * phaser_object.groups.buildings.enableBody = true;
  */
 var phaser_object = {
-  groups : {}
+  groups : {},
+  collisions : {},
 };
 
 
 window.onload = function() {  
-  game = new Phaser.Game(Map.settings.gameWidth, Map.settings.gameHeight, Phaser.AUTO, 'map-canvas',
+  game = new Phaser.Game(Map.settings.gameWidth, Map.settings.gameHeight, Phaser.CANVAS, 'map-canvas',
     {
       /*init:     GameApp.init,*/
       preload:  GameApp.preload,
       create:   GameApp.create,
-      update:   GameApp.update
+      update:   GameApp.update,
+      /*render:   GameApp.render,*/
     }
   );
 }

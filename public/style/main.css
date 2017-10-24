@@ -77,6 +77,12 @@ button {
   background: #f9f9f9;
 }
 
+.board-command {
+  cursor: pointer;
+}
+.board-command:hover {
+  text-decoration: underline;
+}
 
 @media only screen and (max-width: 767px) {
   .flex {

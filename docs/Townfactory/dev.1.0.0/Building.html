@@ -28,7 +28,7 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>Building<span class="signature">()</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>Building<span class="signature">(type)</span><span class="type-signature"></span></h2>
         
             <div class="class-description">Create a building instance.</div>
         
@@ -45,7 +45,7 @@
     
 
     
-    <h4 class="name" id="Building"><span class="type-signature"></span>new Building<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Building"><span class="type-signature"></span>new Building<span class="signature">(type)</span><span class="type-signature"></span></h4>
     
 
     
@@ -62,6 +62,55 @@
 
 
 
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>type</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Building type.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
 
 
@@ -90,6 +139,29 @@
     </thead>
 
     <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>type</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Building ID.</td>
+        </tr>
+
     
 
         <tr>
@@ -169,6 +241,47 @@
             <td class="type">
             
                 
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Production data.
+                <h6>Properties</h6>
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>resources</code></td>
+            
+
+            <td class="type">
+            
+                
 <span class="param-type">number</span>
 
 
@@ -179,7 +292,60 @@
 
             
 
-            <td class="description last">Resource id.</td>
+            <td class="description last">Array of resources it can produces.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>current</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Array of current production.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>power_switch</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">bool</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Production active or not.</td>
         </tr>
 
     
@@ -262,6 +428,72 @@
     
 
     
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id=".produce"><span class="type-signature">(static) </span>produce<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Produces resources (called by update loop).
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="game_building.js.html">game/building.js</a>, <a href="game_building.js.html#line81">line 81</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+    
 
     
         <h3 class="subsection-title">Methods</h3>
@@ -324,7 +556,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_building.js.html">game/building.js</a>, <a href="game_building.js.html#line25">line 25</a>
+        <a href="game_building.js.html">game/building.js</a>, <a href="game_building.js.html#line51">line 51</a>
     </li></ul></dd>
     
 
@@ -368,13 +600,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Building.html">Building</a></li><li><a href="Resource.html">Resource</a></li></ul><h3>Namespaces</h3><ul><li><a href="Board.html">Board</a></li><li><a href="GameApp.html">GameApp</a></li><li><a href="Map.html">Map</a></li><li><a href="Resources.html">Resources</a></li></ul><h3>Global</h3><ul><li><a href="global.html#game">game</a></li><li><a href="global.html#phaser_object">phaser_object</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Building.html">Building</a></li><li><a href="Resource.html">Resource</a></li></ul><h3>Namespaces</h3><ul><li><a href="Board.html">Board</a></li><li><a href="Database.html">Database</a></li><li><a href="GameApp.html">GameApp</a></li><li><a href="Map.html">Map</a></li><li><a href="Production.html">Production</a></li><li><a href="Resources.html">Resources</a></li></ul><h3>Global</h3><ul><li><a href="global.html#game">game</a></li><li><a href="global.html#phaser_object">phaser_object</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Oct 23 2017 13:43:25 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Oct 24 2017 12:06:29 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>

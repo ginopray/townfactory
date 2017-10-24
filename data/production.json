@@ -1,0 +1,22 @@
+[
+  {
+    "building": 1,
+    "resource": 1,
+    "time": 3
+  },
+  {
+    "building": 2,
+    "resource": 2,
+    "time": 2
+  },
+  {
+    "building": 3,
+    "resource": 3,
+    "time": 7
+  },
+  {
+    "building": 4,
+    "resource": 4,
+    "time": 5
+  }
+]

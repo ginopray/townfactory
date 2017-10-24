@@ -1,18 +1,26 @@
-{
-  "list": [
+[
     {
-      "id": "1",
+      "id": 1,
       "name": "wood",
-      "level": "1",
-      "image": "",
-      "value": "1"
+      "color": "#795548",
+      "value": 1
     },
     {
-      "id": "2",
-      "name": "food",
-      "level": "1",
-      "image": "",
-      "value": "1"
+      "id": 2,
+      "name": "wheat",
+      "color": "#ffc107",
+      "value": 1
+    },
+    {
+      "id": 3,
+      "name": "wooden planks",
+      "color": "#795548",
+      "value": 3
+    },
+    {
+      "id": 4,
+      "name": "bread",
+      "color": "#ffc107",
+      "value": 2
     }
   ]
-}

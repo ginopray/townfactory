@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: game/board.js</title>
+    <title>JSDoc: Source: game/production.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: game/board.js</h1>
+    <h1 class="page-title">Source: game/production.js</h1>
 
     
 
@@ -27,50 +27,72 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * Contains the game board class: Board.
+ * Contains the production class.
  * @file
- * @see Board
+ * @see Production
  */
 
 /**
- * The game board class.
- * @name Board
+ * The production class.
+ * @name Production
  * @namespace
- * @classdesc Game board - Manage the UI: buttons, stats...
- * @property {object} flags - Flags
- * @property {bool} flags.render - Rendering on/off
+ * @classdesc The production class.
  */
-var Board = {
-  
-  flags : {
-    render : 1,
+var Production = {
+
+  /**
+   * Get the complete production data of a building.
+   * @memberof Production
+   * @name get
+   * @method
+   * @param {number} building_type - The building type.
+   * @return {object} The building production object.
+   */
+  get : function (building_type) {
+    var ret = {}
+    ret.current = [];
+    ret.resources = Production.get_production(building_type);
+    var r,
+        required_resources;
+    // Loop produced resources.
+    for (var p in ret.resources) {
+      // Add required resources.
+      ret.resources[p].requires = Production.get_required(ret.resources[p].resource);
+    }
+    return ret;
   },
   
+  
   /**
-   * Initialize the board.
-   * @memberof Board
-   * @name init
+   * Get the production of a building.
+   * @memberof Production
+   * @name get_production
    * @method
+   * @param {number} building_type - The building type.
+   * @return {array} Array of resources produded by a building.
    */
-  init : function () {
-    jQuery('.board-command').each(function(){
-      jQuery(this).click(function(){
-        window["Board"][jQuery(this).attr("data-callback")]();
-      });
-    })
+  get_production : function (building_type) {
+    var prod = Database.get('production', {
+      building : building_type
+    });
+    return prod;
   },
   
   
   /**
-   * Toggle geometry rendering.
-   * @memberof Board
-   * @name render_toggle
+   * Get the resources required to produce another resource.
+   * @memberof Production
+   * @name get_required
    * @method
+   * @param {number} resource_type - The resource type.
+   * @return {array} Array of required resources.
    */
-  render_toggle : function () {
-    Board.flags.render = 1 - Board.flags.render;
-    game.debug.reset();
-  }
+  get_required : function (resource_type) {
+    var prod = Database.get('production_resources', {
+      resource : resource_type
+    });
+    return prod;
+  },
 
 };
 </code></pre>
