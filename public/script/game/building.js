@@ -10,17 +10,19 @@
  * @class
  * @classdesc Create a building instance.
  * @param {number} type - Building type.
+ * @param {pos_x} type - x (tile) position.
+ * @param {pos_y} type - y (tile) position.
  * @property {number} type - Building ID.
- * @property {number} pos_x - x position (in px).
- * @property {number} pos_y - y position (in px).
+ * @property {number} pos_x - x (tile) position.
+ * @property {number} pos_y - y (tile) position.
  * @property {object} sprite - Phaser.io sprite object.
  * @property {object} production - Production data.
  * @property {number} production.resources - Array of resources it can produces.
  * @property {number} production.current - Array of current production.
  * @property {bool} power_switch - Production active or not.
  */
-var Building = function (type) {
-    
+var Building = function (type, pos_x, pos_y) {
+  
   // FIRST!
   // Setting defaults.
   var default_building = Database.get('buildings', {
@@ -30,17 +32,20 @@ var Building = function (type) {
   // Set defaults!
   Object.assign(this, default_building[0]);
   
-  // Is producing?
-  this.power_switch = 1;
   
   this.id = 'to define';
+  
+  // Is producing?
+  this.power_switch = 1;
   
   // Building type.
   this.type = type;
   
   // Random position.
-  this.pos_x = Math.floor(Math.random() * Map.settings.gameWidth) + 1;
-  this.pos_y = Math.floor(Math.random() * Map.settings.gameHeight) + 1;
+  //this.pos_x = Math.floor(Math.random() * Map.settings.gameWidth) + 1;
+  //this.pos_y = Math.floor(Math.random() * Map.settings.gameHeight) + 1;
+  this.pos_x = pos_x;
+  this.pos_y = pos_y;
   
   // Get the production.
   this.production = Production.get(type);
@@ -55,14 +60,23 @@ var Building = function (type) {
  * @method
  */
 Building.prototype.spawn  = function () {
-  // Create sprite and add it to "buildings" group.
-  this.sprite = phaser_object.groups.buildings.create(this.pos_x, this.pos_y, 'building-' + this.type);
   
-  // Setting the size.
+  // Get building size.
+  // this.width and this.height aqe expressed in tiles.
   var width = this.width * Map.settings.tileWidth;
   var height = this.height * Map.settings.tileHeight;
+  
+  // Get the tile coordinates.
+  var tile = Map.get_tile({x: this.pos_x, y: this.pos_y, w: width, h: height}, 'rgba(244, 67, 54, .5)');
+  
+  // Create sprite and add it to "buildings" group.
+  this.sprite = phaser_object.groups.buildings.create(tile.x, tile.y, 'building-' + this.type);
+  
+  // Setting the size.
   this.sprite.width = width;
-  this.sprite.height = height;  
+  this.sprite.height = height;
+  this.sprite.top = tile.top;
+  this.sprite.left = tile.left;
   
   // Set physics.
   game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
@@ -72,9 +86,13 @@ Building.prototype.spawn  = function () {
   
   // Log building info onclick.
   this.sprite.inputEnabled = true;
-  this.sprite.events.onInputDown.add(function(){
-    console.log ("Type: " + this.type + ", Produzione: ", this.production);
+  this.sprite.events.onInputOver.add(function(){
+    Board.info_building(this);
   }, this);
+  this.sprite.events.onInputOut.add(function(){
+    Board.info_building(false);
+  }, this);
+  
 };
 
 

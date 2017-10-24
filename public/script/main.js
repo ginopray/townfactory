@@ -25,8 +25,13 @@ var game;
  * The Phaser.io game data object.
  * Contains groups and other Phaser.io objects.
  * @name phaser_object
- * @property {object}  groups - Phaser groups
- * @property {object}  groups.buildings - Buildings group
+ * @property {object} groups - Phaser groups.
+ * @property {object} groups.buildings - Buildings group.
+ * @property {object} collisions - Collision groups.
+ * @property {array} grid - Array of rectangles (tiles).
+ * @property {object} inputs - Input geometries.
+ * @property {object} inputs.mouse - Mouse geometries.
+ * @property {object} inputs.mouse.selection - Mouse selection rectangle.
  * @global
  * @example // Creating buildings group:
  * phaser_object.groups.buildings = game.add.group();
@@ -36,6 +41,12 @@ var game;
 var phaser_object = {
   groups : {},
   collisions : {},
+  grid : [],
+  inputs: {
+    mouse: {
+      selection: {},
+    }
+  }
 };
 
 
@@ -46,7 +57,7 @@ window.onload = function() {
       preload:  GameApp.preload,
       create:   GameApp.create,
       update:   GameApp.update,
-      /*render:   GameApp.render,*/
+      render:   GameApp.render,
     }
   );
 }
