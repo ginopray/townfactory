@@ -25,11 +25,15 @@ var Board = {
    * @method
    */
   init : function () {
+    // Bind click on boad commands.
     jQuery('.board-command').each(function(){
       jQuery(this).click(function(){
         window["Board"][jQuery(this).attr("data-callback")]();
       });
-    })
+    });
+    
+    // Build tools panel.
+    Board.set_tools_panel();
   },
 
   
@@ -66,7 +70,7 @@ var Board = {
   info_selection : function () {
     var coords = Map.coord2tile({x: phaser_object.inputs.mouse.selection.tile.x, y: phaser_object.inputs.mouse.selection.tile.y});
     var html = "";
-    html += '<p>Tile selected: ' + (coords.x + 1) + ':' + (coords.y + 1) + '</p>'
+    html += '<p>Tile hover: ' + (coords.x + 1) + ':' + (coords.y + 1) + '</p>'
     jQuery('#info-selection').html(html);
   },
   
@@ -122,7 +126,34 @@ var Board = {
     }
     html += '</div>';
     return html;
-  }
+  },
+  
+  
+  /**
+   * Set the tools panel.
+   * @memberof Board
+   * @name set_tools_panel
+   * @method
+   */
+  set_tools_panel : function () {
+    for (var tool in Actions.tools) {
+      jQuery('#tools').append(
+        $('<div>', {
+          id: 'tool-' + tool,
+          'data-tool': tool,
+          class: 'tool tool--' + tool,
+          text: tool,
+          click: function() {
+            Actions.set(jQuery(this).attr('data-tool'));
+          }
+        })
+      );
+    }
+    // Select first.
+    GameApp.data.action.selected = jQuery('#tools div').first().attr('data-tool');
+    jQuery('#tools div').first().addClass('tool--selected');
+  },
+  
 
 
 };

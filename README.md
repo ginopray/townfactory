@@ -19,13 +19,15 @@ A test with github, jsdoc and Phaser.io
 Browse "docs/Townfactory/<em>version-name</em>/index.html" for documentation
 
 
-<h2>Version log (italiano):</h2>
-@todo translation
+<h2>Version log:</h2>
 <ul>
 <li>dev.1.0.0
   <ul>
-  <li>Crea l'area di gioco con Phaser, crea e piazza due "Building" a caso.</li>
-  <li>Clicca su un "Building" per vedere la produzione nella console del browser.</li>
+  <li>Create some game data.</li>
+  <li>Create game with Phaser.io.</li>
+  <li>Spawn 3 buildings.</li>
+  <li>Some building produce resources.</li>
+  <li>Move the mouse on buildings to get some info.</li>
   </ul>
 </li>
 </ul>

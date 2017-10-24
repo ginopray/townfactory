@@ -52,15 +52,6 @@ var Map = {
     
     // Create the grid.
     Map.grid();
-
-    // Set events:
-    // Mouse down:
-    game.input.onDown.add(function(){
-      var tile = phaser_object.inputs.mouse.selection.tile;
-      var tile_pos_x = (phaser_object.inputs.mouse.selection.tile.x / Map.settings.tileWidth) + 1;
-      var tile_pos_y = (phaser_object.inputs.mouse.selection.tile.y / Map.settings.tileHeight) + 1;
-      $('#log').text('['+tile_pos_x+':'+tile_pos_y+']');
-    }, this);
     
     // Create mouse tile selection rectangle.
     phaser_object.inputs.mouse.selection = {

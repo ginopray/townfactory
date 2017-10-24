@@ -16,6 +16,8 @@
  * @property {object} data.map - Map game data.
  * @property {object} data.map.width - The width of the map (in tiles).
  * @property {number} data.map.height - The height of the map (in tiles).
+ * @property {object} data.action - Action data.
+ * @property {object} data.action.selected - Current selected action: view, build road....
  * @see Building
  * @see Data
  * @see Map
@@ -126,6 +128,9 @@ var GameApp = {
     
     // Show the map.
     Map.get();
+    
+    // Actions init.
+    Actions.init();
 
     // Initialize the board.
     Board.init();
@@ -243,6 +248,7 @@ var GameApp = {
         new Building(5, Math.floor(Math.random() * initial_game_size.w) + 1, Math.floor(Math.random() * initial_game_size.h) + 1),
       ],
       resources : [],
+      action : {}
     }
   },
 

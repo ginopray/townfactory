@@ -13,6 +13,7 @@
     
     <script src="script/database.js"></script>
     <script src="script/game.js"></script>
+    <script src="script/game/actions.js"></script>
     <script src="script/game/board.js"></script>
     <script src="script/game/building.js"></script>
     <script src="script/game/map.js"></script>
@@ -27,16 +28,17 @@
       </div>
       <div class="sidebar">
         <div id="log"></div>
-        <div class="controls">
-          <h3>Board commands:</h3>
-          <ul>
-            <li><div class="board-command" data-callback="render_toggle">Toggle debug render</div></li>
-          </ul>
-        </div>
+        <div id="tools" class="tools"></div>
         <div class="info">
           <h3>Info</h3>
           <div id="info-selection" class="info-selection"></div>
           <div id="info-building" class="info-building"></div>
+        </div>
+        <div class="controls">
+          <h3>Debug:</h3>
+          <ul>
+            <li><div class="board-command" data-callback="render_toggle">Toggle debug render</div></li>
+          </ul>
         </div>
       </div>
     </div>

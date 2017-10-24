@@ -97,6 +97,26 @@ img {
   max-height: 24px;
 }
 
+.tools{
+  display: flex;
+  flex-wrap: wrap;
+}
+.tool {
+  width: 32px;
+  height: 32px;
+  border: 2px solid #ccc;
+  margin: 2px;
+  background-color: #eeeeee;
+  cursor: pointer;
+}
+.tool--selected {
+  background-color: #2196f3;
+  border-color: #1976d2;
+  color: white;
+}
+
+
+
 @media only screen and (max-width: 767px) {
   .flex {
     flex-direction: column;

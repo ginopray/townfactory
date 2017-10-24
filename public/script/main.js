@@ -31,7 +31,7 @@ var game;
  * @property {array} grid - Array of rectangles (tiles).
  * @property {object} inputs - Input geometries.
  * @property {object} inputs.mouse - Mouse geometries.
- * @property {object} inputs.mouse.selection - Mouse selection rectangle.
+ * @property {object} inputs.mouse.selection - Mouse selection object.
  * @global
  * @example // Creating buildings group:
  * phaser_object.groups.buildings = game.add.group();
