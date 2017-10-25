@@ -55,24 +55,20 @@ var GameApp = {
   preload : function () {
     
     // Load db data.
-    GameApp.loading('db...');
     game.load.json('resources', '../data/resources.json');
     game.load.json('buildings', '../data/buildings.json');
     game.load.json('production', '../data/production.json');
     game.load.json('production_resources', '../data/production_resources.json');
     
     // Load buildings.
-    GameApp.loading('buildings...');
     for (var i = 1; i <= 5; i ++) {
       game.load.image('building-' + i, 'images/game/buildings/building-' + i + '.png');
     }
     // Load resources.
-    GameApp.loading('resources...');
     for (var i = 1; i <= 4; i ++) {
       game.load.image('resource-' + i, 'images/game/resources/resource-' + i + '.png');
     }
     // Load other images.
-    GameApp.loading('almost ready...');
     game.load.image('helper-road', 'images/game/tools/helper-road.png');
     game.load.image('road', 'images/game/roads/road.png');
     
@@ -108,8 +104,6 @@ var GameApp = {
       //console.log("File loaded! Load game...");
       // Load game data.
       GameApp.data = GameApp.load();
-      
-      GameApp.loading('Go!');
       
       console.log("PHASER PRELOAD DONE!");
       
