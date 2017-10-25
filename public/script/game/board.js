@@ -147,7 +147,7 @@ var Board = {
   set_tools_panel : function () {
     for (var tool in Actions.tools) {
       jQuery('#tools').append(
-        $('<div>', {
+        jQuery('<div>', {
           id: 'tool-' + tool,
           'data-tool': tool,
           class: 'tool tool--' + tool,
