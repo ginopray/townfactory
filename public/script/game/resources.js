@@ -95,12 +95,12 @@ Resource.prototype.spawn  = function (x, y) {
   // Create sprite and add it to "buildings" group.
   this.sprite = phaser_object.groups.resources.create(x, y, 'resource-' + this.type);
   
+  // Center anchor.
+  this.sprite.anchor.setTo(0.5, 0.5);
+  
   // Setting the size.
   this.sprite.width = Map.settings.resourceWidth;
   this.sprite.height = Map.settings.resourceHeight;
-
-  // Center anchor.
-  this.sprite.anchor.setTo(0.5, 0.5);
   
   // Physics.
   game.physics.enable(this.sprite, Phaser.Physics.ARCADE);

@@ -27,7 +27,7 @@ var GameApp = {
   * @property {string} action.selected - Current selected action: view, build road....
   * @property {object} action.vars - Action data object. Each tool has his data set. (ie. "road" tool can have "direction" property)
   * @property {object} roads - Roads data.
-  * @property {array} roads.items - Array containing all road items.
+  * @property {array} roads.items - Array containing all road items. Ie. GameApp.data.roads.items[x][y] = new Road();
   */
   data : {},
   
@@ -115,7 +115,7 @@ var GameApp = {
    * @name start
    * @method
    */
-  create : function () {    
+  create : function () {
         
     // Add Physics.
     game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -264,7 +264,9 @@ var GameApp = {
       ],
       resources : [],
       action : {},
-      roads : {}
+      roads : {
+        items: []
+      }
     }
   },
 

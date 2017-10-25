@@ -35,7 +35,7 @@ var Actions = {
    * @name init
    * @method
    */
-  init : function () {  
+  init : function () {
     
   },
   

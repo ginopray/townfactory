@@ -10,8 +10,8 @@
  * @class
  * @classdesc Create a building instance.
  * @param {number} type - Building type.
- * @param {pos_x} type - x (tile) position.
- * @param {pos_y} type - y (tile) position.
+ * @param {number} pos_x - x (tile) position.
+ * @param {number} pos_y - y (tile) position.
  * @property {number} type - Building ID.
  * @property {number} pos_x - x (tile) position.
  * @property {number} pos_y - y (tile) position.
@@ -73,14 +73,14 @@ Building.prototype.spawn  = function () {
   // Create sprite and add it to "buildings" group.
   this.sprite = phaser_object.groups.buildings.create(tile.x, tile.y, 'building-' + this.type);
   
+  // Center anchor.
+  this.sprite.anchor.setTo(0.5, 0.5);
+  
   // Setting the size.
   this.sprite.width = width;
   this.sprite.height = height;
   this.sprite.top = tile.top;
-  this.sprite.left = tile.left;
-  
-  // Center anchor.
-  this.sprite.anchor.setTo(0.5, 0.5);
+  this.sprite.left = tile.left;  
   
   // Set physics.
   game.physics.enable(this.sprite, Phaser.Physics.ARCADE);

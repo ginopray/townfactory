@@ -40,6 +40,9 @@ var Board = {
     
     // Build tools panel.
     Board.set_tools_panel();
+    
+    // Show the game!
+    jQuery('.waiting').hide();
   },
 
   

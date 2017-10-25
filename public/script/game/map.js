@@ -193,7 +193,93 @@ var Map = {
       x: Math.floor(coords.x / Map.settings.tileWidth),
       y: Math.floor(coords.y / Map.settings.tileHeight)
     }
-  }
+  },
+  
+  
+  /**
+   * Check if a slot is free.
+   * @memberof Map
+   * @name check_free_slot
+   * @method
+   * @param {number} x - X position to find.
+   * @param {number} y - Y position to find.
+   * @return {boolean}
+   */
+  check_free_slot : function (x, y) {
+    var find = Map.find(x, y);
+    for (var type in find) {
+      if (find[type] !== false) {
+        return false;
+      }
+    }
+    return true;
+  },
+  
+  
+  /**
+   * Find a game object on the map.
+   * @memberof Map
+   * @name find
+   * @method
+   * @param {number} x - X position to find.
+   * @param {number} y - Y position to find.
+   * @param {string} what - Type of item to find, ie. "buildings". undefined = check all.
+   * @return {object} Object containing items found.
+   */
+  find : function (x, y, what) {
+    var all = (typeof what === "undefined"),
+        ret = {};
+    if (what == "buildings" || all) {
+      ret.buildings = Map.find_building(x, y);
+    }
+    if (what == "roads" || all) {
+      ret.roads = Map.find_road(x, y);
+    }
+    return ret;
+  },
+
+  
+  /**
+   * Find a building on the map.
+   * @memberof Map
+   * @name find_building
+   * @method
+   * @param {number} x - X position to find.
+   * @param {number} y - Y position to find.
+   * @return {object} The building.
+   */
+  find_building : function (x, y) {
+    var building,
+        cX, cY;
+    for (var b in GameApp.data.buildings) {
+      building = GameApp.data.buildings[b];
+      // Check all size of the building.
+      for (cX = building.pos_x; cX < building.pos_x + building.width; cX ++) {
+        for (cY = building.pos_y; cY < building.pos_y + building.height; cY ++) {
+          if (cX == x && cY == y) {
+            return building;   
+          }
+        }
+      }
+    }
+    return false;
+  },
+  
+  
+  /**
+   * Find a road on the map.
+   * @memberof Map
+   * @name find_road
+   * @method
+   * @param {number} x - X position to find.
+   * @param {number} y - Y position to find.
+   * @return {object} The building.
+   */
+  find_road : function (x, y) {
+    if (typeof GameApp.data.roads.items[x] === "undefined" || typeof GameApp.data.roads.items[x][y] === "undefined")
+      return false;
+    return GameApp.data.roads.items[x][y];
+  },
 
 };
 

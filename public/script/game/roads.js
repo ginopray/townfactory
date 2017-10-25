@@ -21,7 +21,23 @@ var Roads = {
    * @param {object} tile - Selected tile.
    */
   build : function (tile) {
-    $('#log').text('build a road on ['+tile.x+':'+tile.y+'], dir: ' + GameApp.data.action.data.direction);
+    //$('#log').text('build a road on ['+tile.x+':'+tile.y+'], dir: ' + GameApp.data.action.data.direction);
+    
+    // Check for free space.
+    if (!Map.check_free_slot(tile.x, tile.y)) {
+      console.log("QUI NO!");
+      return;
+    }
+    
+    // Create game object...
+    var road = new Road(GameApp.data.action.data.type, tile.x, tile.y, GameApp.data.action.data.direction);
+    // ...and append it to GameApp.data.roads.
+    if (typeof GameApp.data.roads.items[tile.x] === "undefined")
+      GameApp.data.roads.items[tile.x] = new Array();
+    GameApp.data.roads.items[tile.x][tile.y] = road;
+    // Spawn!
+    road.spawn();
+    
   },
   
   
@@ -45,7 +61,7 @@ var Roads = {
    */
   tool_init : function () {
     return {
-      //type: 1,
+      type: 1,
       direction: Actions.tools.road.directions[0]
     };
   },
@@ -100,10 +116,22 @@ var Roads = {
  * @name Road
  * @class
  * @classdesc Create a road instance.
- * @property {object} sprite - Phaser.io sprite object
+ * @param {number} type - The road type.
+ * @param {number} pos_x - x (tile) position.
+ * @param {number} pos_y - y (tile) position.
+ * @param {string} direction - up/down/left/right.
+ * @property {object} sprite - Phaser.io sprite object.
+ * @property {number} type The road type.
+ * @property {number} pos_x - x (tile) position.
+ * @property {number} pos_y - y (tile) position.
+ * @property {string} direction - up/down/left/right.
  */
-var Road = function () {
+var Road = function (type, pos_x, pos_y, direction) {
   
+  this.type = type;
+  this.pos_x = pos_x;
+  this.pos_y = pos_y;
+  this.direction = direction;
   
 };
 
@@ -116,5 +144,33 @@ var Road = function () {
  * @method
  */
 Road.prototype.spawn  = function () {
+  
+  // Get the tile coordinates.
+  var tile = Map.get_tile({x: this.pos_x, y: this.pos_y, w: Map.settings.tileWidth, h: Map.settings.tileHeight}, 'rgba(244, 67, 54, .5)');
+  
+  // Create sprite and add it to "buildings" group.
+  this.sprite = phaser_object.groups.buildings.create(tile.x, tile.y, 'road');
+  
+  // Physics.
+  game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
+  this.sprite.body.checkCollision.up = false;
+  this.sprite.body.checkCollision.down = false;
+  this.sprite.body.checkCollision.left = false;
+  this.sprite.body.checkCollision.right = false;
+  this.sprite.body.immovable = true;
+  
+  // Center anchor.
+  this.sprite.anchor.setTo(0.5, 0.5);
+  
+  // Setting the size.
+  this.sprite.width = Map.settings.tileWidth;
+  this.sprite.height = Map.settings.tileHeight;
+  this.sprite.top = tile.top;
+  this.sprite.left = tile.left;
+  
+  // Set direction angle.
+  var direction_index = Actions.tools.road.directions.indexOf(this.direction);
+  this.sprite.angle = Actions.tools.road.dir_angles[direction_index];
+  
 }
 
