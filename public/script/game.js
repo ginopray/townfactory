@@ -9,21 +9,27 @@
  * @name GameApp
  * @namespace
  * @classdesc The main game application class.
- * @property {object} data - The game data set.
- * @property {timestamp} data.date_ini - Start game date: Date.now()
- * @property {array} data.buildings - Array containing building objects.
- * @property {array} data.resources - Array containing resources objects.
- * @property {object} data.map - Map game data.
- * @property {object} data.map.width - The width of the map (in tiles).
- * @property {number} data.map.height - The height of the map (in tiles).
- * @property {object} data.action - Action data.
- * @property {object} data.action.selected - Current selected action: view, build road....
- * @property {object} data.roads - Roads data.
- * @see Building
- * @see Data
- * @see Map
  */
 var GameApp = {
+  
+  /**
+  * The game data set.
+  * @memberof GameApp
+  * @name data
+  * @type {object}
+  * @property {timestamp} date_ini - Start game date: Date.now()
+  * @property {array} buildings - Array containing building objects.
+  * @property {array} resources - Array containing resources objects.
+  * @property {object} map - Map game data.
+  * @property {object} map.width - The width of the map (in tiles).
+  * @property {number} map.height - The height of the map (in tiles).
+  * @property {object} action - Action data.
+  * @property {object} action.selected - Current selected action: view, build road....
+  * @property {object} roads - Roads data.
+  * @property {array} roads.items - Array containing all road items.
+  */
+  data : {},
+  
  
   /**
    * Initialize the game (called by Phaser:init).
@@ -266,7 +272,7 @@ var GameApp = {
    * @memberof GameApp
    * @name error
    * @method
-   * @param {string} Error message.
+   * @param {string} msg - Error message.
    */
   error : function (msg) {
     game.destroy();

@@ -9,18 +9,24 @@
  * @name Map
  * @namespace
  * @classdesc Map class.
- * @property {object} settings - Map settings.
- * @property {number} settings.gameWidth - Width (px) of canvas.
- * @property {number} settings.gameHeight - Height (px) of canvas.
- * @property {number} settings.tileWidth - The tile width in px.
- * @property {number} settings.tileHeight - The tile height in px.
- * @property {number} settings.resourceWidth - The resource width in px.
- * @property {number} settings.resourceHeight - The resource height in px.
- * @property {number} settings.friction - The friction for things.
- * @property {number} settings.friction_rate - The friction rate in ms.
  */
 var Map = {
   
+  /**
+   * Map settings object.
+   * @memberof Map
+   * @name settings
+   * @type {object}
+   * @property {number} gameWidth - Width (px) of canvas.
+   * @property {number} gameHeight - Height (px) of canvas.
+   * @property {number} tileWidth - The tile width in px.
+   * @property {number} tileHeight - The tile height in px.
+   * @property {number} resourceWidth - The resource width in px.
+   * @property {number} resourceHeight - The resource height in px.
+   * @property {number} friction - The friction for things.
+   * @property {number} friction_rate - The friction rate in ms.
+   * @example var friction = Map.settings.friction;
+   */
   settings : {
     gameWidth : 1024,
     gameHeight : 768,
@@ -32,6 +38,7 @@ var Map = {
     friction_rate: 50, // ms
   },
 
+  
   /**
    * Get the map, based on data stored in "GameApp.data".
    * @memberof Map

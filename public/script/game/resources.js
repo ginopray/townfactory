@@ -88,6 +88,7 @@ var Resource = function (type) {
  * Add the resource to the map.
  * @memberof Resource
  * @name spawn
+ * @instance
  * @method
  */
 Resource.prototype.spawn  = function (x, y) {

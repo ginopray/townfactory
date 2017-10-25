@@ -41,3 +41,14 @@ var Road = function () {
   
 };
 
+
+/**
+ * Add the road sprite to the map.
+ * @memberof Road
+ * @name spawn
+ * @instance
+ * @method
+ */
+Road.prototype.spawn  = function () {
+}
+

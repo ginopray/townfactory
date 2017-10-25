@@ -8,10 +8,17 @@
  * @name Actions
  * @namespace
  * @classdesc Actions class.
- * @property {object} tools - User available tools.
  */
 var Actions = {
   
+  /**
+   * User available tools.
+   * @memberof Actions
+   * @name tools
+   * @type {object}
+   * @property {object} view - The "view" tool.
+   * @property {object} road - The "road" tool.
+   */
   tools : {
     view: {},
     road: {}
@@ -21,7 +28,7 @@ var Actions = {
   /**
    * Initialize actions.
    * @memberof Actions
-   * @name set
+   * @name init
    * @method
    */
   init : function () {  

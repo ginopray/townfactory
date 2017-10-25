@@ -57,6 +57,7 @@ var Building = function (type, pos_x, pos_y) {
  * Add the building to the map.
  * @memberof Building
  * @name spawn
+ * @instance
  * @method
  */
 Building.prototype.spawn  = function () {
@@ -100,7 +101,8 @@ Building.prototype.spawn  = function () {
  * Produces resources (called by update loop).
  * @memberof Building
  * @name produce
- * @methodresources it can produces
+ * @instance
+ * @method
  */
 Building.prototype.produce  = function () {
   // Is building active?
