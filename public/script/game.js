@@ -24,7 +24,8 @@ var GameApp = {
   * @property {object} map.width - The width of the map (in tiles).
   * @property {number} map.height - The height of the map (in tiles).
   * @property {object} action - Action data.
-  * @property {object} action.selected - Current selected action: view, build road....
+  * @property {string} action.selected - Current selected action: view, build road....
+  * @property {object} action.vars - Action data object. Each tool has his data set. (ie. "road" tool can have "direction" property)
   * @property {object} roads - Roads data.
   * @property {array} roads.items - Array containing all road items.
   */
@@ -100,7 +101,8 @@ var GameApp = {
     for (var i = 1; i <= 4; i ++) {
       game.load.image('resource-' + i, 'images/game/resources/resource-' + i + '.png');
     }
-    game.load.image('helper-road' + i, 'images/game/tools/helper-road.png');
+    game.load.image('helper-road', 'images/game/tools/helper-road.png');
+    game.load.image('road', 'images/game/roads/road.png');
     
   },
 

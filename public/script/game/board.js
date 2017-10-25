@@ -148,7 +148,7 @@ var Board = {
           id: 'tool-' + tool,
           'data-tool': tool,
           class: 'tool tool--' + tool,
-          text: tool,
+          title: tool,
           mousedown: function() {
             Actions.set(jQuery(this).attr('data-tool'));
           }

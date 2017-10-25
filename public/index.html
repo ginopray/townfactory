@@ -29,13 +29,16 @@
       </div>
       <div class="sidebar">
         <div id="log"></div>
-        <div id="tools" class="tools"></div>
-        <div class="info">
+        <div class="sidebar__section">
+          <h3>Tools</h3>
+          <div id="tools" class="tools"></div>
+        </div>
+        <div class="sidebar__section info">
           <h3>Info</h3>
           <div id="info-selection" class="info-selection"></div>
           <div id="info-building" class="info-building"></div>
         </div>
-        <div class="controls">
+        <div class="sidebar__section controls">
           <h3>Debug:</h3>
           <ul>
             <li><div class="board-command" data-callback="render_toggle">Toggle debug render</div></li>

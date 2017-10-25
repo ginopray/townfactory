@@ -21,6 +21,8 @@ var Map = {
    * @property {number} gameHeight - Height (px) of canvas.
    * @property {number} tileWidth - The tile width in px.
    * @property {number} tileHeight - The tile height in px.
+   * @property {number} helperWidth - The helper sprite width in px.
+   * @property {number} helperHeight - The helper sprite height in px.
    * @property {number} resourceWidth - The resource width in px.
    * @property {number} resourceHeight - The resource height in px.
    * @property {number} friction - The friction for things.
@@ -32,6 +34,8 @@ var Map = {
     gameHeight : 768,
     tileWidth : 48,
     tileHeight : 48,
+    helperWidth : 48,
+    helperHeight : 48,
     resourceWidth: 24,
     resourceHeight: 24,
     friction: 50,
@@ -70,6 +74,17 @@ var Map = {
       ),
       color: 'rgba(244, 67, 54, .3)'
     };
+    
+    // Set events:
+    // Mouse down:
+    game.input.onDown.add(function(){
+      Actions.click();
+    }, this);
+    
+    // Mouse wheel.
+    game.input.mouse.mouseWheelCallback = function(e){
+      Actions.wheel(e);
+    }
     
   },
 

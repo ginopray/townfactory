@@ -79,6 +79,9 @@ Building.prototype.spawn  = function () {
   this.sprite.top = tile.top;
   this.sprite.left = tile.left;
   
+  // Center anchor.
+  this.sprite.anchor.setTo(0.5, 0.5);
+  
   // Set physics.
   game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
   this.sprite.body.collideWorldBounds = true;

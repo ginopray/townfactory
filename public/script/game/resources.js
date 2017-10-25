@@ -99,14 +99,20 @@ Resource.prototype.spawn  = function (x, y) {
   this.sprite.width = Map.settings.resourceWidth;
   this.sprite.height = Map.settings.resourceHeight;
 
+  // Center anchor.
+  this.sprite.anchor.setTo(0.5, 0.5);
+  
+  // Physics.
   game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
   this.sprite.body.collideWorldBounds = true;
-
+  // Bounces.
   this.sprite.body.bounce.setTo(0.5, 0.5);
   
+  // Test:initial speed.
   this.sprite.body.velocity.y = -350;
   this.sprite.body.velocity.x = 350;
   
+  // Set friction.
   Map.friction(this.sprite);
   
 };
