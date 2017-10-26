@@ -129,7 +129,7 @@ var Board = {
     html += '<div>';
     for (var p in production.resources) {
       obj = production.resources[p]
-      html += '<img class="info-resource__image" src="images/game/resources/resource-' + obj.resource + '.png" title="Resource ' + obj.resource + '" /> ';
+      html += '<img class="info-resource__image" src="images/game/resources/resource-' + obj.resource + '.png" title="Resource ' + obj.resource + '" /> ' + ((1 / obj.time) * 60) + '/m';
     }
     html += '</div>';
     return html;

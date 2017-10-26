@@ -28,6 +28,7 @@ Browse "docs/Townfactory/<em>version-name</em>/index.html" for documentation
   <li>Spawn 3 buildings.</li>
   <li>Some building produce resources.</li>
   <li>Move the mouse on buildings to get some info.</li>
+  <li>Place roads and move resources.</li>
   </ul>
 </li>
 </ul>
