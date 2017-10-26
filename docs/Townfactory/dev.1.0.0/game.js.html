@@ -52,7 +52,7 @@ var GameApp = {
   * @property {object} map.width - The width of the map (in tiles).
   * @property {number} map.height - The height of the map (in tiles).
   * @property {object} action - Action data.
-  * @property {string} action.selected - Current selected action: view, build road....
+  * @property {string} action.tool - Current selected tool: view, build road....
   * @property {object} action.vars - Action data object. Each tool has his data set. (ie. "road" tool can have "direction" property)
   * @property {object} roads - Roads data.
   * @property {array} roads.items - Array containing all road items. Ie. GameApp.data.roads.items[x][y] = new Road();
@@ -83,30 +83,33 @@ var GameApp = {
   preload : function () {
     
     // Load db data.
-    GameApp.loading('db...');
     game.load.json('resources', '../data/resources.json');
     game.load.json('buildings', '../data/buildings.json');
     game.load.json('production', '../data/production.json');
     game.load.json('production_resources', '../data/production_resources.json');
     
     // Load buildings.
-    GameApp.loading('buildings...');
     for (var i = 1; i &lt;= 5; i ++) {
       game.load.image('building-' + i, 'images/game/buildings/building-' + i + '.png');
     }
     // Load resources.
-    GameApp.loading('resources...');
     for (var i = 1; i &lt;= 4; i ++) {
       game.load.image('resource-' + i, 'images/game/resources/resource-' + i + '.png');
     }
     // Load other images.
-    GameApp.loading('almost ready...');
     game.load.image('helper-road', 'images/game/tools/helper-road.png');
+    game.load.image('helper-remove', 'images/game/tools/helper-remove.png');
     game.load.image('road', 'images/game/roads/road.png');
     
+    // File complete (progress bar).
+    game.load.onFileComplete.add(function(progress, file_key, success, total_loaded_files, total_files){
+      //console.log(file_key + "...done! " + total_loaded_files + "/" + total_files + "= " + progress + "%");
+      GameApp.loading(progress, file_key, success);
+    }, this);
     
     // Load game after load complete.
-    game.load.onLoadComplete = { dispatch : function(){
+    //game.load.onLoadComplete = { dispatch : function(){
+    game.load.onLoadComplete.add(function(){
       
       // Check resources.
       var JSON_resources = game.cache.getJSON('resources');
@@ -137,11 +140,9 @@ var GameApp = {
       // Load game data.
       GameApp.data = GameApp.load();
       
-      GameApp.loading('Go!');
-      
       console.log("PHASER PRELOAD DONE!");
       
-    }};
+    }, this);
     
   },
 
@@ -164,25 +165,35 @@ var GameApp = {
     phaser_object.groups.layers = {};
     // Base layer
     phaser_object.groups.layers.base = game.add.group();
+    // Roads.
+    phaser_object.groups.roads = game.add.group();
     // Buildings.
     phaser_object.groups.buildings = game.add.group();
     // Resources.
     phaser_object.groups.resources = game.add.group();
     // Add groups to base layer.
+    phaser_object.groups.layers.base.add(phaser_object.groups.roads);
     phaser_object.groups.layers.base.add(phaser_object.groups.buildings);
     phaser_object.groups.layers.base.add(phaser_object.groups.resources);
     // Add physics to main layer groups.
     phaser_object.groups.layers.base.setAll('enableBody', true);
 
+    // Prevent defaults.
+    game.canvas.oncontextmenu = function (e) {
+      e.preventDefault();
+    }
     
-    // Show the map.
-    Map.get();
+    // Initialize the map.
+    Map.init();
     
     // Actions init.
     Actions.init();
 
     // Initialize the board.
     Board.init();
+    
+    // Show the game!
+    jQuery('.waiting').hide();
     
     console.log("PHASER CREATE DONE!");
   },
@@ -195,26 +206,8 @@ var GameApp = {
    * @method
    */
   update : function () {
-    // Production.
-    for (var b in GameApp.data.buildings) {
-      GameApp.data.buildings[b].produce();
-    }
-    // Collisions.
-    game.physics.arcade.collide(phaser_object.groups.resources, phaser_object.groups.buildings);
-    game.physics.arcade.collide(phaser_object.groups.resources, phaser_object.groups.resources);
     
-    var coords = Map.coord2tile({x: game.input.mousePointer.x, y: game.input.mousePointer.y});
-    
-    // Update mouse selection position.
-    if (typeof phaser_object.inputs.mouse.selection.tile !== "undefined") {
-      phaser_object.inputs.mouse.selection.tile.x = coords.x * Map.settings.tileWidth;
-      phaser_object.inputs.mouse.selection.tile.y = coords.y * Map.settings.tileHeight;
-    }
-    
-    // Update helper
-    phaser_object.helper.centerX = (coords.x * Map.settings.tileWidth) + (Map.settings.tileWidth / 2);
-    phaser_object.helper.centerY = (coords.y * Map.settings.tileHeight) + (Map.settings.tileHeight / 2);
-    
+    Map.update();
     Board.update();
     
   },
@@ -252,6 +245,7 @@ var GameApp = {
       game.debug.geom(obj.tile, color);
     }
   },
+  
   
   /**
    * Load saved game.
@@ -329,10 +323,20 @@ var GameApp = {
    * @memberof GameApp
    * @name loading
    * @method
-   * @param {string} msg - Loading message.
+   * @param {number} progress - Loading progress percentage.
+   * @param {string} file_key - File key.
+   * @param {boolean} success - Resource loaded or not.
    */
-  loading : function (msg) {
-    jQuery('#loading').append(jQuery('&lt;div>', { text: msg }));
+  loading : function (progress, file_key, success) {
+    var msg = file_key + '...' + (success?'done!':'failed!');
+    if (!success) msg = '&lt;span class="color-error">' + msg + '&lt;/span>';
+    // Set progress bar.
+    jQuery('.progress__span').css('width', progress + '%');
+    // Append message.
+    jQuery('#loading').append(jQuery('&lt;div>', { html: msg }));
+    // Set percentage.
+    jQuery('.loading__percentage').text(progress + '%');
+
   }
 
 };
@@ -352,7 +356,7 @@ var GameApp = {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Oct 25 2017 19:10:25 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Oct 26 2017 19:32:17 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>

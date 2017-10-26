@@ -89,6 +89,51 @@ var Map = {
   
   
   /**
+   * Update the map.
+   * @memberof Map
+   * @name update
+   * @method
+   */
+  update : function () {
+    
+    // Resources and roads overlapping.
+    game.physics.arcade.overlap(phaser_object.groups.roads, phaser_object.groups.resources, Roads.flow);//, processCallback, callbackContext
+
+    // Collisions.
+    //game.physics.arcade.collide(phaser_object.groups.buildings, phaser_object.groups.resources);
+    game.physics.arcade.collide(phaser_object.groups.resources, phaser_object.groups.resources);
+    
+    var coords = Map.coord2tile({x: game.input.mousePointer.x, y: game.input.mousePointer.y});
+    
+    // Update mouse selection position.
+    if (typeof phaser_object.inputs.mouse.selection.tile !== "undefined") {
+      phaser_object.inputs.mouse.selection.tile.x = coords.x * Map.settings.tileWidth;
+      phaser_object.inputs.mouse.selection.tile.y = coords.y * Map.settings.tileHeight;
+    }
+    
+    // Update helper
+    phaser_object.helper.centerX = (coords.x * Map.settings.tileWidth) + (Map.settings.tileWidth / 2);
+    phaser_object.helper.centerY = (coords.y * Map.settings.tileHeight) + (Map.settings.tileHeight / 2);
+
+    // Buildings production.
+    for (var b in GameApp.data.buildings) {
+      GameApp.data.buildings[b].produce();
+    }
+    
+    // Check resources.
+    for (var r in GameApp.data.resources) {
+      // Delete steady resources
+      if (GameApp.data.resources[r].sprite.body.velocity.x == 0 && 
+          GameApp.data.resources[r].sprite.body.velocity.y == 0) {
+        GameApp.data.resources[r].sprite.destroy();
+        GameApp.data.resources.splice(r, 1);
+      }
+    }
+    
+  },
+  
+  
+  /**
    * Initialize the keyboard.
    * @memberof Map
    * @name set_keyboard
