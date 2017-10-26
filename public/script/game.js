@@ -157,7 +157,7 @@ var GameApp = {
     Board.init();
     
     // Show the game!
-    //jQuery('.waiting').hide();
+    jQuery('.waiting').hide();
     
     console.log("PHASER CREATE DONE!");
   },
