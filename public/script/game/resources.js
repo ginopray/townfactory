@@ -42,7 +42,10 @@ var Resources = {
    * @method
    * @param {number} type - The resource type.
    */
-  create : function (type, x, y) {
+  create : function (type, building) {
+    var x = building.sprite.x;
+    var y = building.sprite.top;
+    
     var resource = new Resource(type);
     resource.spawn(x, y);
     // Append new resource to GameApp.data.resources.
@@ -95,6 +98,10 @@ Resource.prototype.spawn  = function (x, y) {
   // Create sprite and add it to "buildings" group.
   this.sprite = phaser_object.groups.resources.create(x, y, 'resource-' + this.type);
   
+  // Test:initial speed.
+  this.sprite.body.velocity.y = -300;
+  this.sprite.body.velocity.x = 0;
+  
   // Center anchor.
   this.sprite.anchor.setTo(0.5, 0.5);
   
@@ -107,10 +114,6 @@ Resource.prototype.spawn  = function (x, y) {
   this.sprite.body.collideWorldBounds = true;
   // Bounces.
   this.sprite.body.bounce.setTo(0.5, 0.5);
-  
-  // Test:initial speed.
-  this.sprite.body.velocity.y = -350;
-  this.sprite.body.velocity.x = 350;
   
   // Set friction.
   Map.friction(this.sprite);

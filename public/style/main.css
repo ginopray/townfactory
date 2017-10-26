@@ -148,7 +148,9 @@ img {
 .tool--view {
   background-image: url('../images/board/tools/tool-view.png');
 }
-
+.tool--remove {
+  background-image: url('../images/board/tools/tool-remove.png');
+}
 
 .loading__percentage {
   font-size: 1.2em;

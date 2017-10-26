@@ -24,7 +24,7 @@ var GameApp = {
   * @property {object} map.width - The width of the map (in tiles).
   * @property {number} map.height - The height of the map (in tiles).
   * @property {object} action - Action data.
-  * @property {string} action.selected - Current selected action: view, build road....
+  * @property {string} action.tool - Current selected tool: view, build road....
   * @property {object} action.vars - Action data object. Each tool has his data set. (ie. "road" tool can have "direction" property)
   * @property {object} roads - Roads data.
   * @property {array} roads.items - Array containing all road items. Ie. GameApp.data.roads.items[x][y] = new Road();
@@ -70,6 +70,7 @@ var GameApp = {
     }
     // Load other images.
     game.load.image('helper-road', 'images/game/tools/helper-road.png');
+    game.load.image('helper-remove', 'images/game/tools/helper-remove.png');
     game.load.image('road', 'images/game/roads/road.png');
     
     // File complete (progress bar).
@@ -136,19 +137,26 @@ var GameApp = {
     phaser_object.groups.layers = {};
     // Base layer
     phaser_object.groups.layers.base = game.add.group();
+    // Roads.
+    phaser_object.groups.roads = game.add.group();
     // Buildings.
     phaser_object.groups.buildings = game.add.group();
     // Resources.
     phaser_object.groups.resources = game.add.group();
     // Add groups to base layer.
+    phaser_object.groups.layers.base.add(phaser_object.groups.roads);
     phaser_object.groups.layers.base.add(phaser_object.groups.buildings);
     phaser_object.groups.layers.base.add(phaser_object.groups.resources);
     // Add physics to main layer groups.
     phaser_object.groups.layers.base.setAll('enableBody', true);
 
+    // Prevent defaults.
+    game.canvas.oncontextmenu = function (e) {
+      e.preventDefault();
+    }
     
-    // Show the map.
-    Map.get();
+    // Initialize the map.
+    Map.init();
     
     // Actions init.
     Actions.init();
@@ -170,12 +178,12 @@ var GameApp = {
    * @method
    */
   update : function () {
-    // Production.
-    for (var b in GameApp.data.buildings) {
-      GameApp.data.buildings[b].produce();
-    }
+    
+    // Resources and roads overlapping.
+    game.physics.arcade.overlap(phaser_object.groups.roads, phaser_object.groups.resources, Roads.flow);//, processCallback, callbackContext
+
     // Collisions.
-    game.physics.arcade.collide(phaser_object.groups.resources, phaser_object.groups.buildings);
+    //game.physics.arcade.collide(phaser_object.groups.buildings, phaser_object.groups.resources);
     game.physics.arcade.collide(phaser_object.groups.resources, phaser_object.groups.resources);
     
     var coords = Map.coord2tile({x: game.input.mousePointer.x, y: game.input.mousePointer.y});
@@ -189,6 +197,21 @@ var GameApp = {
     // Update helper
     phaser_object.helper.centerX = (coords.x * Map.settings.tileWidth) + (Map.settings.tileWidth / 2);
     phaser_object.helper.centerY = (coords.y * Map.settings.tileHeight) + (Map.settings.tileHeight / 2);
+
+    // Buildings production.
+    for (var b in GameApp.data.buildings) {
+      GameApp.data.buildings[b].produce();
+    }
+    
+    // Check resources.
+    for (var r in GameApp.data.resources) {
+      // Delete steady resources
+      if (GameApp.data.resources[r].sprite.body.velocity.x == 0 && 
+          GameApp.data.resources[r].sprite.body.velocity.y == 0) {
+        GameApp.data.resources[r].sprite.destroy();
+        GameApp.data.resources.splice(r, 1);
+      }
+    }
     
     Board.update();
     

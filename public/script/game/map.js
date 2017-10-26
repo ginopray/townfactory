@@ -44,23 +44,13 @@ var Map = {
 
   
   /**
-   * Get the map, based on data stored in "GameApp.data".
+   * Initialize the map.
    * @memberof Map
-   * @name get
-   * @method
-   * @see GameApp
+   * @name init
+   * @method   
    */
-  get : function () {
-    
-    // Spawn buildings.
-    for (var b in GameApp.data.buildings) {
-      GameApp.data.buildings[b].spawn();
-    }
-    // Spawn resources.
-    for (var r in GameApp.data.resources) {
-      GameApp.data.resources[r].spawn();
-    }
-    
+  init : function () {
+
     // Create the grid.
     Map.grid();
     
@@ -75,15 +65,74 @@ var Map = {
       color: 'rgba(244, 67, 54, .3)'
     };
     
+    
     // Set events:
     // Mouse down:
-    game.input.onDown.add(function(){
-      Actions.click();
+    game.input.onDown.add(function(pointer){
+      Actions.click(pointer);
     }, this);
     
     // Mouse wheel.
     game.input.mouse.mouseWheelCallback = function(e){
       Actions.wheel(e);
+    };
+    
+    // Initialize the keyboard.
+    Map.set_keyboard();
+    
+    // Background color
+    //game.stage.backgroundColor = "#424242";
+    
+    Map.get();
+    
+  },
+  
+  
+  /**
+   * Initialize the keyboard.
+   * @memberof Map
+   * @name set_keyboard
+   * @method   
+   */
+  set_keyboard : function () {
+    // Keyboard
+    /*var upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
+    var downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
+    var leftKey = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
+    var rightKey = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+    */
+    var keys = new Array();
+    
+    // W.
+    keys.push( game.input.keyboard.addKey(Phaser.Keyboard.W) );
+    keys.push( game.input.keyboard.addKey(Phaser.Keyboard.A) );
+    keys.push( game.input.keyboard.addKey(Phaser.Keyboard.S) );
+    keys.push( game.input.keyboard.addKey(Phaser.Keyboard.D) );
+    
+    for (var k in keys) {
+      keys[k].onDown.add(function(e){
+        Actions.keyPress(e);
+      }, this);      
+    }
+
+  },
+  
+  
+  /**
+   * Get the map, based on data stored in "GameApp.data".
+   * @memberof Map
+   * @name get
+   * @method   
+   */
+  get : function () {
+    
+    // Spawn buildings.
+    for (var b in GameApp.data.buildings) {
+      GameApp.data.buildings[b].spawn();
+    }
+    // Spawn resources.
+    for (var r in GameApp.data.resources) {
+      GameApp.data.resources[r].spawn();
     }
     
   },
@@ -139,11 +188,11 @@ var Map = {
   * @param {object} sprite - The sprite object.
   */
   friction : function (sprite) {
+    if (typeof sprite === "undefined" || sprite === null || typeof sprite.body === "undefined" || sprite.body === null)
+      return;
     var f = Map.settings.friction;
     var abs_x = Math.abs(sprite.body.velocity.x);
     var abs_y = Math.abs(sprite.body.velocity.y);
-    if (typeof sprite === "undefined")
-      return;
     if (abs_x > 0 || abs_y > 0) { 
       if (abs_x <= f)
         sprite.body.velocity.x = 0;
@@ -159,8 +208,7 @@ var Map = {
   
   
   /**
-  * Simulate friction: decelerate things on the map.
-  * Sets a timeout based on Map.settings.friction_rate while sprite exists.
+  * Get a tile (rectangle).
   * @memberof Map
   * @name get_tile
   * @method

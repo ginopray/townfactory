@@ -128,7 +128,7 @@ Building.prototype.produce  = function () {
       if ((Date.now() - current) / 1000 > production_time) {
         //console.log("Done resource: " + resource + "!");
         delete this.production.current[resource];
-        Resources.create(resource, this.sprite.x, this.sprite.y);
+        Resources.create(resource, this);
       // Producing...
       } else {
         //console.log("Producing " + resource + "...");
@@ -148,5 +148,8 @@ Building.prototype.produce  = function () {
   }
   
 }
+
+
+
 
 

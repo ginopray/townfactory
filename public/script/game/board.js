@@ -157,7 +157,7 @@ var Board = {
       );
     }
     // Select first.
-    GameApp.data.action.selected = jQuery('#tools div').first().attr('data-tool');
+    GameApp.data.action.tool = jQuery('#tools div').first().attr('data-tool');
     jQuery('#tools div').first().addClass('tool--selected');
   },
   
