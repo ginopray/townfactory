@@ -53,6 +53,13 @@ img {
   color: #fff;
 }
 
+.color-error {
+  color: #f44336;
+}
+.color-red {
+  color: #f44336;
+}
+
 .boxed {
   max-width: 1600px;
   margin: auto;
@@ -140,6 +147,54 @@ img {
 }
 .tool--view {
   background-image: url('../images/board/tools/tool-view.png');
+}
+
+
+.loading__percentage {
+  font-size: 1.2em;
+  margin: 1em 0;
+}
+
+/** PROGRESS BAR **/
+.progress { 
+    height: 20px;
+    position: relative;
+    margin: 1em 0;
+    background: #555;
+    -moz-border-radius: 25px;
+    -webkit-border-radius: 25px;
+    border-radius: 25px;
+    padding: 7px;
+}
+.progress__span {
+  display: block;
+  height: 100%;
+  width: 0;
+     -webkit-border-top-right-radius: 8px;
+  -webkit-border-bottom-right-radius: 8px;
+         -moz-border-radius-topright: 8px;
+      -moz-border-radius-bottomright: 8px;
+             border-top-right-radius: 8px;
+          border-bottom-right-radius: 8px;
+      -webkit-border-top-left-radius: 20px;
+   -webkit-border-bottom-left-radius: 20px;
+          -moz-border-radius-topleft: 20px;
+       -moz-border-radius-bottomleft: 20px;
+              border-top-left-radius: 20px;
+           border-bottom-left-radius: 20px;
+  background-color: rgb(43,194,83);
+  position: relative;
+  overflow: hidden;
+}
+.meter--yellow > span {
+  background-color: #ffc107;
+}
+
+.meter--orange > span {
+  background-color: #ff5722;
+}
+.meter--red > span {
+  background-color: #f44336;
 }
 
 

@@ -53,7 +53,7 @@ var phaser_object = {
 
 
 window.onload = function() {  
-  game = new Phaser.Game(Map.settings.gameWidth, Map.settings.gameHeight, Phaser.CANVAS, 'map-canvas',
+  game = new Phaser.Game(Map.settings.gameWidth, Map.settings.gameHeight, Phaser.CANVAS, 'map-canvas', // Phaser.AUTO
     {
       /*init:     GameApp.init,*/
       preload:  GameApp.preload,

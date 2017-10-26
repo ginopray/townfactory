@@ -72,9 +72,15 @@ var GameApp = {
     game.load.image('helper-road', 'images/game/tools/helper-road.png');
     game.load.image('road', 'images/game/roads/road.png');
     
+    // File complete (progress bar).
+    game.load.onFileComplete.add(function(progress, file_key, success, total_loaded_files, total_files){
+      //console.log(file_key + "...done! " + total_loaded_files + "/" + total_files + "= " + progress + "%");
+      GameApp.loading(progress, file_key, success);
+    }, this);
     
     // Load game after load complete.
-    game.load.onLoadComplete = { dispatch : function(){
+    //game.load.onLoadComplete = { dispatch : function(){
+    game.load.onLoadComplete.add(function(){
       
       // Check resources.
       var JSON_resources = game.cache.getJSON('resources');
@@ -107,7 +113,7 @@ var GameApp = {
       
       console.log("PHASER PRELOAD DONE!");
       
-    }};
+    }, this);
     
   },
 
@@ -149,6 +155,9 @@ var GameApp = {
 
     // Initialize the board.
     Board.init();
+    
+    // Show the game!
+    //jQuery('.waiting').hide();
     
     console.log("PHASER CREATE DONE!");
   },
@@ -218,6 +227,7 @@ var GameApp = {
       game.debug.geom(obj.tile, color);
     }
   },
+  
   
   /**
    * Load saved game.
@@ -295,10 +305,20 @@ var GameApp = {
    * @memberof GameApp
    * @name loading
    * @method
-   * @param {string} msg - Loading message.
+   * @param {number} progress - Loading progress percentage.
+   * @param {string} file_key - File key.
+   * @param {boolean} success - Resource loaded or not.
    */
-  loading : function (msg) {
-    jQuery('#loading').append(jQuery('<div>', { text: msg }));
+  loading : function (progress, file_key, success) {
+    var msg = file_key + '...' + (success?'done!':'failed!');
+    if (!success) msg = '<span class="color-error">' + msg + '</span>';
+    // Set progress bar.
+    jQuery('.progress__span').css('width', progress + '%');
+    // Append message.
+    jQuery('#loading').append(jQuery('<div>', { html: msg }));
+    // Set percentage.
+    jQuery('.loading__percentage').text(progress + '%');
+
   }
 
 };
