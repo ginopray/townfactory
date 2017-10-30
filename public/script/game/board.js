@@ -77,7 +77,7 @@ var Board = {
   info_selection : function () {
     var coords = Map.coord2tile({x: phaser_object.inputs.mouse.selection.tile.x, y: phaser_object.inputs.mouse.selection.tile.y});
     var html = "";
-    html += '<p>Tile hover: ' + (coords.x + 1) + ':' + (coords.y + 1) + '</p>'
+    html += '<p>Tile hover: ' + (coords.x) + ':' + (coords.y) + '</p>'
     jQuery('#info-selection').html(html);
   },
   

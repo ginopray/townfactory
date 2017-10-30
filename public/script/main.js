@@ -33,6 +33,8 @@ var game;
  * @property {object} inputs - Input geometries.
  * @property {object} inputs.mouse - Mouse geometries.
  * @property {object} inputs.mouse.selection - Mouse selection object.
+ * @property {object} inputs.keyboard - keyboard data.
+ * @property {array} inputs.keyboard.keys - keyboard keys list.
  * @global
  * @example // Creating buildings group:
  * phaser_object.groups.buildings = game.add.group();
@@ -46,14 +48,18 @@ var phaser_object = {
   inputs: {
     mouse: {
       selection: {},
+    },
+    keyboard: {
+      keys: [],
     }
   },
   helper: false
 };
 
-
-window.onload = function() {  
-  game = new Phaser.Game(Map.settings.gameWidth, Map.settings.gameHeight, Phaser.CANVAS, 'map-canvas', // Phaser.AUTO
+jQuery(document).ready(function(){
+  var container_w = jQuery('#map-container').width();
+  var container_h = jQuery('#map-container').outerHeight();
+  game = new Phaser.Game(container_w, container_h, Phaser.CANVAS, 'map-canvas', // Phaser.AUTO
     {
       /*init:     GameApp.init,*/
       preload:  GameApp.preload,
@@ -62,4 +68,4 @@ window.onload = function() {
       render:   GameApp.render,
     }
   );
-}
+});

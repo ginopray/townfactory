@@ -129,32 +129,6 @@ var GameApp = {
    */
   create : function () {
         
-    // Add Physics.
-    game.physics.startSystem(Phaser.Physics.ARCADE);
-    
-    // Create sprite groups:
-    // Layers
-    phaser_object.groups.layers = {};
-    // Base layer
-    phaser_object.groups.layers.base = game.add.group();
-    // Roads.
-    phaser_object.groups.roads = game.add.group();
-    // Buildings.
-    phaser_object.groups.buildings = game.add.group();
-    // Resources.
-    phaser_object.groups.resources = game.add.group();
-    // Add groups to base layer.
-    phaser_object.groups.layers.base.add(phaser_object.groups.roads);
-    phaser_object.groups.layers.base.add(phaser_object.groups.buildings);
-    phaser_object.groups.layers.base.add(phaser_object.groups.resources);
-    // Add physics to main layer groups.
-    phaser_object.groups.layers.base.setAll('enableBody', true);
-
-    // Prevent defaults.
-    game.canvas.oncontextmenu = function (e) {
-      e.preventDefault();
-    }
-    
     // Initialize the map.
     Map.init();
     
@@ -250,8 +224,8 @@ var GameApp = {
    */
   new : function () {
     var initial_game_size = {
-      w: 21,
-      h: 16
+      w: 20,
+      h: 15
     }
     return {
       date_ini : Date.now(),

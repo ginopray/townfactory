@@ -128,7 +128,7 @@ var Actions = {
    * @method
    */
   click : function (pointer) {
-    
+
     // Manage active tool.
     
     // Right button
@@ -139,14 +139,12 @@ var Actions = {
     // Left and center button.
     // pointer.leftButton.isDown
     } else {
-    
-      // Get tile.
-      var tile = phaser_object.inputs.mouse.selection.tile;
-      var tile_pos_x = (phaser_object.inputs.mouse.selection.tile.x / Map.settings.tileWidth) + 1;
-      var tile_pos_y = (phaser_object.inputs.mouse.selection.tile.y / Map.settings.tileHeight) + 1;
+
+      // Get tile coords.
+      var coords = Map.coord2tile({x: pointer.worldX, y: pointer.worldY});
       // Call the tool.
       if (typeof window["Actions"]['tool_' + GameApp.data.action.tool] !== "undefined")
-        window["Actions"]['tool_' + GameApp.data.action.tool]({x: tile_pos_x, y: tile_pos_y});
+        window["Actions"]['tool_' + GameApp.data.action.tool]({x: coords.x, y: coords.y});
       
     }
   },

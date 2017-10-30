@@ -41,9 +41,7 @@ var Building = function (type, pos_x, pos_y) {
   // Building type.
   this.type = type;
   
-  // Random position.
-  //this.pos_x = Math.floor(Math.random() * Map.settings.gameWidth) + 1;
-  //this.pos_y = Math.floor(Math.random() * Map.settings.gameHeight) + 1;
+  // Set position.
   this.pos_x = pos_x;
   this.pos_y = pos_y;
   
