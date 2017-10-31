@@ -157,7 +157,7 @@ var Board = {
     }
     var html = "";
     for (resource_type in resources) {
-      html += '<img class="info-resource__image" src="images/game/resources/resource-' + resource_type + '.png" title="Resource ' + resource_type + '" /> ';
+      html += resource_type + ':';
       html += resources[resource_type] + " ";
     }
     jQuery('#resources').html(html);
