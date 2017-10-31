@@ -47,7 +47,21 @@
       "height": 2,
       "max_width": 3,
       "max_height": 3,
-      "max_level": 0
+      "max_level": 0,
+      "warehouse": {
+        "1": {
+          "capacity": 1000
+        },
+        "2": {
+          "capacity": 1000
+        },
+        "3": {
+          "capacity": 500
+        },
+        "4": {
+          "capacity": 500
+        }
+      }
     }
 
   ]

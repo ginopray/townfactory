@@ -5,7 +5,7 @@ A test with github, jsdoc and Phaser.io
 <h2>Online:</h2>
 <ul>
 <li>Play: <a href="https://ginopray.github.io/townfactory/public/">https://ginopray.github.io/townfactory/public/</a></li>
-<li>Docs: <a href="https://ginopray.github.io/townfactory/docs/Townfactory/dev.1.0.0/">https://ginopray.github.io/townfactory/docs/Townfactory/dev.1.0.0/</a></li>
+<li>Docs: <a href="https://ginopray.github.io/townfactory/docs/Townfactory/dev.1.0.1/">https://ginopray.github.io/townfactory/docs/Townfactory/dev.1.0.1/</a></li>
 </ul>
 
 
@@ -21,6 +21,11 @@ Browse "docs/Townfactory/<em>version-name</em>/index.html" for documentation
 
 <h2>Version log:</h2>
 <ul>
+<li>dev.1.0.1
+  <ul>
+  <li>Added village warehouse</li>
+  </ul>
+</li>
 <li>dev.1.0.0
   <ul>
   <li>Create some game data.</li>
