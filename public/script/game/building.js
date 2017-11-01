@@ -228,7 +228,7 @@ Building.prototype.get_border_tiles  = function () {
  */
 Building.prototype.store  = function (resource) {
   
-  console.log(this.name + " riceveqwe " + resource.name);
+  //console.log(this.name + " riceveqwe " + resource.name);
   if (typeof this.warehouse[resource.type].amount === "undefined")
     this.warehouse[resource.type].amount = 0;
   // Store!
