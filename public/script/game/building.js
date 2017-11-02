@@ -133,10 +133,24 @@ Building.prototype.produce  = function () {
         // Check for exit point.
         station = this.get_station(1);
         if (station) {
-          delete this.production.current[resource];
-          Resources.create(resource, this, station);
+          // Remove "needs outcoming station" message.
+          //Board.message_remove(1, [this.fullname()]);
+          // Check if station is free.
+          if (Roads.check_free_station(station)) {
+            
+            // PRODUCE!
+            // Clear current production.
+            delete this.production.current[resource];
+            // Create the resource!
+            Resources.create(resource, this, station);
+            
+          } else {
+            can_start = false;
+          }
         } else {
-          //console.log("Cant produce " + resource + "! Missing exit station.");
+          // Add "needs outcoming station" message.
+          //Board.message_add(1, [this.fullname()]);
+          can_start = false;
         }
         
       // Producing...
@@ -238,4 +252,19 @@ Building.prototype.store  = function (resource) {
 }
 
 
+/**
+ * Get translated name.
+ * @memberof Building
+ * @name fullname
+ * @instance
+ * @method
+ * @param {object} resource - Resource object.
+ * @return {string} The name
+ */
+Building.prototype.fullname  = function () {
+  var str = jQuery.i18n._('building-' + this.id);
+  if (str == 'building-' + this.id)
+    str = jQuery.i18n._(this.name);
+  return str;
+}
 

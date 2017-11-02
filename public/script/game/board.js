@@ -22,7 +22,23 @@ var Board = {
   flags : {
     render : 1,
   },
-
+  
+  
+  /**
+   * Game messages.
+   * @memberof Board
+   * @name messages
+   * @type {array}
+   * @example
+   * Board.messages.push({
+   *   // Message id.
+   *   id: 1,
+   *   // Passing building id.
+   *   vars: [1]
+   * });
+   */
+  messages : [],
+  
   
   /**
    * Initialize the board.
@@ -31,6 +47,7 @@ var Board = {
    * @method
    */
   init : function () {
+
     // Bind click on boad commands.
     jQuery('.board-command').each(function(){
       jQuery(this).click(function(){
@@ -79,7 +96,8 @@ var Board = {
     var coords = Map.coord2tile({x: phaser_object.inputs.mouse.selection.tile.x, y: phaser_object.inputs.mouse.selection.tile.y});
     var html = "";
     html += '<p>Tile hover: ' + (coords.x) + ':' + (coords.y) + '</p>'
-    jQuery('#info-selection').html(html);
+    //jQuery('#info-selection').html(html);
+    document.getElementById('info-selection').innerHTML = html;
   },
   
   
@@ -160,7 +178,8 @@ var Board = {
       html += resource_type + ':';
       html += resources[resource_type] + " ";
     }
-    jQuery('#resources').html(html);
+    //jQuery('#resources').html(html);
+    document.getElementById('resources').innerHTML = html;
   },
   
   
@@ -189,6 +208,71 @@ var Board = {
     jQuery('#tools div').first().addClass('tool--selected');
   },
   
-
+  
+  /**
+   * Add a game message.
+   * @memberof Board
+   * @name message_add
+   * @method
+   * @param {number} msg_id - message type.
+   * @param {array} vars - Array of string to use with translation.
+   * @deprecated "message" methods: to do something better.
+   */
+  message_add : function (msg_id, vars) {
+    var new_msg = {
+      id: msg_id,
+      vars: vars
+    };
+    for (var m in Board.messages) {
+      if (Board.messages[m].id == msg_id && JSON.stringify(Board.messages[m].vars) === JSON.stringify(vars))
+        return;
+    }
+    Board.messages.push(new_msg);
+    Board.message_show();
+  },
+  
+  
+  /**
+   * Remove a game message.
+   * @memberof Board
+   * @name message_remove
+   * @method
+   * @param {number} msg_id - message type.
+   * @param {array} vars - Array of string to use with translation.
+   * @deprecated "message" methods: to do something better.
+   */
+  message_remove : function (msg_id, vars) {
+    var new_msg = {
+      id: msg_id,
+      vars: vars
+    };
+    for (var m in Board.messages) {
+      if (Board.messages[m].id == msg_id && JSON.stringify(Board.messages[m].vars) === JSON.stringify(vars)) {
+        Board.messages.splice(m, 1);
+        Board.message_show();
+        return;
+      }
+    }
+    
+  },
+  
+  
+  /**
+   * Show game message.
+   * @memberof Board
+   * @name message_show
+   * @method
+   * @deprecated "message" methods: to do something better.
+   */
+  message_show : function () {
+    var html = "";
+    var msg;
+    for (var m in Board.messages) {
+      msg = Board.messages[m];
+      html += jQuery.i18n._('message-' + msg.id, msg.vars[0], msg.vars[1], msg.vars[2]) + "<br />";
+    }
+    document.getElementById('messages').innerHTML = html;
+  },
+  
 
 };

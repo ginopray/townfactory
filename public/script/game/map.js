@@ -171,14 +171,31 @@ var Map = {
     }
       
     
+    // Loop resources.
+    for (var r in GameApp.data.resources) {
+      coords = Map.coord2tile({x: GameApp.data.resources[r].sprite.centerX, y: GameApp.data.resources[r].sprite.centerY });
+      // Delete resources out of the road.
+      if (!Map.find_road(coords.x, coords.y)) {
+        GameApp.data.resources[r].delete();
+      } else {
+        GameApp.data.resources[r].sprite.custom_overlap = new Array();
+      }
+    }
+    
+    // Resources overlapping.
+    game.physics.arcade.overlap(
+      phaser_object.groups.resources,
+      phaser_object.groups.resources,
+      Map.resource_overlap
+    );
+    
     // Resources and roads overlapping.
     game.physics.arcade.overlap(
       phaser_object.groups.resources,
       phaser_object.groups.roads,
       Roads.flow,
       Map.full_overlap
-    );//, processCallback, callbackContext
-
+    );
     
     // Collisions.
     // Resource collide with building.
@@ -188,12 +205,10 @@ var Map = {
       Production.receive
     );
     // Resource collide with resource.
-    game.physics.arcade.collide(
+    /*game.physics.arcade.collide(
       phaser_object.groups.resources, 
-      phaser_object.groups.resources/*,
-      function(resource1, resource2) {
-      }*/
-    );
+      phaser_object.groups.resources
+    );*/
     
     var coords = Map.coord2tile({x: game.input.mousePointer.worldX, y: game.input.mousePointer.worldY});
     
@@ -210,18 +225,6 @@ var Map = {
     // Buildings production.
     for (var b in GameApp.data.buildings) {
       GameApp.data.buildings[b].produce();
-    }
-    
-    // Check resources.
-    for (var r in GameApp.data.resources) {
-      coords = Map.coord2tile({x: GameApp.data.resources[r].sprite.centerX, y: GameApp.data.resources[r].sprite.centerY });
-      // Delete resources out of the road.
-      if (/*GameApp.data.resources[r].sprite.body.velocity.x == 0 && 
-          GameApp.data.resources[r].sprite.body.velocity.y == 0 &&*/
-          !Map.find_road(coords.x, coords.y)
-      ) {
-        GameApp.data.resources[r].delete();
-      }
     }
     
   },
@@ -404,7 +407,10 @@ var Map = {
     var all = (typeof what === "undefined"),
         ret = {};
     if (what == "buildings" || all) {
-      ret.buildings = Map.find_building(x, y);
+      ret.buildings = Map.find_by_pos(x, y, 'buildings');
+    }
+    if (what == "resources" || all) {
+      ret.resources = Map.find_by_pos(x, y, 'resources');
     }
     if (what == "roads" || all) {
       ret.roads = Map.find_road(x, y);
@@ -414,24 +420,25 @@ var Map = {
 
   
   /**
-   * Find a building on the map.
+   * Find object on the map.
    * @memberof Map
-   * @name find_building
+   * @name find_by_pos
    * @method
    * @param {number} x - X position to find.
    * @param {number} y - Y position to find.
-   * @return {object} The building.
+   * @param {string} what - what to search.
+   * @return {object} The object.
    */
-  find_building : function (x, y) {
-    var building,
+  find_by_pos : function (x, y, what) {
+    var ret,
         cX, cY;
-    for (var b in GameApp.data.buildings) {
-      building = GameApp.data.buildings[b];
+    for (var b in GameApp.data[what]) {
+      ret = GameApp.data[what][b];
       // Check all size of the building.
-      for (cX = building.pos_x; cX < building.pos_x + building.width; cX ++) {
-        for (cY = building.pos_y; cY < building.pos_y + building.height; cY ++) {
+      for (cX = ret.pos_x; cX < ret.pos_x + ret.width; cX ++) {
+        for (cY = ret.pos_y; cY < ret.pos_y + ret.height; cY ++) {
           if (cX == x && cY == y) {
-            return building;   
+            return ret;   
           }
         }
       }
@@ -507,7 +514,23 @@ var Map = {
     var boundsB = container.getBounds();
     //return boundsB.containsRect(boundsA);
     return boundsB.contains(boundsA.centerX, boundsA.centerY);
+  },
+  
+
+  /**
+  * Check resources overlapping.
+  * Set "custom_overlap" property to the sprite.
+  * @memberof Map
+  * @name resource_overlap
+  * @method
+  * @param {object} r1 - Resource sprite 1.
+  * @param {object} r2 - Resource sprite 2.
+  */
+  resource_overlap : function (r1, r2) {
+    r1.custom_overlap.push(r2);
+    r2.custom_overlap.push(r1);
   }
+  
 
 };
 

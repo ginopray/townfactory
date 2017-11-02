@@ -62,6 +62,7 @@ var GameApp = {
     game.load.json('buildings', '../data/buildings.json');
     game.load.json('production', '../data/production.json');
     game.load.json('production_resources', '../data/production_resources.json');
+    game.load.json('translations', '../langs/en.json');
     
     // Load buildings.
     for (var i = 1; i <= 5; i ++) {
@@ -110,6 +111,15 @@ var GameApp = {
         GameApp.error('Production resources file not found.');
         return; 
       }
+      
+      // Load translations.
+      var JSON_translations = game.cache.getJSON('translations');
+      if (typeof JSON_translations === "undefined" || JSON_translations === null) {
+        GameApp.error('Languages file not found.');
+        return; 
+      }
+
+      jQuery.i18n.load(JSON_translations);
       
       //console.log("File loaded! Load game...");
       // Load game data.
@@ -251,11 +261,11 @@ var GameApp = {
     // Add buildings.
     GameApp.data.buildings = [
       // forest
-      new Building(1, Math.floor(Math.random() * initial_game_size.w) + 1, Math.floor(Math.random() * initial_game_size.h) + 1),
+      new Building(1, getRandom(2, initial_game_size.w - 2), getRandom(2, initial_game_size.h - 2)),
       // wheatfield
-      new Building(2, Math.floor(Math.random() * initial_game_size.w) + 1, Math.floor(Math.random() * initial_game_size.h) + 1),
+      new Building(2, getRandom(2, initial_game_size.w - 2), getRandom(2, initial_game_size.h - 2)),
       // village
-      new Building(5, Math.floor(Math.random() * initial_game_size.w) + 1, Math.floor(Math.random() * initial_game_size.h) + 1),
+      new Building(5, getRandom(2, initial_game_size.w - 2), getRandom(2, initial_game_size.h - 2)),
     ];
   },
 
