@@ -48,6 +48,9 @@ var Board = {
    */
   init : function () {
 
+    // Create resources overview container.
+    Board.info_resources_header();
+    
     // Bind click on boad commands.
     jQuery('.board-command').each(function(){
       jQuery(this).click(function(){
@@ -147,8 +150,8 @@ var Board = {
     var obj;
     html += '<div>';
     for (var p in production.resources) {
-      obj = production.resources[p]
-      html += '<img class="info-resource__image" src="images/game/resources/resource-' + obj.resource + '.png" title="Resource ' + obj.resource + '" /> ' + ((1 / obj.time) * 60) + '/m';
+      obj = production.resources[p];
+      html += Board.get_resource_image(obj.resource, {class: 'info-resource__image'}) + ' ' + ((1 / obj.time) * 60) + '/m';
     }
     html += '</div>';
     return html;
@@ -175,10 +178,35 @@ var Board = {
     }
     var html = "";
     for (resource_type in resources) {
-      html += resource_type + ':';
-      html += resources[resource_type] + " ";
+      if (resources[resource_type] > 0) {
+        document.getElementById('resource-' + resource_type + '-count').innerHTML = resources[resource_type];
+        document.getElementById('resource-' + resource_type + '-container').style.display = 'block';
+      }
     }
     //jQuery('#resources').html(html);
+    //document.getElementById('resources').innerHTML = html;
+  },
+  
+
+  /**
+   * Create resource overview container.
+   * @memberof Board
+   * @name info_resources_header
+   * @method
+   */
+  info_resources_header : function () {
+    var resources = Database.get('resources');
+    var html = "";
+    for (var r in resources) {
+      html += '<div id="resource-' + resources[r].id + '-container" class="resources__container">';
+      html += '<div class="resources__head">';
+      html += Board.get_resource_image(resources[r].id, {class: 'resources__image'});
+      html += '</div>';
+      html += '<div id="resource-' + resources[r].id + '-count" class="resource-count">';
+      html += '</div>';
+      html += '</div>';
+    }
+    
     document.getElementById('resources').innerHTML = html;
   },
   
@@ -229,6 +257,23 @@ var Board = {
     }
     Board.messages.push(new_msg);
     Board.message_show();
+  },
+  
+  
+  /**
+   * Get the html image of a resource.
+   * @memberof Board
+   * @name get_resource_image
+   * @method
+   * @param {number} type - The resource type.
+   * @param {object} vars - Attributes (optional).
+   */
+  get_resource_image : function (type, vars) {
+    var html = '<img';
+    if (typeof vars.class !== "undefined")
+      html += ' class="' + vars.class + '"';
+    html += ' src="images/game/resources/resource-' + type + '.png" alt="' + jQuery.i18n._('resource-' + type) + '" title="' + jQuery.i18n._('resource-' + type) + '" />';
+    return html;
   },
   
   

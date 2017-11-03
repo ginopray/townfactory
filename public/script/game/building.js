@@ -42,8 +42,15 @@ var Building = function (type, pos_x, pos_y) {
   this.type = type;
   
   // Set position.
-  this.pos_x = pos_x;
-  this.pos_y = pos_y;
+  if (typeof pos_x !== "undefined" &&
+      typeof pos_y !== "undefined") {
+    this.pos_x = pos_x;
+    this.pos_y = pos_y;
+  } else {
+    var coords = Map.random_position();
+    this.pos_x = coords.x;
+    this.pos_y = coords.y;
+  }
   
   // Get the production.
   this.production = Production.get(type);

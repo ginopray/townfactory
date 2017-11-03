@@ -258,15 +258,22 @@ var GameApp = {
         items: []
       }
     };
+    
     // Add buildings.
-    GameApp.data.buildings = [
+    // forest.
+    GameApp.data.buildings.push(new Building(1));
+    // wheatfield.
+    GameApp.data.buildings.push(new Building(2));
+    // village.
+    GameApp.data.buildings.push(new Building(5));
+    /*GameApp.data.buildings = [
       // forest
       new Building(1, getRandom(2, initial_game_size.w - 2), getRandom(2, initial_game_size.h - 2)),
       // wheatfield
       new Building(2, getRandom(2, initial_game_size.w - 2), getRandom(2, initial_game_size.h - 2)),
       // village
       new Building(5, getRandom(2, initial_game_size.w - 2), getRandom(2, initial_game_size.h - 2)),
-    ];
+    ];*/
   },
 
   

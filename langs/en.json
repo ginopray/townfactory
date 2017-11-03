@@ -1,5 +1,7 @@
 {
   "message-1": "%s needs outcoming station",
   "building-1": "Forest",
-  "building-2": "Wheat field"
+  "building-2": "Wheat field",
+  "resource-1": "Wood",
+  "resource-2": "Wheat"
 }

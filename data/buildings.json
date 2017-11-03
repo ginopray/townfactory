@@ -31,12 +31,12 @@
     },
     {
       "id": 4,
-      "name": "oven",
+      "name": "windmill",
       "color": "#ffc107",
       "width": 2,
-      "height": 1,
+      "height": 2,
       "max_width": 2,
-      "max_height": 1,
+      "max_height": 2,
       "max_level": 0
     },
     {
