@@ -3,5 +3,9 @@
   "building-1": "Forest",
   "building-2": "Wheat field",
   "resource-1": "Wood",
-  "resource-2": "Wheat"
+  "resource-2": "Wheat",
+  "tool-view": "View",
+  "tool-road": "Build road",
+  "tool-station": "Build station",
+  "tool-remove": "Remove"
 }

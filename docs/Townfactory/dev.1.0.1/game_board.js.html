@@ -146,18 +146,29 @@ var Board = {
     }
     var html = "";
     var html_production = Board.get_building_production(building.production);
+    var html_request = Board.get_building_request(building.request);
+    var html_warehouse = Board.get_building_warehouse(building.warehouse);
     html += '&lt;div>';
     // Building name.
-    html += '&lt;h3>' + building.name + '&lt;/h3>';
+    html += '&lt;h2>' + building.fullname() + '&lt;/h2>';
     // Image.
     html += '&lt;div>&lt;img class="info-building__image" src="images/game/buildings/building-' + building.type + '.png" />&lt;/div>';
     // Position and size info.
     html +='&lt;div>ID: ' + building.id + ', position: ' + building.pos_x + ':' + building.pos_y + ', size: ' + building.width + 'x' + building.height + '&lt;/div>';
     // Production info.
     if (html_production != "") {
-      html += '&lt;div>Production: ' + html_production + '&lt;/div>';
+      html += '&lt;div>&lt;h3>' + Main.t('Production') + '&lt;/h3>' + html_production + '&lt;/div>';
       html += '&lt;div>Active: ' + building.power_switch + '&lt;/div>';
     }
+    // Request info.
+    if (html_request != "") {
+      html += '&lt;div>&lt;h3>' + Main.t('Request') + '&lt;/h3>' + html_request + '&lt;/div>';
+    }
+    // Warehouse info.
+    if (html_warehouse != "") {
+      html += '&lt;div>&lt;h3>' + Main.t('Warehouse') + '&lt;/h3>' + html_warehouse + '&lt;/div>';
+    }
+    
     html += '&lt;/div>';
     jQuery('#info-building').html(html);
   },
@@ -187,6 +198,55 @@ var Board = {
   
   
   /**
+   * Get the information view about building request.
+   * @memberof Board
+   * @name get_building_request
+   * @method
+   * @param {array} request - request array.
+   */
+  get_building_request : function (request) {
+    if (typeof request === "undefined" || request.length == 0) 
+      return "";
+    var html = "";
+    var obj;
+    html += '&lt;div>';
+    for (var r in request) {
+      obj = request[r];
+      html += obj.amount + ' ' + Board.get_resource_image(obj.resource, {class: 'info-resource__image'});
+    }
+    html += '&lt;/div>';
+    return html;
+  },
+  
+  
+  /**
+   * Get the information view about building warehouse.
+   * @memberof Board
+   * @name get_building_warehouse
+   * @method
+   * @param {array} warehouse - warehouse array.
+   */
+  get_building_warehouse : function (warehouse) {
+    if (typeof warehouse === "undefined" || warehouse.length == 0) 
+      return "";
+    var html = "";
+    var obj,
+        amount;
+    html += '&lt;div>';
+    for (var resource in warehouse) {
+      obj = warehouse[resource];
+      if (typeof obj.amount === "undefined")
+        amount = 0;
+      else
+        amount = obj.amount;
+      html += Board.get_resource_image(resource, {class: 'info-resource__image'}) + ' ' + amount + '/' + obj.capacity;
+    }
+    html += '&lt;/div>';
+    return html;
+  },
+    
+  
+  /**
    * Update the information view about resources.
    * @memberof Board
    * @name info_resources
@@ -195,7 +255,7 @@ var Board = {
   info_resources : function () {
     var resources = {};
     var villages = Map.findType(5, 'buildings');
-    var resource_type;
+    var resource_type;    
     for (var v in villages) {
       for (resource_type in villages[v].warehouse) {
         if (typeof resources[resource_type] === "undefined")
@@ -252,7 +312,7 @@ var Board = {
           id: 'tool-' + tool,
           'data-tool': tool,
           class: 'tool tool--' + tool,
-          title: tool,
+          title: Main.t('tool-' + tool),
           mousedown: function() {
             Actions.set(jQuery(this).attr('data-tool'));
           }
@@ -300,7 +360,7 @@ var Board = {
     var html = '&lt;img';
     if (typeof vars.class !== "undefined")
       html += ' class="' + vars.class + '"';
-    html += ' src="images/game/resources/resource-' + type + '.png" alt="' + jQuery.i18n._('resource-' + type) + '" title="' + jQuery.i18n._('resource-' + type) + '" />';
+    html += ' src="images/game/resources/resource-' + type + '.png" alt="' + Main.t('resource-' + type) + '" title="' + Main.t('resource-' + type) + '" />';
     return html;
   },
   
@@ -342,7 +402,7 @@ var Board = {
     var msg;
     for (var m in Board.messages) {
       msg = Board.messages[m];
-      html += jQuery.i18n._('message-' + msg.id, msg.vars[0], msg.vars[1], msg.vars[2]) + "&lt;br />";
+      html += Main.t('message-' + msg.id, msg.vars[0], msg.vars[1], msg.vars[2]) + "&lt;br />";
     }
     document.getElementById('messages').innerHTML = html;
   },
@@ -359,13 +419,13 @@ var Board = {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Building.html">Building</a></li><li><a href="Resource.html">Resource</a></li><li><a href="Road.html">Road</a></li></ul><h3>Namespaces</h3><ul><li><a href="Actions.html">Actions</a></li><li><a href="Board.html">Board</a></li><li><a href="Database.html">Database</a></li><li><a href="GameApp.html">GameApp</a></li><li><a href="Map.html">Map</a></li><li><a href="Production.html">Production</a></li><li><a href="Resources.html">Resources</a></li><li><a href="Roads.html">Roads</a></li></ul><h3>Global</h3><ul><li><a href="global.html#game">game</a></li><li><a href="global.html#phaser_object">phaser_object</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Building.html">Building</a></li><li><a href="Resource.html">Resource</a></li><li><a href="Road.html">Road</a></li><li><a href="Station.html">Station</a></li><li><a href="Village.html">Village</a></li></ul><h3>Namespaces</h3><ul><li><a href="Actions.html">Actions</a></li><li><a href="Board.html">Board</a></li><li><a href="Database.html">Database</a></li><li><a href="GameApp.html">GameApp</a></li><li><a href="Main.html">Main</a></li><li><a href="Map.html">Map</a></li><li><a href="Production.html">Production</a></li><li><a href="Resources.html">Resources</a></li><li><a href="Roads.html">Roads</a></li></ul><h3>Global</h3><ul><li><a href="global.html#game">game</a></li><li><a href="global.html#phaser_object">phaser_object</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Nov 03 2017 11:21:37 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sat Nov 04 2017 15:04:22 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>

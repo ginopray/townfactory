@@ -30,6 +30,7 @@ var Actions = {
    * @type {object}
    * @property {object} view - The "view" tool - DEFAULT.
    * @property {object} road - The "road" tool.
+   * @property {object} station - The "station" tool, children of "road".
    * @property {array} road.directions - Possible road directions.
    */
   tools : {
@@ -37,6 +38,9 @@ var Actions = {
     road: {
       directions: ['right', 'down', 'left', 'up'],
       dir_angles: [0, 90, -180, -90]
+    },
+    station: {
+      parent: "road",
     },
     remove: {}
   },
@@ -61,12 +65,30 @@ var Actions = {
    * @param {string} tool - The tool to use.
    */
   set : function (tool) {
+    var helper;
+    
+    // Clear children tool.
+    delete GameApp.data.action.children;
+    
     // Set default.
     if (tool == "")
       tool = Actions.settings.default_tool;
-      
+    
+    if (typeof Actions.tools[tool].parent !== "undefined") {
+      // Set children tool.
+      GameApp.data.action.children = tool;
+      // Set parent tool.
+      tool = Actions.tools[tool].parent;
+      // Set helper.
+      helper = GameApp.data.action.children;
+    } else {
+      // Set helper.
+      helper = tool;
+    }
+    
     // Set current action.
     GameApp.data.action.tool = tool;
+    
     // Locked.
     GameApp.data.action.locked = false;
     
@@ -77,11 +99,11 @@ var Actions = {
       GameApp.data.action.data = {};
     
     // Create helper sprite
-    Actions.set_helper(tool);
+    Actions.set_helper(helper);
     
     // Update board.
     jQuery('#tools').children().removeClass('tool--selected');
-    jQuery('.tool--' + tool).addClass('tool--selected');
+    jQuery('.tool--' + helper).addClass('tool--selected');
   },
   
   
@@ -108,7 +130,7 @@ var Actions = {
   
   
   /**
-   * Configure tool data.
+   * Set any variable of current tool.
    * @memberof Actions
    * @name tool_configure
    * @method
@@ -199,7 +221,7 @@ var Actions = {
    * @memberof Actions
    * @name wheel_road
    * @method
-   * @see Roads.wheel
+   * @see Roads.wheelbuild
    */
   wheel_road : function (e) {
     Roads.wheel(e);

@@ -484,6 +484,164 @@
     
 
     
+    <h4 class="name" id="can_produce"><span class="type-signature"></span>can_produce<span class="signature">(resource, requires)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Check if building can start producing something.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>resource</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Resource type.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>requires</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Array of required resources.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="game_building.js.html">game/building.js</a>, <a href="game_building.js.html#line195">line 195</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
     <h4 class="name" id="fullname"><span class="type-signature"></span>fullname<span class="signature">(resource)</span><span class="type-signature"> &rarr; {string}</span></h4>
     
 
@@ -585,7 +743,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_building.js.html">game/building.js</a>, <a href="game_building.js.html#line262">line 262</a>
+        <a href="game_building.js.html">game/building.js</a>, <a href="game_building.js.html#line303">line 303</a>
     </li></ul></dd>
     
 
@@ -641,7 +799,7 @@
     
 
     
-    <h4 class="name" id="get_border_tiles"><span class="type-signature"></span>get_border_tiles<span class="signature">()</span><span class="type-signature"> &rarr; {array}</span></h4>
+    <h4 class="name" id="gather"><span class="type-signature"></span>gather<span class="signature">(resource, amount)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
     
 
     
@@ -649,111 +807,7 @@
 
 
 <div class="description">
-    Get the tiles around the building.
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_building.js.html">game/building.js</a>, <a href="game_building.js.html#line210">line 210</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">array</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="get_border_tiles"><span class="type-signature"></span>get_border_tiles<span class="signature">(resource)</span><span class="type-signature"> &rarr; {array}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Store resource in the warehouse.
+    Gather resource from the warehouse.
 </div>
 
 
@@ -795,7 +849,7 @@
             <td class="type">
             
                 
-<span class="param-type">object</span>
+<span class="param-type">number</span>
 
 
             
@@ -805,7 +859,30 @@
 
             
 
-            <td class="description last">Resource object.</td>
+            <td class="description last">Resource type.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>amount</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Amount of resources to take.</td>
         </tr>
 
     
@@ -846,7 +923,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_building.js.html">game/building.js</a>, <a href="game_building.js.html#line241">line 241</a>
+        <a href="game_building.js.html">game/building.js</a>, <a href="game_building.js.html#line279">line 279</a>
     </li></ul></dd>
     
 
@@ -872,6 +949,10 @@
 <h5>Returns:</h5>
 
         
+<div class="param-desc">
+    false if not enough resources in the warehouse.
+</div>
+
 
 
 <dl>
@@ -880,7 +961,7 @@
     </dt>
     <dd>
         
-<span class="param-type">array</span>
+<span class="param-type">boolean</span>
 
 
     </dd>
@@ -999,7 +1080,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_building.js.html">game/building.js</a>, <a href="game_building.js.html#line184">line 184</a>
+        <a href="game_building.js.html">game/building.js</a>, <a href="game_building.js.html#line230">line 230</a>
     </li></ul></dd>
     
 
@@ -1085,7 +1166,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_building.js.html">game/building.js</a>, <a href="game_building.js.html#line111">line 111</a>
+        <a href="game_building.js.html">game/building.js</a>, <a href="game_building.js.html#line120">line 120</a>
     </li></ul></dd>
     
 
@@ -1171,7 +1252,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_building.js.html">game/building.js</a>, <a href="game_building.js.html#line61">line 61</a>
+        <a href="game_building.js.html">game/building.js</a>, <a href="game_building.js.html#line67">line 67</a>
     </li></ul></dd>
     
 
@@ -1200,6 +1281,159 @@
 
 
         
+            
+
+    
+
+    
+    <h4 class="name" id="store"><span class="type-signature"></span>store<span class="signature">(resource)</span><span class="type-signature"> &rarr; {array}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Store resource in the warehouse.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>resource</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Resource type.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="game_building.js.html">game/building.js</a>, <a href="game_building.js.html#line257">line 257</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">array</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
     
 
     
@@ -1215,13 +1449,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Building.html">Building</a></li><li><a href="Resource.html">Resource</a></li><li><a href="Road.html">Road</a></li></ul><h3>Namespaces</h3><ul><li><a href="Actions.html">Actions</a></li><li><a href="Board.html">Board</a></li><li><a href="Database.html">Database</a></li><li><a href="GameApp.html">GameApp</a></li><li><a href="Map.html">Map</a></li><li><a href="Production.html">Production</a></li><li><a href="Resources.html">Resources</a></li><li><a href="Roads.html">Roads</a></li></ul><h3>Global</h3><ul><li><a href="global.html#game">game</a></li><li><a href="global.html#phaser_object">phaser_object</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Building.html">Building</a></li><li><a href="Resource.html">Resource</a></li><li><a href="Road.html">Road</a></li><li><a href="Station.html">Station</a></li><li><a href="Village.html">Village</a></li></ul><h3>Namespaces</h3><ul><li><a href="Actions.html">Actions</a></li><li><a href="Board.html">Board</a></li><li><a href="Database.html">Database</a></li><li><a href="GameApp.html">GameApp</a></li><li><a href="Main.html">Main</a></li><li><a href="Map.html">Map</a></li><li><a href="Production.html">Production</a></li><li><a href="Resources.html">Resources</a></li><li><a href="Roads.html">Roads</a></li></ul><h3>Global</h3><ul><li><a href="global.html#game">game</a></li><li><a href="global.html#phaser_object">phaser_object</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Nov 03 2017 11:21:37 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sat Nov 04 2017 15:04:22 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>

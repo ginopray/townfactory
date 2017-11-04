@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Namespace: Resources</title>
+    <title>JSDoc: Namespace: Main</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Namespace: Resources</h1>
+    <h1 class="page-title">Namespace: Main</h1>
 
     
 
@@ -28,9 +28,9 @@
 
 <header>
     
-        <h2>Resources</h2>
+        <h2>Main</h2>
         
-            <div class="class-description">Resources functions.</div>
+            <div class="class-description">The main class with common functions.</div>
         
     
 </header>
@@ -39,7 +39,7 @@
     <div class="container-overview">
     
         
-            <div class="description">Resources functions.</div>
+            <div class="description">The main class with common functions.</div>
         
 
         
@@ -74,7 +74,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_resources.js.html">game/resources.js</a>, <a href="game_resources.js.html#line8">line 8</a>
+        <a href="main.js.html">main.js</a>, <a href="main.js.html#line77">line 77</a>
     </li></ul></dd>
     
 
@@ -113,7 +113,7 @@
     
 
     
-    <h4 class="name" id=".create"><span class="type-signature">(static) </span>create<span class="signature">(type)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".getRandom"><span class="type-signature">(static) </span>getRandom<span class="signature">()</span><span class="type-signature"></span></h4>
     
 
     
@@ -121,7 +121,93 @@
 
 
 <div class="description">
-    Create a new istance of a resource.
+    Get random int number.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="main.js.html">main.js</a>, <a href="main.js.html#line85">line 85</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".t"><span class="type-signature">(static) </span>t<span class="signature">(arguments)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Translate a string.
 </div>
 
 
@@ -157,13 +243,13 @@
 
         <tr>
             
-                <td class="name"><code>type</code></td>
+                <td class="name"><code>arguments</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">number</span>
+<span class="param-type">object</span>
 
 
             
@@ -173,7 +259,7 @@
 
             
 
-            <td class="description last">The resource type.</td>
+            <td class="description last">The first argument is the string to translate, than it can receive N placeholders.</td>
         </tr>
 
     
@@ -214,7 +300,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_resources.js.html">game/resources.js</a>, <a href="game_resources.js.html#line36">line 36</a>
+        <a href="main.js.html">main.js</a>, <a href="main.js.html#line98">line 98</a>
     </li></ul></dd>
     
 
@@ -237,163 +323,6 @@
 
 
 
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id=".getRandom"><span class="type-signature">(static) </span>getRandom<span class="signature">(value)</span><span class="type-signature"> &rarr; {number}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Get random resource ID from list.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>value</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The resource value to select.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_resources.js.html">game/resources.js</a>, <a href="game_resources.js.html#line16">line 16</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    The resource ID.
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">number</span>
-
-
-    </dd>
-</dl>
-
-    
 
 
 

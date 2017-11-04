@@ -163,6 +163,9 @@ img {
 .tool--road {
   background-image: url('../images/board/tools/tool-road.png');
 }
+.tool--station {
+  background-image: url('../images/board/tools/tool-station.png');
+}
 .tool--view {
   background-image: url('../images/board/tools/tool-view.png');
 }

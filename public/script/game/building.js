@@ -23,6 +23,9 @@
  */
 var Building = function (type, pos_x, pos_y) {
   
+  if (typeof type === "undefined")
+    return;
+  
   // FIRST!
   // Setting defaults.
   var default_building = Database.get('buildings', {
@@ -52,6 +55,9 @@ var Building = function (type, pos_x, pos_y) {
     this.pos_y = coords.y;
   }
   
+  // Set level.
+  this.level = 1;
+  
   // Get the production.
   this.production = Production.get(type);
   
@@ -80,6 +86,9 @@ Building.prototype.spawn  = function () {
   
   // Save item id on the sprite.
   this.sprite.custom_id = this.id;
+  // Save map (tile) coordinates.
+  this.sprite.custom_pos_x = this.pos_x;
+  this.sprite.custom_pos_y = this.pos_y;
   
   // Center anchor.
   this.sprite.anchor.setTo(0.5, 0.5);
@@ -123,10 +132,12 @@ Building.prototype.produce  = function () {
   var resource,
       current,
       can_start,
-      station;
+      station,
+      requires;
   // What can produce?
   for (var r in this.production.resources) {
     resource = this.production.resources[r].resource;
+    requires = this.production.resources[r].requires;
     production_time = this.production.resources[r].time;
     current = this.production.current[resource];
     can_start = true;
@@ -138,7 +149,7 @@ Building.prototype.produce  = function () {
         //console.log("Done resource: " + resource + "!");
         
         // Check for exit point.
-        station = this.get_station(1);
+        station = this.get_station(0);
         if (station) {
           // Remove "needs outcoming station" message.
           //Board.message_remove(1, [this.fullname()]);
@@ -171,12 +182,47 @@ Building.prototype.produce  = function () {
       //console.log("Can produce: " + resource + "?");
       
       // Check for needed resources.
-      if (1 == 1) {
+      if (this.can_produce(resource, requires)) {
         // Start production!
         this.production.current[resource] = Date.now();
       }
     }
   }
+  
+}
+
+
+/**
+ * Check if building can start producing something.
+ * @memberof Building
+ * @name can_produce
+ * @instance
+ * @method
+ * @param {number} resource - Resource type.
+ * @param {array} requires - Array of required resources.
+ */
+Building.prototype.can_produce  = function (resource, requires) {
+  if (requires.length == 0)
+    return true;
+
+  var required,
+      amount,
+      gathered = new Array();
+  for (var r in requires) {
+    required = requires[r].requires;
+    amount = requires[r].amount;
+    if (this.gather(required, amount)) {
+      gathered.push({required: required, amount: amount});
+    } else {
+      // Return back gathered resources.
+      //console.log(resource + " requires " + amount + ' of '  + required);
+      for (var g in gathered) {
+        this.store(gathered[g].required, gathered[g].amount);
+      }
+      return false;
+    }
+  }
+  return true;
   
 }
 
@@ -191,71 +237,66 @@ Building.prototype.produce  = function () {
  */
 Building.prototype.get_station  = function (in_out) {
   // Search a road near the building.
-  var borders = this.get_border_tiles();
+  var borders = Map.get_border_tiles(this);
   var x,
       y;
   for (var i in borders) {
     x = borders[i].x;
     y = borders[i].y;
-    if (typeof GameApp.data.roads.items[x] !== "undefined" && typeof GameApp.data.roads.items[x][y] !== "undefined") {
+    if (typeof GameApp.data.roads.items[x] !== "undefined" && 
+        typeof GameApp.data.roads.items[x][y] !== "undefined" &&
+       GameApp.data.roads.items[x][y].station &&
+       GameApp.data.roads.items[x][y].in_out == in_out) {
       return GameApp.data.roads.items[x][y];
     }
   }
-  
-      
   return false;
-}
-
-
-/**
- * Get the tiles around the building.
- * @memberof Building
- * @name get_border_tiles
- * @instance
- * @method
- * @return {array}
- */
-Building.prototype.get_border_tiles  = function () {
-  var x1 = this.pos_x - 1;
-  var y1 = this.pos_y - 1;
-  var x2 = this.pos_x + this.width;
-  var y2 = this.pos_y + this.height;
-  var x,
-      y;
-  var ret = new Array();
-  for (x = x1; x <= x2; x ++) {
-    for (y = y1; y <= y2; y ++) {
-      // Select center elements of the first and last row...
-      // .. and first/last element of the other rows.
-      if (((x == x1 || x == x2) && (y != y1 && y != y2)) ||
-          ((y == y1 || y == y2) && (x > x1 && x < x2))) {
-        //console.log(this.name + ": bordo "+x+":"+y+"");
-        ret.push({x: x, y: y});
-      }
-    }
-  }
-  return ret;
 }
 
 
 /**
  * Store resource in the warehouse.
  * @memberof Building
- * @name get_border_tiles
+ * @name store
  * @instance
  * @method
- * @param {object} resource - Resource object.
+ * @param {number} resource - Resource type.
  * @return {array}
  */
-Building.prototype.store  = function (resource) {
+Building.prototype.store  = function (resource, amount) {
   
-  //console.log(this.name + " riceveqwe " + resource.name);
-  if (typeof this.warehouse[resource.type].amount === "undefined")
-    this.warehouse[resource.type].amount = 0;
+  if (typeof amount === "undefined")
+    amount = 1;
+  
+  if (typeof this.warehouse[resource].amount === "undefined")
+    this.warehouse[resource].amount = 0;
   // Store!
-  this.warehouse[resource.type].amount ++;
-  // Delete resource.
-  resource.delete();
+  this.warehouse[resource].amount += amount;
+
+}
+
+
+/**
+ * Gather resource from the warehouse.
+ * @memberof Building
+ * @name gather
+ * @instance
+ * @method
+ * @param {number} resource - Resource type.
+ * @param {number} amount - Amount of resources to take.
+ * @return {boolean} false if not enough resources in the warehouse.
+ */
+Building.prototype.gather  = function (resource, amount) {
+  
+  if (typeof this.warehouse === "undefined" ||
+      typeof this.warehouse[resource] === "undefined" || 
+      typeof this.warehouse[resource].amount === "undefined" ||
+      this.warehouse[resource].amount < amount)
+    return false;
+  
+  // Gather!
+  this.warehouse[resource].amount -= amount;
+  return true;
 }
 
 
@@ -269,9 +310,65 @@ Building.prototype.store  = function (resource) {
  * @return {string} The name
  */
 Building.prototype.fullname  = function () {
-  var str = jQuery.i18n._('building-' + this.id);
-  if (str == 'building-' + this.id)
-    str = jQuery.i18n._(this.name);
+  var str = Main.t('building-' + this.type);
+  if (str == 'building-' + this.type)
+    str = Main.t(this.name);
   return str;
 }
+
+
+
+
+
+/**
+ * Village class (children of Building).
+ * @name Village
+ * @class
+ * @classdesc Create a village.
+ * @see Building
+ * @property {array} request - The resources required by the village.
+ */
+var Village = function (type, pos_x, pos_y) {
+  // Call the parent constructor.
+  Building.call(this, type, pos_x, pos_y);
+  
+  // Ger required resources.
+  this.request = new Array;
+  this.new_request();
+  
+}
+// Inherit Building
+Village.prototype = new Building();
+Village.prototype.constructor = Village;
+
+
+/**
+ * Get a new resource request.
+ * @memberof Village
+ * @name new_request
+ * @instance
+ * @method
+ * @param {object} resource - Resource object.
+ * @return {string} The name
+ */
+Village.prototype.new_request  = function () {
+  var resource = Resources.getRandom({value: this.level});
+  if (resource) {
+    var amount = 1000;
+    
+    // Check already required.
+    for (var r in this.request) {
+      if (this.request[r].resource == resource)
+        return;
+    }
+    
+    this.request.push({
+      resource: resource,
+      amount: amount
+    });
+    //console.log("new request: " + resource);
+  }
+}
+
+
 

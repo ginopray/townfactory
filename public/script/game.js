@@ -44,6 +44,11 @@ var GameApp = {
    */
   init : function () {
     
+    // Set locale.
+    jQuery.i18n({
+      locale: 'en'
+    });
+    
     console.log("PHASER INIT DONE!");
   },
 
@@ -74,8 +79,13 @@ var GameApp = {
     }
     // Load other images.
     game.load.image('helper-road', 'images/game/tools/helper-road.png');
+    game.load.image('helper-station', 'images/game/tools/helper-station.png');
+    game.load.image('helper-station-in', 'images/game/tools/helper-station-1.png');
+    game.load.image('helper-station-out', 'images/game/tools/helper-station-0.png');
     game.load.image('helper-remove', 'images/game/tools/helper-remove.png');
     game.load.image('road', 'images/game/roads/road.png');
+    game.load.image('station-1', 'images/game/roads/station-1.png');
+    game.load.image('station-0', 'images/game/roads/station-0.png');
     
     // File complete (progress bar).
     game.load.onFileComplete.add(function(progress, file_key, success, total_loaded_files, total_files){
@@ -260,20 +270,15 @@ var GameApp = {
     };
     
     // Add buildings.
+    // village.
+    GameApp.data.buildings.push(new Village(5));
     // forest.
     GameApp.data.buildings.push(new Building(1));
     // wheatfield.
     GameApp.data.buildings.push(new Building(2));
-    // village.
-    GameApp.data.buildings.push(new Building(5));
-    /*GameApp.data.buildings = [
-      // forest
-      new Building(1, getRandom(2, initial_game_size.w - 2), getRandom(2, initial_game_size.h - 2)),
-      // wheatfield
-      new Building(2, getRandom(2, initial_game_size.w - 2), getRandom(2, initial_game_size.h - 2)),
-      // village
-      new Building(5, getRandom(2, initial_game_size.w - 2), getRandom(2, initial_game_size.h - 2)),
-    ];*/
+    // windmill.
+    GameApp.data.buildings.push(new Building(4));
+    
   },
 
   

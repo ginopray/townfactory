@@ -34,8 +34,22 @@ var Roads = {
     
     GameApp.data.action.locked = true;
     
-    // Create game object...
-    var road = new Road(GameApp.data.action.data.type, tile.x, tile.y, GameApp.data.action.data.direction);
+    // Create station...
+    if (GameApp.data.action.children == "station") {
+      
+      // Check for right position and get input-output.
+      var in_out = Roads.check_build_station(tile, GameApp.data.action.data.direction);
+      if (in_out === false) {
+        GameApp.data.action.locked = false;
+        return;
+      }      
+      var road = new Station(GameApp.data.action.data.type, tile.x, tile.y, GameApp.data.action.data.direction, in_out);
+      
+    // or create a road...
+    } else {
+      var road = new Road(GameApp.data.action.data.type, tile.x, tile.y, GameApp.data.action.data.direction);
+    }
+    
     // ...and append it to GameApp.data.roads.
     if (typeof GameApp.data.roads.items[tile.x] === "undefined")
       GameApp.data.roads.items[tile.x] = new Array();
@@ -67,10 +81,15 @@ var Roads = {
    * @todo road types.
    */
   tool_init : function () {
-    return {
+    var ret = {
       type: 1,
       direction: Actions.tools.road.directions[0]
     };
+    if (typeof GameApp.data.action.children !== "undefined" &&
+       GameApp.data.action.children == "station") {
+      ret.station = 1;
+    }
+    return ret;
   },
   
   
@@ -239,13 +258,13 @@ var Roads = {
   
   
   /**
-   * Check if "road 1" leads towards "road 2".
+   * Check if "road 1" leads towards "sprite 2".
    * @memberof Roads
    * @name check_toward
    * @instance
    * @method
    * @param {object} r1 - Road 1.
-   * @param {object} r2 - Road 2.
+   * @param {object} r2 - Sprite 2.
    * @return {boolean} true if r1 leads towards r2.
    */
   check_toward : function (r1, r2) {
@@ -295,7 +314,7 @@ var Roads = {
 
 
   /**
-   * Check if "road 1" leads towards "road 2".
+   * Check if the station is occupied by a resource.
    * @memberof Roads
    * @name check_free_station
    * @instance
@@ -320,7 +339,60 @@ var Roads = {
         return false;
     }
     return true;
-  }
+  },
+  
+  
+  /**
+   * Can a station be created here?
+   * @memberof Roads
+   * @name check_build_station
+   * @instance
+   * @method
+   * @param {object} tile - The tile.
+   * @return {number|false} 1 = in, 0 = out, false: cant build.
+   */
+  check_build_station : function (tile, direction) {
+    var x,
+        y,
+        b,
+        buildings = new Array();
+    // Get tile borders.
+    var borders = Map.get_border_tiles(tile);
+    // Find building around the tile.
+    for (var i in borders) {
+      x = borders[i].x;
+      y = borders[i].y;
+      b = Map.find_by_pos(x, y, 'buildings');
+      if (b !== false) {
+        buildings.push({
+          custom_pos_x: x,
+          custom_pos_y: y
+        });
+      }
+    }
+    
+    // If the station is among more than 1 buildings: is always OUTCOMING!
+    if (buildings.length > 1) {
+      return 0;
+    // Calcolate incoming/outcoming by building position.
+    } else if (buildings.length == 1) {
+      var in_out;
+      // Set angle and custom_pos.
+      var direction_index = Actions.tools.road.directions.indexOf(direction);
+      tile.angle = Actions.tools.road.dir_angles[direction_index];
+      tile.custom_pos_x = tile.x;
+      tile.custom_pos_y = tile.y;
+      // If road direction is towards the building: is INCOMING.
+      if (Roads.check_toward(tile, buildings[0]))
+        in_out = 1;
+      else
+        in_out = 0
+      return in_out;
+    }
+    
+    return false;
+  },
+
   
   
 };
@@ -345,6 +417,9 @@ var Roads = {
  */
 var Road = function (type, pos_x, pos_y, direction) {
   
+  if (typeof type === "undefined")
+    return;
+  
   // Set item ID.
   this.id = ++ GameApp.data.indexes.roads;
   this.type = type;
@@ -364,11 +439,19 @@ var Road = function (type, pos_x, pos_y, direction) {
  */
 Road.prototype.spawn  = function () {
   
+  var img;
+  // Road image.
+  if (this.station) {
+    img = "station-" + this.in_out;
+  } else {
+    img = "road";
+  }
+  
   // Get the tile coordinates.
   var tile = Map.get_tile({x: this.pos_x, y: this.pos_y, w: Map.settings.tileWidth, h: Map.settings.tileHeight}, 'rgba(244, 67, 54, .5)');
   
-  // Create sprite and add it to "buildings" group.
-  this.sprite = phaser_object.groups.roads.create(tile.x, tile.y, 'road');
+  // Create sprite and add it to "roads" group.
+  this.sprite = phaser_object.groups.roads.create(tile.x, tile.y, img);
   
   // Save item id on the sprite.
   this.sprite.custom_id = this.id;
@@ -420,4 +503,29 @@ Road.prototype.remove  = function () {
   
 }
 
+
+
+
+/**
+ * Station class (children of Road).
+ * @name Station
+ * @class
+ * @classdesc Create an input/output station.
+ * @see Road
+ * @param {number} in_out - 1 = In, 0 = Out.
+ * @property {number} in_out - 1 = In, 0 = Out.
+ */
+var Station = function (type, pos_x, pos_y, direction, in_out) {
+  // Call the parent constructor.
+  Road.call(this, type, pos_x, pos_y, direction);
+  
+  // Define road as station.
+  this.station = true;
+  // Input or output.
+  this.in_out = in_out;
+  
+}
+// Inherit Road
+Station.prototype = new Road();
+Station.prototype.constructor = Station;
 

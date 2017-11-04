@@ -21,11 +21,9 @@ var Resources = {
    * @param {number} value - The resource value to select.
    * @returns {number} The resource ID.
    */
-  getRandom : function (value) {
+  getRandom : function (filters) {
     // Get value 1 resources.
-    var resources = Database.get('resources', {
-      value : value
-    });
+    var resources = Database.get('resources', filters);
     // No resources found: return false.
     if (resources.length == 0) return false;
     // Select random resource.

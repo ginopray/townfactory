@@ -118,18 +118,29 @@ var Board = {
     }
     var html = "";
     var html_production = Board.get_building_production(building.production);
+    var html_request = Board.get_building_request(building.request);
+    var html_warehouse = Board.get_building_warehouse(building.warehouse);
     html += '<div>';
     // Building name.
-    html += '<h3>' + building.name + '</h3>';
+    html += '<h2>' + building.fullname() + '</h2>';
     // Image.
     html += '<div><img class="info-building__image" src="images/game/buildings/building-' + building.type + '.png" /></div>';
     // Position and size info.
     html +='<div>ID: ' + building.id + ', position: ' + building.pos_x + ':' + building.pos_y + ', size: ' + building.width + 'x' + building.height + '</div>';
     // Production info.
     if (html_production != "") {
-      html += '<div>Production: ' + html_production + '</div>';
+      html += '<div><h3>' + Main.t('Production') + '</h3>' + html_production + '</div>';
       html += '<div>Active: ' + building.power_switch + '</div>';
     }
+    // Request info.
+    if (html_request != "") {
+      html += '<div><h3>' + Main.t('Request') + '</h3>' + html_request + '</div>';
+    }
+    // Warehouse info.
+    if (html_warehouse != "") {
+      html += '<div><h3>' + Main.t('Warehouse') + '</h3>' + html_warehouse + '</div>';
+    }
+    
     html += '</div>';
     jQuery('#info-building').html(html);
   },
@@ -159,6 +170,55 @@ var Board = {
   
   
   /**
+   * Get the information view about building request.
+   * @memberof Board
+   * @name get_building_request
+   * @method
+   * @param {array} request - request array.
+   */
+  get_building_request : function (request) {
+    if (typeof request === "undefined" || request.length == 0) 
+      return "";
+    var html = "";
+    var obj;
+    html += '<div>';
+    for (var r in request) {
+      obj = request[r];
+      html += obj.amount + ' ' + Board.get_resource_image(obj.resource, {class: 'info-resource__image'});
+    }
+    html += '</div>';
+    return html;
+  },
+  
+  
+  /**
+   * Get the information view about building warehouse.
+   * @memberof Board
+   * @name get_building_warehouse
+   * @method
+   * @param {array} warehouse - warehouse array.
+   */
+  get_building_warehouse : function (warehouse) {
+    if (typeof warehouse === "undefined" || warehouse.length == 0) 
+      return "";
+    var html = "";
+    var obj,
+        amount;
+    html += '<div>';
+    for (var resource in warehouse) {
+      obj = warehouse[resource];
+      if (typeof obj.amount === "undefined")
+        amount = 0;
+      else
+        amount = obj.amount;
+      html += Board.get_resource_image(resource, {class: 'info-resource__image'}) + ' ' + amount + '/' + obj.capacity;
+    }
+    html += '</div>';
+    return html;
+  },
+    
+  
+  /**
    * Update the information view about resources.
    * @memberof Board
    * @name info_resources
@@ -167,7 +227,7 @@ var Board = {
   info_resources : function () {
     var resources = {};
     var villages = Map.findType(5, 'buildings');
-    var resource_type;
+    var resource_type;    
     for (var v in villages) {
       for (resource_type in villages[v].warehouse) {
         if (typeof resources[resource_type] === "undefined")
@@ -224,7 +284,7 @@ var Board = {
           id: 'tool-' + tool,
           'data-tool': tool,
           class: 'tool tool--' + tool,
-          title: tool,
+          title: Main.t('tool-' + tool),
           mousedown: function() {
             Actions.set(jQuery(this).attr('data-tool'));
           }
@@ -272,7 +332,7 @@ var Board = {
     var html = '<img';
     if (typeof vars.class !== "undefined")
       html += ' class="' + vars.class + '"';
-    html += ' src="images/game/resources/resource-' + type + '.png" alt="' + jQuery.i18n._('resource-' + type) + '" title="' + jQuery.i18n._('resource-' + type) + '" />';
+    html += ' src="images/game/resources/resource-' + type + '.png" alt="' + Main.t('resource-' + type) + '" title="' + Main.t('resource-' + type) + '" />';
     return html;
   },
   
@@ -314,7 +374,7 @@ var Board = {
     var msg;
     for (var m in Board.messages) {
       msg = Board.messages[m];
-      html += jQuery.i18n._('message-' + msg.id, msg.vars[0], msg.vars[1], msg.vars[2]) + "<br />";
+      html += Main.t('message-' + msg.id, msg.vars[0], msg.vars[1], msg.vars[2]) + "<br />";
     }
     document.getElementById('messages').innerHTML = html;
   },

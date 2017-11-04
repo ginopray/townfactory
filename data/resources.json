@@ -3,24 +3,24 @@
       "id": 1,
       "name": "wood",
       "color": "#795548",
-      "value": 1
+      "value": 0
     },
     {
       "id": 2,
       "name": "wheat",
       "color": "#ffc107",
-      "value": 1
+      "value": 0
     },
     {
       "id": 3,
       "name": "wooden plank",
       "color": "#795548",
-      "value": 3
+      "value": 2
     },
     {
       "id": 4,
       "name": "bread",
       "color": "#ffc107",
-      "value": 2
+      "value": 1
     }
   ]

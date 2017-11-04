@@ -83,9 +83,13 @@ var Production = {
     // Can this building receive this resource?
     if (
       typeof building.warehouse !== "undefined" &&
-      typeof building.warehouse[resource.type] !== "undefined"
+      typeof building.warehouse[resource.type] !== "undefined" &&
+      (typeof building.warehouse[resource.type].amount === "undefined" || building.warehouse[resource.type].amount < building.warehouse[resource.type].capacity)
     ) {
-      building.store(resource);
+      // Store.
+      building.store(resource.type);
+      // Delete resource.
+      resource.delete();
     }
   },
 

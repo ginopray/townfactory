@@ -544,8 +544,8 @@ var Map = {
     // If first building: random position.
     if (GameApp.data.buildings.length == 0) {
       return {
-        x: getRandom(2, GameApp.data.map.width - 2),
-        y: getRandom(2, GameApp.data.map.height - 2)
+        x: Main.getRandom(2, GameApp.data.map.width - 2),
+        y: Main.getRandom(2, GameApp.data.map.height - 2)
       }
     }
     
@@ -619,6 +619,60 @@ var Map = {
     var dy = y1 - y2;
     return Math.sqrt(dx * dx + dy * dy);
   },
+  
+
+  /**
+   * Get the tiles around an object.
+   * @memberof Map
+   * @name get_border_tiles
+   * @method
+   * @param {object} obj - Object to check.
+   * @return {array} Array of coordinates of tiles found.
+   */
+  get_border_tiles: function (obj) {
+    var width,
+        height,
+        pos_x,
+        pos_y;
+    // Set width and height.
+    if (typeof obj.width !== "undefined")
+      width = obj.width;
+    else
+      width = 1;
+    if (typeof obj.height !== "undefined")
+      height = obj.height;
+    else
+      height = 1;
+    // Set pos_x and pos_y.
+    if (typeof obj.pos_x !== "undefined")
+      pos_x = obj.pos_x;
+    else
+      pos_x = obj.x;
+    if (typeof obj.pos_y !== "undefined")
+      pos_y = obj.pos_y;
+    else
+      pos_y = obj.y;
+    
+    var x1 = pos_x - 1;
+    var y1 = pos_y - 1;
+    var x2 = pos_x + width;
+    var y2 = pos_y + height;
+    var x,
+        y;
+    var ret = new Array();
+    for (x = x1; x <= x2; x ++) {
+      for (y = y1; y <= y2; y ++) {
+        // Select center elements of the first and last row...
+        // .. and first/last element of the other rows.
+        if (((x == x1 || x == x2) && (y != y1 && y != y2)) ||
+            ((y == y1 || y == y2) && (x > x1 && x < x2))) {
+          ret.push({x: x, y: y});
+        }
+      }
+    }
+    return ret;
+  }
+
   
 
 };

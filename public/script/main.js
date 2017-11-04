@@ -56,6 +56,8 @@ var phaser_object = {
   helper: false
 };
 
+
+// Document ready: create the game with Phaser.
 jQuery(document).ready(function(){
   var container_w = jQuery('#map-container').width();
   var container_h = jQuery('#map-container').outerHeight();
@@ -71,8 +73,40 @@ jQuery(document).ready(function(){
 });
 
 
-function getRandom(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+
+/**
+ * The main class with common functions.
+ * @name Main
+ * @namespace
+ * @classdesc The main class with common functions.
+ */
+var Main = {
+  
+  /**
+   * Get random int number.
+   * @memberof Main
+   * @name getRandom
+   * @method
+   */
+  getRandom : function(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  },
+  
+  
+  /**
+   * Translate a string.
+   * @memberof Main
+   * @name t
+   * @method
+   * @param {object} arguments - The first argument is the string to translate, than it can receive N placeholders.
+   */
+  t : function() {
+    var str = arguments[0];
+    return jQuery.i18n._(str, arguments[1], arguments[2], arguments[3], arguments[4], arguments[5]);
+  }
+  
+  
 }
+
