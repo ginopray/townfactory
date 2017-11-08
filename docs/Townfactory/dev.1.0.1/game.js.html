@@ -51,17 +51,29 @@ var GameApp = {
   * @property {number} indexes.resources - Resource max id.
   * @property {array} buildings - Array containing building objects.
   * @property {array} resources - Array containing resources objects.
+  * @property {object} roads - Roads data.
+  * @property {array} roads.items - Array containing all road items. Ie. GameApp.data.roads.items[x][y] = new Road();
   * @property {object} map - Map game data.
   * @property {object} map.width - The width of the map (in tiles).
   * @property {number} map.height - The height of the map (in tiles).
   * @property {object} action - Action data.
   * @property {string} action.tool - Current selected tool: view, build road....
   * @property {object} action.vars - Action data object. Each tool has his data set. (ie. "road" tool can have "direction" property)
-  * @property {object} roads - Roads data.
-  * @property {array} roads.items - Array containing all road items. Ie. GameApp.data.roads.items[x][y] = new Road();
+  * @property {object} capital - Reference to Capital.
   */
   data : {},
   
+  
+  /**
+  * The game timers.
+  * @memberof GameApp
+  * @name timers
+  * @type {object}
+  */
+  timers : {
+    alternative_update: false,
+    save_game: false,
+  },
  
   /**
    * Initialize the game (called by Phaser:init).
@@ -73,11 +85,8 @@ var GameApp = {
   init : function () {
     
     // Set locale.
-    jQuery.i18n({
-      locale: 'en'
-    });
-    
-    console.log("PHASER INIT DONE!");
+    jQuery.i18n.locale = 'en';
+
   },
 
   
@@ -90,19 +99,28 @@ var GameApp = {
    */
   preload : function () {
     
+    var tables = [
+      "resources",
+      "buildings",
+      "production",
+      "costs",
+      "consumption",
+      "production_resources",
+    ];
+    
     // Load db data.
-    game.load.json('resources', '../data/resources.json');
-    game.load.json('buildings', '../data/buildings.json');
-    game.load.json('production', '../data/production.json');
-    game.load.json('production_resources', '../data/production_resources.json');
+    for (var t in tables) {
+      game.load.json(tables[t], '../data/' + tables[t] + '.json');  
+    }
+    // Load translations.
     game.load.json('translations', '../langs/en.json');
     
     // Load buildings.
-    for (var i = 1; i &lt;= 5; i ++) {
+    for (var i = 1; i &lt;= 7; i ++) {
       game.load.image('building-' + i, 'images/game/buildings/building-' + i + '.png');
     }
     // Load resources.
-    for (var i = 1; i &lt;= 4; i ++) {
+    for (var i = 1; i &lt;= 6; i ++) {
       game.load.image('resource-' + i, 'images/game/resources/resource-' + i + '.png');
     }
     // Load other images.
@@ -121,49 +139,36 @@ var GameApp = {
       GameApp.loading(progress, file_key, success);
     }, this);
     
+    
     // Load game after load complete.
     //game.load.onLoadComplete = { dispatch : function(){
     game.load.onLoadComplete.add(function(){
       
-      // Check resources.
-      var JSON_resources = game.cache.getJSON('resources');
-      if (typeof JSON_resources === "undefined" || JSON_resources === null) {
-        GameApp.error('Resources file not found.');
-        return; 
+      // Check db files.
+      var JSON_get;
+      for (var t in tables) {
+        JSON_get = game.cache.getJSON(tables[t]);
+        if (typeof JSON_get === "undefined" || JSON_get === null) {
+          GameApp.error(tables[t] + ' file not found.');
+          return; 
+        }
       }
-      // Check buildings.
-      var JSON_buildings = game.cache.getJSON('buildings');
-      if (typeof JSON_buildings === "undefined" || JSON_buildings === null) {
-        GameApp.error('Buildings file not found.');
-        return; 
-      }
-      // Check production.
-      var JSON_production = game.cache.getJSON('production');
-      if (typeof JSON_production === "undefined" || JSON_production === null) {
-        GameApp.error('Production file not found.');
-        return; 
-      }
-      // Check production resources.
-      var JSON_production_resources = game.cache.getJSON('production_resources');
-      if (typeof JSON_production_resources === "undefined" || JSON_production_resources === null) {
-        GameApp.error('Production resources file not found.');
-        return; 
-      }
+
       
-      // Load translations.
+      // Check translations file.
       var JSON_translations = game.cache.getJSON('translations');
       if (typeof JSON_translations === "undefined" || JSON_translations === null) {
         GameApp.error('Languages file not found.');
         return; 
       }
-
+      // Load translations.
       jQuery.i18n.load(JSON_translations);
       
-      //console.log("File loaded! Load game...");
+
       // Load game data.
-      GameApp.load();
-      
-      console.log("PHASER PRELOAD DONE!");
+      if (!GameApp.load())
+        GameApp.new();
+
       
     }, this);
     
@@ -185,14 +190,20 @@ var GameApp = {
     
     // Actions init.
     Actions.init();
+    
+    // Production init.
+    Production.init();
 
     // Initialize the board.
     Board.init();
     
+    // Set a less frequent update loop.
+    GameApp.timers.alternative_update = setInterval(GameApp.alternative_update, 1000);
+    GameApp.timers.save_game = setInterval(GameApp.save, 5000);
+    
     // Show the game!
     jQuery('.waiting').hide();
-    
-    console.log("PHASER CREATE DONE!");
+
   },
 
   
@@ -209,6 +220,24 @@ var GameApp = {
     
   },
 
+  
+  /**
+   * Alternative, less frequent, update game loop.
+   * @memberof GameApp
+   * @name alternative_update
+   * @method
+   */
+  alternative_update : function () {
+    
+    // Update icons and messages.
+    Icons.alternative_update();
+    // Update board.
+    Board.alternative_update();
+    // Process villages.
+    
+    
+  },
+  
   
   /**
    * Render loop.
@@ -252,7 +281,16 @@ var GameApp = {
    * @returns {Object} A full game data object.
    */
   load : function () {
-    GameApp.new();
+    return false;
+    /*
+    var game_data = localStorage.getItem("game_data");
+    if (typeof game_data === "undefined" || game_data.date_ini === "undefined")
+      return false;
+    else {
+      GameApp.data = JSON.parse(game_data);
+      console.log("Game loaded!");
+      return true;
+    }*/
   },
 
   
@@ -263,6 +301,11 @@ var GameApp = {
    * @method
    */
   save : function () {
+    /*
+    if (typeof(Storage) !== "undefined") {
+      
+      console.log("Game saved!");
+    }*/
   },
 
   
@@ -306,6 +349,14 @@ var GameApp = {
     GameApp.data.buildings.push(new Building(2));
     // windmill.
     GameApp.data.buildings.push(new Building(4));
+    // sawmill.
+    GameApp.data.buildings.push(new Building(3));
+    // iron mine.
+    GameApp.data.buildings.push(new Building(6));
+    // smeltery.
+    GameApp.data.buildings.push(new Building(7));
+    
+    console.log("New game!");
     
   },
 
@@ -358,13 +409,13 @@ var GameApp = {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Building.html">Building</a></li><li><a href="Resource.html">Resource</a></li><li><a href="Road.html">Road</a></li><li><a href="Station.html">Station</a></li><li><a href="Village.html">Village</a></li></ul><h3>Namespaces</h3><ul><li><a href="Actions.html">Actions</a></li><li><a href="Board.html">Board</a></li><li><a href="Database.html">Database</a></li><li><a href="GameApp.html">GameApp</a></li><li><a href="Main.html">Main</a></li><li><a href="Map.html">Map</a></li><li><a href="Production.html">Production</a></li><li><a href="Resources.html">Resources</a></li><li><a href="Roads.html">Roads</a></li></ul><h3>Global</h3><ul><li><a href="global.html#game">game</a></li><li><a href="global.html#phaser_object">phaser_object</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Building.html">Building</a></li><li><a href="Icon.html">Icon</a></li><li><a href="Resource.html">Resource</a></li><li><a href="Road.html">Road</a></li><li><a href="Station.html">Station</a></li><li><a href="Village.html">Village</a></li></ul><h3>Namespaces</h3><ul><li><a href="Actions.html">Actions</a></li><li><a href="Board.html">Board</a></li><li><a href="Buildings.html">Buildings</a></li><li><a href="Database.html">Database</a></li><li><a href="GameApp.html">GameApp</a></li><li><a href="Icons.html">Icons</a></li><li><a href="Main.html">Main</a></li><li><a href="Map.html">Map</a></li><li><a href="People.html">People</a></li><li><a href="Production.html">Production</a></li><li><a href="Resources.html">Resources</a></li><li><a href="Roads.html">Roads</a></li></ul><h3>Global</h3><ul><li><a href="global.html#game">game</a></li><li><a href="global.html#phaser_object">phaser_object</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sat Nov 04 2017 15:04:22 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Nov 08 2017 19:06:01 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>

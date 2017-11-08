@@ -17,21 +17,23 @@
     <script src="script/game.js"></script>
     <script src="script/game/actions.js"></script>
     <script src="script/game/board.js"></script>
-    <script src="script/game/building.js"></script>
+    <script src="script/game/buildings.js"></script>
+    <script src="script/game/icons.js"></script>
     <script src="script/game/map.js"></script>
+    <script src="script/game/people.js"></script>
     <script src="script/game/production.js"></script>
     <script src="script/game/resources.js"></script>
     <script src="script/game/roads.js"></script>
     <script src="script/main.js"></script>
   </head>
   <body>
+
     <div class="board">
       <div  id="map-container" class="map-container">
         <div id="map-canvas" class="map-canvas"></div>
       </div>
       <div class="sidebar">
         <div class="sidebar__section">
-          <h3>Resources</h3>
           <div id="resources" class="resources"></div>
         </div>
         <div class="sidebar__section">
@@ -48,6 +50,7 @@
         <div class="sidebar__section controls">
           <h3>Debug:</h3>
           <div id="info-selection" class="info-selection"></div>
+          <div id="debug"></div>
           <ul>
             <li><div class="board-command" data-callback="render_toggle">Toggle debug render</div></li>
           </ul>

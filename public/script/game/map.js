@@ -171,16 +171,8 @@ var Map = {
     }
       
     
-    // Loop resources.
-    for (var r in GameApp.data.resources) {
-      coords = Map.coord2tile({x: GameApp.data.resources[r].sprite.centerX, y: GameApp.data.resources[r].sprite.centerY });
-      // Delete resources out of the road.
-      if (!Map.find_road(coords.x, coords.y)) {
-        GameApp.data.resources[r].delete();
-      } else {
-        GameApp.data.resources[r].sprite.custom_overlap = new Array();
-      }
-    }
+    // Update resources.
+    Resources.update();
     
     // Resources overlapping.
     game.physics.arcade.overlap(
@@ -222,10 +214,8 @@ var Map = {
     phaser_object.helper.centerX = ((coords.x - 1) * Map.settings.tileWidth) + (Map.settings.tileWidth / 2);
     phaser_object.helper.centerY = ((coords.y - 1) * Map.settings.tileHeight) + (Map.settings.tileHeight / 2);
 
-    // Buildings production.
-    for (var b in GameApp.data.buildings) {
-      GameApp.data.buildings[b].produce();
-    }
+    // Update buildings.
+    Buildings.update();
     
   },
   

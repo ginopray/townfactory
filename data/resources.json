@@ -22,5 +22,17 @@
       "name": "bread",
       "color": "#ffc107",
       "value": 1
+    },
+    {
+      "id": 5,
+      "name": "iron",
+      "color": "#ffc107",
+      "value": 1
+    },
+    {
+      "id": 6,
+      "name": "iron ingot",
+      "color": "#ffc107",
+      "value": 1
     }
   ]

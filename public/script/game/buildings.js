@@ -1,8 +1,44 @@
 /**
- * Contains the Building class.
+ * Contains the Building class and Buildings namespace.
  * @file
+ * @see Buildings
  * @see Building
  */
+
+
+/**
+ * Buildings functions.
+ * @name Buildings
+ * @namespace
+ * @classdesc Buildings functions.
+ */
+var Buildings = {
+  
+  /**
+   * Buildings loop.
+   * @memberof Buildings
+   * @name update
+   * @method
+   */
+  update : function () {
+    
+    for (var b in GameApp.data.buildings) {
+      // Buildings production.
+      GameApp.data.buildings[b].produce();
+      // Buildings consumption.
+      GameApp.data.buildings[b].consume();
+      // Village.
+      if (GameApp.data.buildings[b].village) {
+        // Check village level.
+        GameApp.data.buildings[b].check_level();
+      }
+    }
+    
+  }
+  
+}
+
+
 
 /**
  * Building class.
@@ -19,6 +55,9 @@
  * @property {object} production - Production data.
  * @property {number} production.resources - Array of resources it can produces.
  * @property {number} production.current - Array of current production.
+ * @property {object} consumption - Consumption data.
+ * @property {number} consumption.resources - Array of resources it want consume.
+ * @property {number} consumption.current - Array of current consumption.
  * @property {bool} power_switch - Production active or not.
  */
 var Building = function (type, pos_x, pos_y) {
@@ -60,6 +99,12 @@ var Building = function (type, pos_x, pos_y) {
   
   // Get the production.
   this.production = Production.get(type);
+  
+  // Get the consumption.
+  this.consumption = {}
+  this.consumption.current = [];
+  this.consumption.resources = Production.get_consumption(type);
+
   
 };
 
@@ -133,7 +178,8 @@ Building.prototype.produce  = function () {
       current,
       can_start,
       station,
-      requires;
+      requires,
+      production_time;
   // What can produce?
   for (var r in this.production.resources) {
     resource = this.production.resources[r].resource;
@@ -151,8 +197,7 @@ Building.prototype.produce  = function () {
         // Check for exit point.
         station = this.get_station(0);
         if (station) {
-          // Remove "needs outcoming station" message.
-          //Board.message_remove(1, [this.fullname()]);
+        
           // Check if station is free.
           if (Roads.check_free_station(station)) {
             
@@ -166,8 +211,7 @@ Building.prototype.produce  = function () {
             can_start = false;
           }
         } else {
-          // Add "needs outcoming station" message.
-          //Board.message_add(1, [this.fullname()]);
+          
           can_start = false;
         }
         
@@ -182,7 +226,7 @@ Building.prototype.produce  = function () {
       //console.log("Can produce: " + resource + "?");
       
       // Check for needed resources.
-      if (this.can_produce(resource, requires)) {
+      if (Production.can_produce(this, requires)) {
         // Start production!
         this.production.current[resource] = Date.now();
       }
@@ -193,36 +237,63 @@ Building.prototype.produce  = function () {
 
 
 /**
- * Check if building can start producing something.
+ * Consume resources (called by update loop).
  * @memberof Building
- * @name can_produce
+ * @name consume
  * @instance
  * @method
- * @param {number} resource - Resource type.
- * @param {array} requires - Array of required resources.
  */
-Building.prototype.can_produce  = function (resource, requires) {
-  if (requires.length == 0)
-    return true;
+Building.prototype.consume  = function () {
+  // Is building active?
+  if (this.power_switch == 0)
+    return;
+  
+  var resource,
+      current,
+      can_start,
+      consumption_time;
+  // What can produce?
+  for (var r in this.consumption.resources) {
+    resource = this.consumption.resources[r].resource;
+    consumption_time = this.consumption.resources[r].time / this.level;
+    current = this.consumption.current[resource];
+    can_start = true;
+    //console.log(this.name, [resource, consumption_time, current])
+    // Is producing?
+    if (typeof current !== "undefined") {
+      // Consumption done!
+      if ((Date.now() - current) / 1000 > consumption_time) {
+        //console.log("Done resource: " + resource + "!");      
 
-  var required,
-      amount,
-      gathered = new Array();
-  for (var r in requires) {
-    required = requires[r].requires;
-    amount = requires[r].amount;
-    if (this.gather(required, amount)) {
-      gathered.push({required: required, amount: amount});
-    } else {
-      // Return back gathered resources.
-      //console.log(resource + " requires " + amount + ' of '  + required);
-      for (var g in gathered) {
-        this.store(gathered[g].required, gathered[g].amount);
+        // EAT!
+        // Clear current consumption.
+        delete this.consumption.current[resource];
+        
+      // Consuming...
+      } else {
+        //console.log("Producing " + resource + "...");
+        can_start = false;
       }
-      return false;
+    // Dont eat at start.
+    } else  {
+      this.consumption.current[resource] = Date.now();
+      can_start = false;
+    }
+    // Can start producing something?
+    if (can_start) {
+      //console.log("Can produce: " + resource + "?");
+      
+      // Check for needed resources.
+      if (1) {
+        // Start consumption!
+        this.consumption.current[resource] = Date.now();
+        console.log("GNAM! " + (1 * this.level));
+        if (!this.gather(resource, 1 * this.level)) {
+          console.log("hungry!");
+        }
+      }
     }
   }
-  return true;
   
 }
 
@@ -264,6 +335,9 @@ Building.prototype.get_station  = function (in_out) {
  * @return {array}
  */
 Building.prototype.store  = function (resource, amount) {
+  
+  if (typeof this.warehouse[resource] === "undefined" || typeof this.warehouse[resource] === "undefined")
+    return;
   
   if (typeof amount === "undefined")
     amount = 1;
@@ -326,15 +400,32 @@ Building.prototype.fullname  = function () {
  * @class
  * @classdesc Create a village.
  * @see Building
+ * @property {number} village - always 1.
+ * @property {number} capital - 1 if capital, 0 if not.
  * @property {array} request - The resources required by the village.
  */
 var Village = function (type, pos_x, pos_y) {
   // Call the parent constructor.
   Building.call(this, type, pos_x, pos_y);
   
+  // Set village property.
+  this.village = 1;
+  
+  // Is the capital?
+  this.capital = 1;
+  //Save game capital.
+  if (this.capital == 1) {
+    GameApp.capital = this;
+  }
+  
   // Ger required resources.
   this.request = new Array;
   this.new_request();
+  
+  // Store some resource.
+  this.store(3, 100);
+  this.store(6, 100);
+
   
 }
 // Inherit Building
@@ -368,6 +459,34 @@ Village.prototype.new_request  = function () {
     });
     //console.log("new request: " + resource);
   }
+}
+
+
+/**
+ * Calculate and set the level of the village.
+ * @memberof Village
+ * @name check_level
+ * @instance
+ * @method
+ */
+Village.prototype.check_level = function () {
+  var bread = this.warehouse[4].amount;
+  if (typeof bread === "undefined")
+    return;
+  
+  if (bread == 0) {
+    this.level = 1;
+    return;
+  }
+  
+  //this.level = Math.sqrt(bread);
+  var new_level = Math.floor(Math.log(bread) / Math.log(2));
+  
+  if (new_level == 0)
+    new_level = 1;
+  
+  this.level = new_level;
+  
 }
 
 

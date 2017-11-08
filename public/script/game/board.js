@@ -74,6 +74,23 @@ var Board = {
     // Update info about current mouse selection.
     Board.info_selection();
     Board.info_resources();
+    
+    // Debug:
+    /*var debug = "";
+    debug += "Buildings: " + GameApp.data.buildings.length + "<br />";
+    debug += "Resources: " + GameApp.data.resources.length + "<br />";    
+    jQuery('#debug').html(debug);*/
+  },
+  
+
+  /**
+   * Update the board (less frequently).
+   * @memberof Board
+   * @name alternative_update
+   * @method
+   */
+  alternative_update : function () {
+    
   },
   
   
@@ -243,8 +260,8 @@ var Board = {
         document.getElementById('resource-' + resource_type + '-container').style.display = 'block';
       }
     }
-    //jQuery('#resources').html(html);
-    //document.getElementById('resources').innerHTML = html;
+    
+    document.getElementById('people-count').innerHTML = People.count();
   },
   
 
@@ -257,6 +274,16 @@ var Board = {
   info_resources_header : function () {
     var resources = Database.get('resources');
     var html = "";
+    // People.
+    html += '<div id="people-container" class="resources__container">';
+    html += '<div class="resources__head">';
+    html += Board.get_resource_image('people', {class: 'resources__image'});
+    html += '</div>';
+    html += '<div id="people-count" class="resource-count">';
+    html += '</div>';
+    html += '</div>';
+    
+    // Resources.
     for (var r in resources) {
       html += '<div id="resource-' + resources[r].id + '-container" class="resources__container">';
       html += '<div class="resources__head">';
@@ -268,6 +295,7 @@ var Board = {
     }
     
     document.getElementById('resources').innerHTML = html;
+    document.getElementById('people-container').style.display = 'block';
   },
   
   

@@ -1,0 +1,26 @@
+[
+  {
+    "item": "road",
+    "type": 1,
+    "requires": 3,
+    "amount": 3
+  },
+  {
+    "item": "road",
+    "type": 1,
+    "requires": 6,
+    "amount": 1
+  },
+  {
+    "item": "station",
+    "type": 1,
+    "requires": 3,
+    "amount": 9
+  },
+  {
+    "item": "station",
+    "type": 1,
+    "requires": 6,
+    "amount": 3
+  }
+]

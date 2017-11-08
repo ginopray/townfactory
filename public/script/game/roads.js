@@ -11,7 +11,17 @@
  * @namespace
  * @classdesc Roads functions.
  */
-var Roads = {
+var Roads = {  
+  
+  /**
+   * Init Roads.
+   * @memberof Roads
+   * @name init
+   * @method
+   */
+  /*init : function () {
+  },*/
+  
   
   /**
    * Build a road.
@@ -32,22 +42,35 @@ var Roads = {
       return;
     }
     
-    GameApp.data.action.locked = true;
+    var item = "road";
+    var type = GameApp.data.action.data.type;
     
-    // Create station...
     if (GameApp.data.action.children == "station") {
+      item = "station";
       
       // Check for right position and get input-output.
       var in_out = Roads.check_build_station(tile, GameApp.data.action.data.direction);
       if (in_out === false) {
-        GameApp.data.action.locked = false;
         return;
-      }      
-      var road = new Station(GameApp.data.action.data.type, tile.x, tile.y, GameApp.data.action.data.direction, in_out);
+      }
+    }
+    
+    // Check resources.
+    var requires = Production.get_item_costs(item, type);
+    if (!Production.can_produce(GameApp.capital, requires)) {
+      console.log("non hai le risorse!", GameApp.capital, requires);
+      return;
+    }
+    
+    GameApp.data.action.locked = true;
+    
+    // Create station...
+    if (item == "station") {    
+      var road = new Station(type, tile.x, tile.y, GameApp.data.action.data.direction, in_out);
       
     // or create a road...
     } else {
-      var road = new Road(GameApp.data.action.data.type, tile.x, tile.y, GameApp.data.action.data.direction);
+      var road = new Road(type, tile.x, tile.y, GameApp.data.action.data.direction);
     }
     
     // ...and append it to GameApp.data.roads.

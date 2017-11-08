@@ -8,5 +8,10 @@
     "resource": 4,
     "requires": 2,
     "amount": 3
+  },
+  {
+    "resource": 6,
+    "requires": 5,
+    "amount": 5
   }
 ]

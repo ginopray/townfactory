@@ -29,6 +29,7 @@ var game;
  * @property {object} groups.buildings - Buildings group.
  * @property {object} collisions - Collision groups.
  * @property {array} grid - Array of rectangles (tiles).
+ * @property {array} icons - Array of icons (for warnings, messages...).
  * @property {object} helper - Helper sprite.
  * @property {object} inputs - Input geometries.
  * @property {object} inputs.mouse - Mouse geometries.
@@ -45,6 +46,7 @@ var phaser_object = {
   groups : {},
   collisions : {},
   grid : [],
+  icons : [],
   inputs: {
     mouse: {
       selection: {},
@@ -63,7 +65,7 @@ jQuery(document).ready(function(){
   var container_h = jQuery('#map-container').outerHeight();
   game = new Phaser.Game(container_w, container_h, Phaser.CANVAS, 'map-canvas', // Phaser.AUTO
     {
-      /*init:     GameApp.init,*/
+      init:     GameApp.init,
       preload:  GameApp.preload,
       create:   GameApp.create,
       update:   GameApp.update,

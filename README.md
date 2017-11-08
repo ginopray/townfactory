@@ -23,7 +23,7 @@ Browse "docs/Townfactory/<em>version-name</em>/index.html" for documentation
 <ul>
 <li>dev.1.0.1
   <ul>
-  <li>Added village warehouse</li>
+  <li>Added warehouse and stations</li>
   </ul>
 </li>
 <li>dev.1.0.0

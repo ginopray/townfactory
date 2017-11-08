@@ -14,6 +14,26 @@
 var Resources = {
   
   /**
+   * Resouces loop.
+   * @memberof Resources
+   * @name update
+   * @method
+   */
+  update : function () {
+    var coords;
+    for (var r in GameApp.data.resources) {
+      coords = Map.coord2tile({x: GameApp.data.resources[r].sprite.centerX, y: GameApp.data.resources[r].sprite.centerY });
+      // Delete resources out of the road.
+      if (!Map.find_road(coords.x, coords.y)) {
+        GameApp.data.resources[r].delete();
+      } else {
+        GameApp.data.resources[r].sprite.custom_overlap = new Array();
+      }
+    }
+  },
+  
+  
+  /**
    * Get random resource ID from list.
    * @memberof Resources
    * @name getRandom
