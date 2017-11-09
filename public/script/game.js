@@ -31,6 +31,9 @@ var GameApp = {
   * @property {object} action - Action data.
   * @property {string} action.tool - Current selected tool: view, build road....
   * @property {object} action.vars - Action data object. Each tool has his data set. (ie. "road" tool can have "direction" property)
+  * @property {object} selection - Current selection.
+  * @property {object} selection.building - Current selected building.
+  * @property {object} selection.road - Current selected road.
   * @property {object} capital - Reference to Capital.
   */
   data : {},
@@ -254,7 +257,7 @@ var GameApp = {
    */
   load : function () {
     return false;
-    /*
+    
     var game_data = localStorage.getItem("game_data");
     if (typeof game_data === "undefined" || game_data.date_ini === "undefined")
       return false;
@@ -262,7 +265,7 @@ var GameApp = {
       GameApp.data = JSON.parse(game_data);
       console.log("Game loaded!");
       return true;
-    }*/
+    }
   },
 
   
@@ -273,9 +276,9 @@ var GameApp = {
    * @method
    */
   save : function () {
-    /*
-    if (typeof(Storage) !== "undefined") {
-      
+    
+    /*if (typeof(Storage) !== "undefined") {
+      localStorage.setItem("game_data", JSON.stringify(GameApp.data));
       console.log("Game saved!");
     }*/
   },
@@ -289,6 +292,10 @@ var GameApp = {
    * @returns {Object} A full game data object.
    */
   new : function () {
+    if (typeof(Storage) !== "undefined") {
+      localStorage.removeItem("game_data");
+    }
+    
     var initial_game_size = {
       w: 20,
       h: 15
@@ -307,6 +314,7 @@ var GameApp = {
       buildings : [],
       resources : [],
       action : {},
+      selection : {},
       roads : {
         items: []
       }

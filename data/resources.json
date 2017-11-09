@@ -3,13 +3,13 @@
       "id": 1,
       "name": "wood",
       "color": "#795548",
-      "value": 0
+      "value": 1
     },
     {
       "id": 2,
       "name": "wheat",
       "color": "#ffc107",
-      "value": 0
+      "value": 1
     },
     {
       "id": 3,
@@ -21,7 +21,7 @@
       "id": 4,
       "name": "bread",
       "color": "#ffc107",
-      "value": 1
+      "value": 2
     },
     {
       "id": 5,
@@ -33,6 +33,6 @@
       "id": 6,
       "name": "iron ingot",
       "color": "#ffc107",
-      "value": 1
+      "value": 3
     }
   ]

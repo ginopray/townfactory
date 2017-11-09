@@ -45,7 +45,7 @@ var Roads = {
     var item = "road";
     var type = GameApp.data.action.data.type;
     
-    if (GameApp.data.action.children == "station") {
+    if (GameApp.data.action.subclass == "station") {
       item = "station";
       
       // Check for right position and get input-output.
@@ -108,9 +108,9 @@ var Roads = {
       type: 1,
       direction: Actions.tools.road.directions[0]
     };
-    if (typeof GameApp.data.action.children !== "undefined" &&
-       GameApp.data.action.children == "station") {
-      ret.station = 1;
+    if (typeof GameApp.data.action.subclass !== "undefined" &&
+       GameApp.data.action.subclass == "station") {
+      ret.subclass = "station";
     }
     return ret;
   },
@@ -464,7 +464,7 @@ Road.prototype.spawn  = function () {
   
   var img;
   // Road image.
-  if (this.station) {
+  if (this.subclass == "station") {
     img = "station-" + this.in_out;
   } else {
     img = "road";
@@ -543,7 +543,8 @@ var Station = function (type, pos_x, pos_y, direction, in_out) {
   Road.call(this, type, pos_x, pos_y, direction);
   
   // Define road as station.
-  this.station = true;
+  this.subclass = "station";
+  
   // Input or output.
   this.in_out = in_out;
   

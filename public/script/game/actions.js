@@ -31,6 +31,7 @@ var Actions = {
    * @property {object} view - The "view" tool - DEFAULT.
    * @property {object} road - The "road" tool.
    * @property {object} station - The "station" tool, children of "road".
+   * @property {string} station.inherit - The parent tool.
    * @property {array} road.directions - Possible road directions.
    */
   tools : {
@@ -40,7 +41,7 @@ var Actions = {
       dir_angles: [0, 90, -180, -90]
     },
     station: {
-      parent: "road",
+      inherit: "road",
     },
     remove: {}
   },
@@ -68,19 +69,19 @@ var Actions = {
     var helper;
     
     // Clear children tool.
-    delete GameApp.data.action.children;
+    delete GameApp.data.action.subclass;
     
     // Set default.
     if (tool == "")
       tool = Actions.settings.default_tool;
     
-    if (typeof Actions.tools[tool].parent !== "undefined") {
+    if (typeof Actions.tools[tool].inherit !== "undefined") {
       // Set children tool.
-      GameApp.data.action.children = tool;
+      GameApp.data.action.subclass = tool;
       // Set parent tool.
-      tool = Actions.tools[tool].parent;
+      tool = Actions.tools[tool].inherit;
       // Set helper.
-      helper = GameApp.data.action.children;
+      helper = GameApp.data.action.subclass;
     } else {
       // Set helper.
       helper = tool;
@@ -155,8 +156,8 @@ var Actions = {
     
     // Right button
     if (pointer.rightButton.isDown) {
-      // Cancel tool
-      Actions.set('');
+
+      Actions.cancel();
       
     // Left and center button.
     // pointer.leftButton.isDown
@@ -168,6 +169,27 @@ var Actions = {
       if (typeof window["Actions"]['tool_' + GameApp.data.action.tool] !== "undefined")
         window["Actions"]['tool_' + GameApp.data.action.tool]({x: coords.x, y: coords.y});
       
+    }
+  },
+  
+  
+  /**
+   * Cancel current action, or selection, or...
+   * @memberof Actions
+   * @name cancel
+   * @method
+   */
+  cancel : function () {
+    // Cancel tool
+    if (typeof GameApp.data.action.tool !== "undefined" &&
+        GameApp.data.action.tool != Actions.settings.default_tool &&
+       GameApp.data.action.tool != "") {
+      Actions.set('');
+    // Cancel selections.
+    } else {
+      for (var s in GameApp.data.selection) {
+        delete GameApp.data.selection[s];
+      }
     }
   },
     

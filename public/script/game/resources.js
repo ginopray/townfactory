@@ -161,9 +161,7 @@ Resource.prototype.delete = function () {
     if (GameApp.data.resources[i].id == this.id) {
       GameApp.data.resources.splice(i, 1);
       return;
-    }
-    
+    } 
   }
-  
 }
 

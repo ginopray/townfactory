@@ -86,9 +86,15 @@ img {
   font-size: 1.2em;
 }
 
-.messages {
+.icons {
   color: #f44336;
 }
+.icon {
+  max-width: 32px;
+  max-height: 32px;
+  vertical-align: middle;
+}
+
 .board {
   position: relative;
   display: flex;

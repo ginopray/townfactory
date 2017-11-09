@@ -59,6 +59,7 @@ var Buildings = {
  * @property {number} consumption.resources - Array of resources it want consume.
  * @property {number} consumption.current - Array of current consumption.
  * @property {bool} power_switch - Production active or not.
+ * @property {array}  icons - Array of variables about icons.
  */
 var Building = function (type, pos_x, pos_y) {
   
@@ -94,6 +95,9 @@ var Building = function (type, pos_x, pos_y) {
     this.pos_y = coords.y;
   }
   
+  // Init icons.
+  this.icons = new Array();
+  
   // Set level.
   this.level = 1;
   
@@ -108,6 +112,29 @@ var Building = function (type, pos_x, pos_y) {
   
 };
 
+
+/**
+ * Select a building.
+ * @memberof Building
+ * @name select
+ * @instance
+ * @method
+ */
+Building.prototype.select  = function () {
+  GameApp.data.selection.building = this;
+}
+
+
+/**
+ * Deselect a building.
+ * @memberof Building
+ * @name deselect
+ * @instance
+ * @method
+ */
+Building.prototype.deselect  = function () {
+  delete GameApp.data.selection.building;
+}
 
 /**
  * Add the building to the map.
@@ -152,11 +179,15 @@ Building.prototype.spawn  = function () {
   
   // Log building info onclick.
   this.sprite.inputEnabled = true;
+  /*
   this.sprite.events.onInputOver.add(function(){
     Board.info_building(this);
   }, this);
   this.sprite.events.onInputOut.add(function(){
     Board.info_building(false);
+  }, this);*/
+  this.sprite.events.onInputDown.add(function(){
+    this.select();
   }, this);
   
 };
@@ -197,7 +228,9 @@ Building.prototype.produce  = function () {
         // Check for exit point.
         station = this.get_station(0);
         if (station) {
-        
+          // Remove missing station icon.
+          this.del_icon(2);
+          
           // Check if station is free.
           if (Roads.check_free_station(station)) {
             
@@ -210,8 +243,9 @@ Building.prototype.produce  = function () {
           } else {
             can_start = false;
           }
+        // Missing outcoming station!
         } else {
-          
+          this.add_icon(2);
           can_start = false;
         }
         
@@ -290,11 +324,45 @@ Building.prototype.consume  = function () {
         console.log("GNAM! " + (1 * this.level));
         if (!this.gather(resource, 1 * this.level)) {
           console.log("hungry!");
+          this.add_icon(3, {resources: [resource]});
+        } else {
+          this.del_icon(3);
         }
       }
     }
   }
   
+}
+
+
+/**
+ * Add icon to building. It will be rendered by Icons class.
+ * @memberof Building
+ * @name add_icon
+ * @instance
+ * @method
+ * @see Icons
+ */
+Building.prototype.add_icon  = function (icon_type, vars) {
+  if (typeof this.icons[icon_type] === "undefined") {
+    if (typeof vars === "undefined")
+      vars = {};
+    this.icons[icon_type] = vars;
+    
+  }
+}
+
+
+/**
+ * Remove icon from building.
+ * @memberof Building
+ * @name del_icon
+ * @instance
+ * @method
+ */
+Building.prototype.del_icon  = function (icon_type) {
+  if (typeof this.icons[icon_type] !== "undefined")
+    this.icons.splice(icon_type, 1);
 }
 
 
@@ -316,7 +384,7 @@ Building.prototype.get_station  = function (in_out) {
     y = borders[i].y;
     if (typeof GameApp.data.roads.items[x] !== "undefined" && 
         typeof GameApp.data.roads.items[x][y] !== "undefined" &&
-       GameApp.data.roads.items[x][y].station &&
+       GameApp.data.roads.items[x][y].subclass == "station" &&
        GameApp.data.roads.items[x][y].in_out == in_out) {
       return GameApp.data.roads.items[x][y];
     }
@@ -443,7 +511,9 @@ Village.prototype.constructor = Village;
  * @return {string} The name
  */
 Village.prototype.new_request  = function () {
+  
   var resource = Resources.getRandom({value: this.level});
+  
   if (resource) {
     var amount = 1000;
     

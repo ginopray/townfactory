@@ -103,6 +103,8 @@ var Board = {
     Board.info_selection();
     Board.info_resources();
     
+    document.getElementById('info-building').innerHTML = Board.info_building();
+    
     // Debug:
     /*var debug = "";
     debug += "Buildings: " + GameApp.data.buildings.length + "&lt;br />";
@@ -141,9 +143,20 @@ var Board = {
    * @method
    */
   info_selection : function () {
+    // Get tile coordinates.
     var coords = Map.coord2tile({x: phaser_object.inputs.mouse.selection.tile.x, y: phaser_object.inputs.mouse.selection.tile.y});
+    // Get items on the map.
+    var buildings = Map.find(coords.x, coords.y, 'buildings');
+    var roads = Map.find(coords.x, coords.y, 'roads');
     var html = "";
-    html += '&lt;p>Tile hover: ' + (coords.x) + ':' + (coords.y) + '&lt;/p>'
+    html += '&lt;div>' + (coords.x) + ':' + (coords.y);
+    if (typeof buildings !== "undefined" &amp;&amp; buildings.buildings) {
+      html += ' ' + Board.get_building_image(buildings.buildings.type, {class: 'icon'});
+    }
+    if (typeof roads !== "undefined" &amp;&amp; roads.roads) {
+      html += ' ' + Board.get_road_image(roads.roads, {class: 'icon'});
+    }
+    html += '&lt;/div>';
     //jQuery('#info-selection').html(html);
     document.getElementById('info-selection').innerHTML = html;
   },
@@ -156,11 +169,12 @@ var Board = {
    * @method
    * @param {object|false} building - Building object. If false: clear info box.
    */
-  info_building : function (building) {
-    if (!building) {
-      jQuery('#info-building').html("");
-      return;
-    }
+  info_building : function () {
+    if (typeof GameApp.data.selection.building === "undefined")
+      return "";
+    
+    var building = GameApp.data.selection.building;
+    
     var html = "";
     var html_production = Board.get_building_production(building.production);
     var html_request = Board.get_building_request(building.request);
@@ -169,7 +183,7 @@ var Board = {
     // Building name.
     html += '&lt;h2>' + building.fullname() + '&lt;/h2>';
     // Image.
-    html += '&lt;div>&lt;img class="info-building__image" src="images/game/buildings/building-' + building.type + '.png" />&lt;/div>';
+    html += '&lt;div>' + Board.get_building_image(building.type, {class: 'info-building__image'}) + '&lt;/div>';
     // Position and size info.
     html +='&lt;div>ID: ' + building.id + ', position: ' + building.pos_x + ':' + building.pos_y + ', size: ' + building.width + 'x' + building.height + '&lt;/div>';
     // Production info.
@@ -187,7 +201,8 @@ var Board = {
     }
     
     html += '&lt;/div>';
-    jQuery('#info-building').html(html);
+   
+    return html;
   },
   
   
@@ -282,14 +297,16 @@ var Board = {
       }
     }
     var html = "";
+    jQuery('.resources__container').hide();
     for (resource_type in resources) {
-      if (resources[resource_type] > 0) {
+      //if (resources[resource_type] > 0) {
         document.getElementById('resource-' + resource_type + '-count').innerHTML = resources[resource_type];
         document.getElementById('resource-' + resource_type + '-container').style.display = 'block';
-      }
+      //}
     }
     
     document.getElementById('people-count').innerHTML = People.count();
+    document.getElementById('people-container').style.display = "block";
   },
   
 
@@ -352,30 +369,7 @@ var Board = {
     jQuery('#tools div').first().addClass('tool--selected');
   },
   
-  
-  /**
-   * Add a game message.
-   * @memberof Board
-   * @name message_add
-   * @method
-   * @param {number} msg_id - message type.
-   * @param {array} vars - Array of string to use with translation.
-   * @deprecated "message" methods: to do something better.
-   */
-  message_add : function (msg_id, vars) {
-    var new_msg = {
-      id: msg_id,
-      vars: vars
-    };
-    for (var m in Board.messages) {
-      if (Board.messages[m].id == msg_id &amp;&amp; JSON.stringify(Board.messages[m].vars) === JSON.stringify(vars))
-        return;
-    }
-    Board.messages.push(new_msg);
-    Board.message_show();
-  },
-  
-  
+    
   /**
    * Get the html image of a resource.
    * @memberof Board
@@ -393,48 +387,49 @@ var Board = {
   },
   
   
-  /**
-   * Remove a game message.
-   * @memberof Board
-   * @name message_remove
-   * @method
-   * @param {number} msg_id - message type.
-   * @param {array} vars - Array of string to use with translation.
-   * @deprecated "message" methods: to do something better.
-   */
-  message_remove : function (msg_id, vars) {
-    var new_msg = {
-      id: msg_id,
-      vars: vars
-    };
-    for (var m in Board.messages) {
-      if (Board.messages[m].id == msg_id &amp;&amp; JSON.stringify(Board.messages[m].vars) === JSON.stringify(vars)) {
-        Board.messages.splice(m, 1);
-        Board.message_show();
-        return;
-      }
-    }
     
+  /**
+   * Get the html image of a building.
+   * @memberof Board
+   * @name get_building_image
+   * @method
+   * @param {number} type - The building type.
+   * @param {object} vars - Attributes (optional).
+   */
+  get_building_image : function (type, vars) {
+    var html = '&lt;img';
+    if (typeof vars.class !== "undefined")
+      html += ' class="' + vars.class + '"';
+    html += ' src="images/game/buildings/building-' + type + '.png" alt="' + Main.t('building-' + type) + '" title="' + Main.t('building-' + type) + '" />';
+    return html;
   },
   
   
   /**
-   * Show game message.
+   * Get the html image of a road.
    * @memberof Board
-   * @name message_show
+   * @name get_road_image
    * @method
-   * @deprecated "message" methods: to do something better.
+   * @param {number} type - The road type.
+   * @param {object} vars - Attributes (optional).
    */
-  message_show : function () {
-    var html = "";
-    var msg;
-    for (var m in Board.messages) {
-      msg = Board.messages[m];
-      html += Main.t('message-' + msg.id, msg.vars[0], msg.vars[1], msg.vars[2]) + "&lt;br />";
+  get_road_image : function (road, vars) {
+    var add_img = "";
+    var html = '&lt;img';
+    if (typeof vars.class !== "undefined")
+      html += ' class="' + vars.class + '"';
+    var item = "road";
+    if (typeof road.subclass !== "undefined") {
+      item = road.subclass;
     }
-    document.getElementById('messages').innerHTML = html;
+    if (typeof road.in_out !== "undefined") {
+      add_img = '-' + road.in_out;
+    }
+    //html += ' src="images/game/roads/' + item + '-' + road.type + add_img + '.png" alt="' + Main.t('road-' + road.type) + '" title="' + Main.t('road-' + road.type) + '" />';
+    html += ' src="images/game/roads/' + item + add_img + '.png" alt="' + Main.t('road') + '" title="' + Main.t('road') + '" />';
+    return html;
   },
-  
+    
 
 };
 </code></pre>
@@ -453,7 +448,7 @@ var Board = {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Nov 08 2017 19:06:01 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Nov 09 2017 21:54:07 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>
