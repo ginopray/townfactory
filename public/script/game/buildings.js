@@ -512,7 +512,7 @@ Village.prototype.constructor = Village;
  */
 Village.prototype.new_request  = function () {
   
-  var resource = Resources.getRandom({value: this.level});
+  var resource = Resources.getRandom({value: {value: this.level, operator: '>'}});
   
   if (resource) {
     var amount = 1000;

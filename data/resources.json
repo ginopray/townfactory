@@ -15,7 +15,7 @@
       "id": 3,
       "name": "wooden plank",
       "color": "#795548",
-      "value": 2
+      "value": 3
     },
     {
       "id": 4,
@@ -33,6 +33,6 @@
       "id": 6,
       "name": "iron ingot",
       "color": "#ffc107",
-      "value": 3
+      "value": 4
     }
   ]
