@@ -148,7 +148,7 @@ var Board = {
     var building = GameApp.data.selection.building;
     
     var html = "";
-    var html_production = Board.get_building_production(building.production);
+    var html_production = Board.get_building_production(building);
     var html_request = Board.get_building_request(building.request);
     var html_warehouse = Board.get_building_warehouse(building.warehouse);
     html += '<div>';
@@ -157,11 +157,11 @@ var Board = {
     // Image.
     html += '<div>' + Board.get_building_image(building.type, {class: 'info-building__image'}) + '</div>';
     // Position and size info.
-    html +='<div>ID: ' + building.id + ', position: ' + building.pos_x + ':' + building.pos_y + ', size: ' + building.width + 'x' + building.height + '</div>';
+    html +='<small>ID: ' + building.id + ', position: ' + building.pos_x + ':' + building.pos_y + ', size: ' + building.width + 'x' + building.height + '</small>';
     // Production info.
     if (html_production != "") {
       html += '<div><h3>' + Main.t('Production') + '</h3>' + html_production + '</div>';
-      html += '<div>Active: ' + building.power_switch + '</div>';
+      // html += '<div>Active: ' + building.power_switch + '</div>';
     }
     // Request info.
     if (html_request != "") {
@@ -183,18 +183,53 @@ var Board = {
    * @memberof Board
    * @name get_building_production
    * @method
-   * @param {object} production - production object.
+   * @param {object} building - Building.
    */
-  get_building_production : function (production) {
+  get_building_production : function (building) {
+    var production = building.production;
     if (typeof production.resources === "undefined" || production.resources.length == 0) 
       return "";
     
     var html = "";
-    var obj;
+    var obj,
+        perc;
     html += '<div>';
     for (var p in production.resources) {
       obj = production.resources[p];
-      html += Board.get_resource_image(obj.resource, {class: 'info-resource__image'}) + ' ' + ((1 / obj.time) * 60) + '/m';
+      // General production info.
+      html += Board.get_resource_image(obj.resource, {class: 'icon'}) + ' '
+      html += ((1 / obj.time) * 60) + '/m'; 
+      // Production state.
+      if (typeof production.current !== "undefined" &&
+          typeof production.current[obj.resource] !== "undefined") {
+        perc = Math.floor(((Date.now() - production.current[obj.resource]) * 100) / (obj.time * 1000));
+        if (perc > 100)
+          perc = 100;
+        html += ' Progress: ' + perc + '%';
+      } else {
+        html += ' Inactive!';
+        var missing = [];
+        // What missing resources?
+        for (var mr in obj.requires) {
+          var res = obj.requires[mr];
+          var required = res.requires;
+          var amount = res.amount;
+          if (
+            typeof building.warehouse === "undefined" ||
+            typeof building.warehouse[required] === "undefined" ||
+            typeof building.warehouse[required].amount === "undefined" ||
+            building.warehouse[required].amount < amount) {
+            missing.push(required);
+          }
+        }
+        if (missing.length > 0) {
+          html += ' Missing: ';
+          for (var m in missing) {
+            html += Board.get_resource_image(missing[m], {class: 'icon'})
+          }
+        }
+      }
+      
     }
     html += '</div>';
     return html;
@@ -258,21 +293,44 @@ var Board = {
    */
   info_resources : function () {
     var resources = {};
+    var consumption = {};
     var villages = Map.findType(5, 'buildings');
-    var resource_type;    
+    var resource_type,
+        time;    
     for (var v in villages) {
+      // Villages warehouse.
       for (resource_type in villages[v].warehouse) {
         if (typeof resources[resource_type] === "undefined")
           resources[resource_type] = 0;
         if (typeof villages[v].warehouse[resource_type].amount !== "undefined")
           resources[resource_type] += villages[v].warehouse[resource_type].amount;
       }
+      // Villages consumption.
+      if (typeof villages[v].consumption !== "undefined" && 
+          typeof villages[v].consumption.resources !== "undefined") {
+        for (var r in villages[v].consumption.resources) {
+          resource_type = villages[v].consumption.resources[r].resource;
+          time = villages[v].consumption.resources[r].time;
+          if (typeof consumption[resource_type] === "undefined")
+            consumption[resource_type] = 0;
+          consumption[resource_type] += (1 * villages[v].level) / time;
+        }
+      }
     }
     var html = "";
     jQuery('.resources__container').hide();
     for (resource_type in resources) {
       //if (resources[resource_type] > 0) {
+        // warehouse.
         document.getElementById('resource-' + resource_type + '-count').innerHTML = resources[resource_type];
+        // consumption.
+        if (typeof consumption[resource_type] !== "undefined") {
+          var cons = '-' + (consumption[resource_type] * 60) + '/m';
+        } else {
+          var cons = '';
+        }
+        document.getElementById('resource-' + resource_type + '-cons').innerHTML = cons;
+        // Show container.
         document.getElementById('resource-' + resource_type + '-container').style.display = 'block';
       //}
     }
@@ -306,8 +364,8 @@ var Board = {
       html += '<div class="resources__head">';
       html += Board.get_resource_image(resources[r].id, {class: 'resources__image'});
       html += '</div>';
-      html += '<div id="resource-' + resources[r].id + '-count" class="resource-count">';
-      html += '</div>';
+      html += '<div id="resource-' + resources[r].id + '-count" class="resource-count"></div>';
+      html += '<div id="resource-' + resources[r].id + '-cons" class="resource-cons"></div>';
       html += '</div>';
     }
     

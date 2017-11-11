@@ -321,8 +321,8 @@ Building.prototype.consume  = function () {
       if (1) {
         // Start consumption!
         this.consumption.current[resource] = Date.now();
-        console.log("GNAM! " + (1 * this.level));
-        if (!this.gather(resource, 1 * this.level)) {
+        console.log("GNAM!");
+        if (!this.gather(resource, 1)) {
           console.log("hungry!");
           this.add_icon(3, {resources: [resource]});
         } else {
