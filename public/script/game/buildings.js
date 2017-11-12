@@ -121,7 +121,21 @@ var Building = function (type, pos_x, pos_y) {
  * @method
  */
 Building.prototype.select  = function () {
+  
+  this.deselect();
+  
+  // Set current selection.
   GameApp.data.selection.building = this;
+  // Set selection sprite.
+  var width = this.width * Map.settings.tileWidth;
+  var height = this.height * Map.settings.tileHeight;
+  var sprite = phaser_object.groups.layers.icons.create(this.sprite.x, this.sprite.y, 'selection');  
+  sprite.anchor.setTo(0.5, 0.5);
+  sprite.width = width;
+  sprite.height = height;
+  sprite.tint = 0x861b1e;
+  // Set global var.
+  phaser_object.sprites.selection = sprite;
 }
 
 
@@ -133,7 +147,15 @@ Building.prototype.select  = function () {
  * @method
  */
 Building.prototype.deselect  = function () {
-  delete GameApp.data.selection.building;
+  // Cancel selection.
+  if (typeof GameApp.data.selection.building !== "undefined") {
+    delete GameApp.data.selection.building;
+  }
+  // Cancel selection sprite.
+  if (typeof phaser_object.sprites.selection !== "undefined") {
+    phaser_object.sprites.selection.destroy();  
+    delete phaser_object.sprites.selection;
+  }
 }
 
 /**

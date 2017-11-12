@@ -188,7 +188,7 @@ var Actions = {
     // Cancel selections.
     } else {
       for (var s in GameApp.data.selection) {
-        delete GameApp.data.selection[s];
+        GameApp.data.selection[s].deselect();
       }
     }
   },

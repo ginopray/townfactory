@@ -382,12 +382,19 @@ var Board = {
    */
   set_tools_panel : function () {
     for (var tool in Actions.tools) {
+      var costs = Production.get_item_costs (tool, 1);
+      var title = Main.t('tool-' + tool);
+      if (costs.length > 0) {
+        for (var c in costs) {
+          title += "\n" + costs[c].amount + ' ' + Resources.fullname(costs[c].requires, { link: false });
+        }
+      }
       jQuery('#tools').append(
         jQuery('<div>', {
           id: 'tool-' + tool,
           'data-tool': tool,
           class: 'tool tool--' + tool,
-          title: Main.t('tool-' + tool),
+          title: title,
           mousedown: function() {
             Actions.set(jQuery(this).attr('data-tool'));
           }
@@ -412,7 +419,7 @@ var Board = {
     var html = '<img';
     if (typeof vars.class !== "undefined")
       html += ' class="' + vars.class + '"';
-    html += ' src="images/game/resources/resource-' + type + '.png" alt="' + Main.t('resource-' + type) + '" title="' + Main.t('resource-' + type) + '" />';
+    html += ' src="images/game/resources/resource-' + type + '.png" alt="' + Resources.fullname(type) + '" title="' + Resources.fullname(type) + '" />';
     return html;
   },
   

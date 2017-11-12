@@ -13,6 +13,26 @@
 var GameApp = {
   
   /**
+   * Game settings.
+   * @memberof GameApp
+   * @name settings
+   * @type {object}
+   * @property {object} defaults - New game: default settings.
+   * @property {object} defaults.size - World size object.
+   * @property {object} defaults.size.width - World width in tiles.
+   * @property {object} defaults.size.height - World height in tiles.
+   */
+  settings : {
+    defaults : {
+      size : {
+        width : 24,
+        height : 18
+      }
+    }
+  },
+  
+  
+  /**
   * The game data set.
   * @memberof GameApp
   * @name data
@@ -98,22 +118,24 @@ var GameApp = {
     for (var i = 1; i <= 6; i ++) {
       game.load.image('resource-' + i, 'images/game/resources/resource-' + i + '.png');
     }
-    // Load other images.
+    // Roads
+    game.load.image('road', 'images/game/roads/road.png');
+    game.load.image('station-1', 'images/game/roads/station-1.png');
+    game.load.image('station-0', 'images/game/roads/station-0.png');
+    // Tools helper.
     game.load.image('helper-road', 'images/game/tools/helper-road.png');
     game.load.image('helper-station', 'images/game/tools/helper-station.png');
     game.load.image('helper-station-in', 'images/game/tools/helper-station-1.png');
     game.load.image('helper-station-out', 'images/game/tools/helper-station-0.png');
     game.load.image('helper-remove', 'images/game/tools/helper-remove.png');
-    game.load.image('road', 'images/game/roads/road.png');
-    game.load.image('station-1', 'images/game/roads/station-1.png');
-    game.load.image('station-0', 'images/game/roads/station-0.png');
+    // Load other images.
+    game.load.image('selection', 'images/game/selection.png');
     
     // File complete (progress bar).
     game.load.onFileComplete.add(function(progress, file_key, success, total_loaded_files, total_files){
       //console.log(file_key + "...done! " + total_loaded_files + "/" + total_files + "= " + progress + "%");
       GameApp.loading(progress, file_key, success);
     }, this);
-    
     
     // Load game after load complete.
     //game.load.onLoadComplete = { dispatch : function(){
@@ -128,7 +150,6 @@ var GameApp = {
           return; 
         }
       }
-
       
       // Check translations file.
       var JSON_translations = game.cache.getJSON('translations');
@@ -233,6 +254,7 @@ var GameApp = {
       game.debug.geom(obj.tile, color);
     }
     
+    
     // Check render flag.
     if (!Board.flags.render)
       return;
@@ -296,10 +318,6 @@ var GameApp = {
       localStorage.removeItem("game_data");
     }
     
-    var initial_game_size = {
-      w: 20,
-      h: 15
-    }
     GameApp.data = {
       date_ini : Date.now(),
       indexes: {
@@ -308,8 +326,8 @@ var GameApp = {
         roads: 0
       },
       map : {
-        width : initial_game_size.w,
-        height : initial_game_size.h,
+        width : GameApp.settings.defaults.size.width,
+        height : GameApp.settings.defaults.size.height,
       },
       buildings : [],
       resources : [],

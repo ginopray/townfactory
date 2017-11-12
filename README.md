@@ -22,7 +22,7 @@ Browse "docs/Townfactory/<em>version-name</em>/index.html" for documentation
 <ul>
 <li>dev.1.0.2
   <ul>
-  <li>+ buildings consumption, villages eating, game messages, road costs, population count.</li>
+  <li>+ buildings consumption, village requests, game messages, road costs, population count.</li>
   </ul>
 </li>
 <li>dev.1.0.1

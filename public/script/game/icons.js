@@ -151,7 +151,7 @@ Icon.prototype.html  = function () {
     var res_arr = new Array();
     for (var r in this.vars.resources) {
       html += Board.get_resource_image(this.vars.resources[r], {class: 'icon'});
-      res_arr.push( Main.t('resource-' + this.vars.resources[r]) );
+      res_arr.push( Resources.fullname(this.vars.resources[r]) );
     }
     ph2 = res_arr.join(", ");
   }

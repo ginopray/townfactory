@@ -60,12 +60,15 @@ var Map = {
     // Add Physics.
     game.physics.startSystem(Phaser.Physics.ARCADE);
     //game.physics.arcade.forceX = true;
-    
+        
     // Create sprite groups:
     // Layers
     phaser_object.groups.layers = {};
     // Base layer
     phaser_object.groups.layers.base = game.add.group();
+    // Icons layer
+    phaser_object.groups.layers.icons = game.add.group();
+    
     // Roads.
     phaser_object.groups.roads = game.add.group();
     // Buildings.
@@ -78,6 +81,8 @@ var Map = {
     phaser_object.groups.layers.base.add(phaser_object.groups.resources);
     // Add physics to main layer groups.
     phaser_object.groups.layers.base.setAll('enableBody', true);
+    // No physics to icons layer.
+    phaser_object.groups.layers.icons.setAll('enableBody', false);
 
     // Prevent defaults.
     game.canvas.oncontextmenu = function (e) {
@@ -517,8 +522,25 @@ var Map = {
   * @param {object} r2 - Resource sprite 2.
   */
   resource_overlap : function (r1, r2) {
-    r1.custom_overlap.push(r2);
-    r2.custom_overlap.push(r1);
+    var found = false;
+    for (var i in r1.custom_overlap) {
+      if (r1.custom_overlap[i].custom_id == r2.custom_id) {
+        found = true;
+        break;
+      }
+    }
+    if (!found)
+      r1.custom_overlap.push(r2);
+    
+    var found = false;
+    for (var i in r2.custom_overlap) {
+      if (r2.custom_overlap[i].custom_id == r1.custom_id) {
+        found = true;
+        break;
+      }
+    }
+    if (!found)
+      r2.custom_overlap.push(r1);
   },
   
   

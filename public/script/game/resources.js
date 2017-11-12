@@ -73,7 +73,25 @@ var Resources = {
     );
   },
   
-
+  
+  /**
+   * Get full name and link for a resource.
+   * @memberof Resources
+   * @name fullname
+   * @method
+   * @param {number} type - The resource type.
+   */
+  fullname : function (type, vars) {
+    if (typeof vars === "undefined")
+      vars = {};
+    var full_name = Main.t('resource-' + type);
+    //if (vars.link !== false) {
+      // Insert link.
+    //}
+    return full_name;
+  },
+  
+  
 };
 
 

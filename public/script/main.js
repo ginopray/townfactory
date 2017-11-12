@@ -25,8 +25,16 @@ var game;
  * The Phaser.io game data object.
  * Contains groups and other Phaser.io objects.
  * @name phaser_object
+ * @property {object} sprites - Various sprites.
+ * @property {object} sprites.selection - Current selection sprite.
  * @property {object} groups - Phaser groups.
+ * @property {object} groups.layers - Layers groups container.
+ * @property {object} groups.layers.base - Base layer group.
+ * @property {object} groups.layers.icons - Icons, selections, messages group.
+ * @property {object} groups.roads - Roads group.
  * @property {object} groups.buildings - Buildings group.
+ * @property {object} groups.resources - Resources group.
+
  * @property {object} collisions - Collision groups.
  * @property {array} grid - Array of rectangles (tiles).
  * @property {array} icons - Array of icons (for warnings, messages...).
@@ -43,6 +51,7 @@ var game;
  * phaser_object.groups.buildings.enableBody = true;
  */
 var phaser_object = {
+  sprites : {},
   groups : {},
   collisions : {},
   grid : [],
