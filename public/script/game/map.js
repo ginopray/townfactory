@@ -522,25 +522,10 @@ var Map = {
   * @param {object} r2 - Resource sprite 2.
   */
   resource_overlap : function (r1, r2) {
-    var found = false;
-    for (var i in r1.custom_overlap) {
-      if (r1.custom_overlap[i].custom_id == r2.custom_id) {
-        found = true;
-        break;
-      }
-    }
-    if (!found)
-      r1.custom_overlap.push(r2);
-    
-    var found = false;
-    for (var i in r2.custom_overlap) {
-      if (r2.custom_overlap[i].custom_id == r1.custom_id) {
-        found = true;
-        break;
-      }
-    }
-    if (!found)
-      r2.custom_overlap.push(r1);
+    //r1.custom_overlap.push(r2);
+    //r2.custom_overlap.push(r1);
+    r1.custom_overlap[r2.custom_id] = r2;
+    r2.custom_overlap[r1.custom_id] = r1;
   },
   
   

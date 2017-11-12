@@ -263,6 +263,7 @@ Building.prototype.produce  = function () {
             Resources.create(resource, this, station);
             
           } else {
+            //console.log("stazione piena");
             can_start = false;
           }
         // Missing outcoming station!
