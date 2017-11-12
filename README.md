@@ -1,11 +1,10 @@
 # townfactory
-A test with github, jsdoc and Phaser.io
-
+A test with github, jsdoc and Phaser.io.
 
 <h2>Online:</h2>
 <ul>
 <li>Play: <a href="https://ginopray.github.io/townfactory/public/">https://ginopray.github.io/townfactory/public/</a></li>
-<li>Docs: <a href="https://ginopray.github.io/townfactory/docs/Townfactory/dev.1.0.1/">https://ginopray.github.io/townfactory/docs/Townfactory/dev.1.0.1/</a></li>
+<li>Docs: <a href="https://ginopray.github.io/townfactory/docs/Townfactory/dev.1.0.x/">https://ginopray.github.io/townfactory/docs/Townfactory/dev.1.0.x/</a></li>
 </ul>
 
 
@@ -21,9 +20,14 @@ Browse "docs/Townfactory/<em>version-name</em>/index.html" for documentation
 
 <h2>Version log:</h2>
 <ul>
+<li>dev.1.0.2
+  <ul>
+  <li>+ buildings consumption, villages eating, game messages, road costs, population count.</li>
+  </ul>
+</li>
 <li>dev.1.0.1
   <ul>
-  <li>Added warehouse and stations</li>
+  <li>+ warehouse and stations</li>
   </ul>
 </li>
 <li>dev.1.0.0
