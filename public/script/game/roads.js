@@ -473,7 +473,7 @@ Road.prototype.spawn  = function () {
   }
   
   // Get the tile coordinates.
-  var tile = Map.get_tile({x: this.pos_x, y: this.pos_y, w: Map.settings.tileWidth, h: Map.settings.tileHeight}, 'rgba(244, 67, 54, .5)');
+  var tile = Map.get_tile({x: this.pos_x, y: this.pos_y, w: Map.settings.tileWidth, h: Map.settings.tileHeight});
   
   // Create sprite and add it to "roads" group.
   this.sprite = phaser_object.groups.roads.create(tile.x, tile.y, img);
@@ -537,6 +537,7 @@ Road.prototype.remove  = function () {
  * @class
  * @classdesc Create an input/output station.
  * @see Road
+ * @property {string} subclass - Subclass name = "station".
  * @param {number} in_out - 1 = In, 0 = Out.
  * @property {number} in_out - 1 = In, 0 = Out.
  */

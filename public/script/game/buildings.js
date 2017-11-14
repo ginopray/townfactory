@@ -34,7 +34,29 @@ var Buildings = {
       }
     }
     
-  }
+  },
+  
+  
+  /**
+   * Get random building from the map.
+   * @memberof Buildings
+   * @name getRandom
+   * @method
+   * @param {number} value - The resource value to select.
+   * @returns {object} The building.
+   */
+  getRandom : function () {
+    
+    // No building found: return false.
+    if (GameApp.data.buildings.length == 0)
+      return false;
+    
+    // Select random building.
+    var rand_i = Math.floor(Math.random() * GameApp.data.buildings.length);
+    
+    // Return building.
+    return GameApp.data.buildings[rand_i];
+  },
   
 }
 
@@ -158,6 +180,7 @@ Building.prototype.deselect  = function () {
   }
 }
 
+
 /**
  * Add the building to the map.
  * @memberof Building
@@ -173,7 +196,7 @@ Building.prototype.spawn  = function () {
   var height = this.height * Map.settings.tileHeight;
   
   // Get the tile coordinates.
-  var tile = Map.get_tile({x: this.pos_x, y: this.pos_y, w: width, h: height}, 'rgba(244, 67, 54, .5)');
+  var tile = Map.get_tile({x: this.pos_x, y: this.pos_y, w: width, h: height});
   
   // Create sprite and add it to "buildings" group.
   this.sprite = phaser_object.groups.buildings.create(tile.x, tile.y, 'building-' + this.type);
@@ -201,13 +224,6 @@ Building.prototype.spawn  = function () {
   
   // Log building info onclick.
   this.sprite.inputEnabled = true;
-  /*
-  this.sprite.events.onInputOver.add(function(){
-    Board.info_building(this);
-  }, this);
-  this.sprite.events.onInputOut.add(function(){
-    Board.info_building(false);
-  }, this);*/
   this.sprite.events.onInputDown.add(function(){
     this.select();
   }, this);
@@ -564,21 +580,26 @@ Village.prototype.new_request  = function () {
  */
 Village.prototype.check_level = function () {
   var bread = this.warehouse[4].amount;
-  if (typeof bread === "undefined")
-    return;
   
-  if (bread == 0) {
-    this.level = 1;
-    return;
+  // Calculate level.
+  if (typeof bread === "undefined" ||
+      bread == 0) {
+    var new_level = 1;
+  } else {
+    var new_level = Math.floor(Math.log(bread) / Math.log(2));
   }
   
-  //this.level = Math.sqrt(bread);
-  var new_level = Math.floor(Math.log(bread) / Math.log(2));
-  
+  // Set level!
   if (new_level == 0)
     new_level = 1;
-  
   this.level = new_level;
+  
+  // Create at least N citizens, for N = village level.
+  var add = new Array();
+  var citizen_length = Math.floor(GameApp.data.characters.citizen.length);
+  for (var c = citizen_length; c < new_level; c ++) {
+    GameApp.data.characters.citizen.push( new Citizen(1, this) );
+  }
   
 }
 

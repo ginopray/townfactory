@@ -34,9 +34,10 @@ var game;
  * @property {object} groups.roads - Roads group.
  * @property {object} groups.buildings - Buildings group.
  * @property {object} groups.resources - Resources group.
-
+ * @property {object} groups.characters - Characters groups container.
+ * @property {object} groups.characters.citizen - Citizen group.
  * @property {object} collisions - Collision groups.
- * @property {array} grid - Array of rectangles (tiles).
+ * @property {array} dgrid - Array of rectangles (tiles).
  * @property {array} icons - Array of icons (for warnings, messages...).
  * @property {object} helper - Helper sprite.
  * @property {object} inputs - Input geometries.
@@ -54,7 +55,7 @@ var phaser_object = {
   sprites : {},
   groups : {},
   collisions : {},
-  grid : [],
+  dgrid : [],
   icons : [],
   inputs: {
     mouse: {

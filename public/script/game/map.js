@@ -36,6 +36,12 @@ var Map = {
     resourceHeight: 24,
     friction: 50,
     friction_rate: 50, // ms
+    character : {
+      citizen: {
+        width: 32,
+        height: 32,
+      }
+    },
   },
 
   
@@ -75,10 +81,18 @@ var Map = {
     phaser_object.groups.buildings = game.add.group();
     // Resources.
     phaser_object.groups.resources = game.add.group();
+    
+    // Characters
+    phaser_object.groups.characters = {};
+    phaser_object.groups.characters.citizen = game.add.group();
+    
     // Add groups to base layer.
     phaser_object.groups.layers.base.add(phaser_object.groups.roads);
     phaser_object.groups.layers.base.add(phaser_object.groups.buildings);
     phaser_object.groups.layers.base.add(phaser_object.groups.resources);
+    for (var ch in phaser_object.groups.characters) {
+      phaser_object.groups.layers.base.add(phaser_object.groups.characters[ch]);
+    }
     // Add physics to main layer groups.
     phaser_object.groups.layers.base.setAll('enableBody', true);
     // No physics to icons layer.
@@ -90,7 +104,7 @@ var Map = {
     }
     
     // Create the grid.
-    Map.grid();
+    Map.dgrid();
     
     // Create mouse tile selection rectangle.
     phaser_object.inputs.mouse.selection = {
@@ -179,6 +193,12 @@ var Map = {
     // Update resources.
     Resources.update();
     
+    // Update buildings.
+    Buildings.update();
+    
+    // Update people.
+    People.update();
+    
     // Resources overlapping.
     game.physics.arcade.overlap(
       phaser_object.groups.resources,
@@ -194,6 +214,14 @@ var Map = {
       Map.full_overlap
     );
     
+    // Character overlap building.
+    /*
+    game.physics.arcade.overlap(
+      phaser_object.groups.characters.citizen,
+      phaser_object.groups.buildings,
+      People.enter_building
+    );
+    */
     // Collisions.
     // Resource collide with building.
     game.physics.arcade.collide(
@@ -201,11 +229,6 @@ var Map = {
       phaser_object.groups.buildings,
       Production.receive
     );
-    // Resource collide with resource.
-    /*game.physics.arcade.collide(
-      phaser_object.groups.resources, 
-      phaser_object.groups.resources
-    );*/
     
     var coords = Map.coord2tile({x: game.input.mousePointer.worldX, y: game.input.mousePointer.worldY});
     
@@ -218,9 +241,6 @@ var Map = {
     // Update helper
     phaser_object.helper.centerX = ((coords.x - 1) * Map.settings.tileWidth) + (Map.settings.tileWidth / 2);
     phaser_object.helper.centerY = ((coords.y - 1) * Map.settings.tileHeight) + (Map.settings.tileHeight / 2);
-
-    // Update buildings.
-    Buildings.update();
     
   },
   
@@ -278,30 +298,58 @@ var Map = {
 
   
   /**
-  * Set the map grid. Attach tiles (rectangles) to phaser_object.grid.
+  * Set the map grid for debug.
   * @memberof Map
-  * @name grid
+  * @name dgrid
   * @method
   */
-  grid : function () {
+  dgrid : function () {
     
     var x,
         y;
     var margin_right = GameApp.data.map.width * Map.settings.tileWidth;
     var margin_bottom = GameApp.data.map.height * Map.settings.tileHeight;
     for (x = 1; x < GameApp.data.map.width; x ++) {
-      phaser_object.grid.push({
+      phaser_object.dgrid.push({
         tile: new Phaser.Line(x * Map.settings.tileWidth, 0, x * Map.settings.tileWidth, margin_bottom)
       });
     }
     for (y = 1; y < GameApp.data.map.height; y ++) {
-      phaser_object.grid.push({
+      phaser_object.dgrid.push({
         tile: new Phaser.Line(0, y * Map.settings.tileHeight, margin_right, y * Map.settings.tileHeight)
       });
-    }    
+    }
     
   },
   
+  
+  /**
+  * Get the map grid with tiles and obstacles.
+  * @memberof Map
+  * @name path_grid
+  * @method
+  */
+  path_grid : function () {
+    var ret = new Array();
+    for (y = 0; y < GameApp.data.map.height; y ++) {
+      var tmp = new Array();
+      for (x = 0; x < GameApp.data.map.width; x ++) {
+        var obstacle = 0;
+        // Buildings.
+        if (Map.find_by_pos(x, y, 'buildings'))
+          obstacle = 1;
+        // Roads.
+        if (typeof GameApp.data.roads.items[x] !== "undefined" &&
+           typeof GameApp.data.roads.items[x][y] !== "undefined")
+          obstacle = 1;
+        
+        tmp.push( obstacle );
+      }
+      ret.push(tmp);
+    }
+    return ret;
+  },
+    
   
   /**
   * Simulate friction: decelerate things on the map.
@@ -340,14 +388,14 @@ var Map = {
   * @param {string} color - html color.
   * @return {object} phaser rectangle.
   */
-  get_tile : function (tile, color) {
+  get_tile : function (tile) {
     var rect = new Phaser.Rectangle(
       (tile.x - 1) * Map.settings.tileWidth,
       (tile.y - 1) * Map.settings.tileHeight,
       tile.w,
       tile.h
     );
-    //phaser_object.grid.push({tile: rect, color: color});
+    
     return rect;
   },
   
@@ -668,9 +716,74 @@ var Map = {
       }
     }
     return ret;
-  }
+  },
 
+
+  /**
+   * Get the path.
+   * @memberof Map
+   * @name find_path
+   * @method
+   * @param {object} from - From object.
+   * @param {object} target - Target object.
+   * @return {array} Path array.
+   */
+  find_path: function (from, target) {
+    
+    var from_pos = Map.coord2tile(from.sprite);
+    var target_pos = {x: target.pos_x - 1, y: target.pos_y };
+    
+    var path_grid = Map.path_grid();
+    
+     /* var path_grid = [[0,0,1,0,0],
+                         [1,0,1,0,1],
+	                     [0,0,1,0,0],
+	                     [0,0,1,1,0],
+	                     [0,0,0,0,0]];*/
+    
+    var easystar = new EasyStar.js();
+    easystar.setIterationsPerCalculation(1000);
+    easystar.setGrid(path_grid);
+    easystar.setAcceptableTiles([0]);
+    easystar.enableDiagonals();
+    //easystar.enableCornerCutting();    
+    //easystar.enableSync();
+    
+    //console.log("qwe", from_pos, target_pos, path_grid);
+    
+    var pluto = easystar.findPath(from_pos.x, from_pos.y, target_pos.x, target_pos.y, function( path ) {
+    //easystar.findPath(0, 0, 4, 0, function( path ) {
+      /*if (path === null) {
+        console.log("The path to the destination point was not found.");
+      } else {
+        from.path = path;
+      }*/
+      from.path = path;
+    });
+    
+    easystar.calculate();
+    
+  },
   
-
+  
+  /**
+   * Get the tile id in a path.
+   * @memberof Map
+   * @name get_path_tile
+   * @method
+   * @param {array} path - path array.
+   * @param {object} tile - tile object.
+   * @return {number} Tile id in the path array.
+   */
+  get_path_tile: function (path, tile) {
+    for (var i = 0; i < path.length; i++) {
+      if (path[i].x == tile.x && path[i].y == tile.y)
+        return i;
+    }
+    console.log("non trovato", tile, path);
+    return false;
+  },
+  
+    
 };
 

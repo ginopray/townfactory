@@ -17,16 +17,32 @@ var GameApp = {
    * @memberof GameApp
    * @name settings
    * @type {object}
-   * @property {object} defaults - New game: default settings.
+   * @property {object} defaults - New game: default settings assigned to data object.
    * @property {object} defaults.size - World size object.
    * @property {object} defaults.size.width - World width in tiles.
    * @property {object} defaults.size.height - World height in tiles.
    */
   settings : {
     defaults : {
-      size : {
+      map : {
         width : 24,
         height : 18
+      },
+      indexes: {
+        buildings: 0,
+        characters: 0,
+        resources: 0,
+        roads: 0,
+      },
+      buildings : [],
+      resources : [],
+      action : {},
+      selection : {},
+      roads : {
+        items: []
+      },
+      characters : {
+        citizen: []
       }
     }
   },
@@ -40,9 +56,13 @@ var GameApp = {
   * @property {timestamp} date_ini - Start game date: Date.now()
   * @property {object} indexes - Object indexes.
   * @property {number} indexes.buildings - Building max id.
+  * @property {number} indexes.characters - characters max id.
   * @property {number} indexes.resources - Resource max id.
+  * @property {number} indexes.roads - roads max id.
   * @property {array} buildings - Array containing building objects.
   * @property {array} resources - Array containing resources objects.
+  * @property {object} characters - Characters container.
+  * @property {array} characters.citizen - Array containing citizens.
   * @property {object} roads - Roads data.
   * @property {array} roads.items - Array containing all road items. Ie. GameApp.data.roads.items[x][y] = new Road();
   * @property {object} map - Map game data.
@@ -117,6 +137,11 @@ var GameApp = {
     // Load resources.
     for (var i = 1; i <= 6; i ++) {
       game.load.image('resource-' + i, 'images/game/resources/resource-' + i + '.png');
+    }
+    // Load characters.
+    // Citizen.
+    for (var i = 1; i <= 1; i ++) {
+      game.load.image('citizen-' + i, 'images/game/characters/citizen-' + i + '.png');
     }
     // Roads
     game.load.image('road', 'images/game/roads/road.png');
@@ -258,9 +283,10 @@ var GameApp = {
     // Check render flag.
     if (!Board.flags.render)
       return;
+    
     // Show map grid.
-    for (var g in phaser_object.grid) {
-      obj = phaser_object.grid[g];
+    for (var g in phaser_object.dgrid) {
+      obj = phaser_object.dgrid[g];
       if (typeof obj.color === "undefined")
         color = 'rgba(0, 150, 136, 0.1)';
       else
@@ -318,26 +344,10 @@ var GameApp = {
       localStorage.removeItem("game_data");
     }
     
-    GameApp.data = {
-      date_ini : Date.now(),
-      indexes: {
-        buildings: 0,
-        resources: 0,
-        roads: 0
-      },
-      map : {
-        width : GameApp.settings.defaults.size.width,
-        height : GameApp.settings.defaults.size.height,
-      },
-      buildings : [],
-      resources : [],
-      action : {},
-      selection : {},
-      roads : {
-        items: []
-      }
-    };
-    
+    GameApp.data = GameApp.settings.defaults;
+    // Set init date.
+    GameApp.data.date_ini = Date.now();
+        
     // Add buildings.
     // village.
     GameApp.data.buildings.push(new Village(5));

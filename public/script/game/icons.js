@@ -12,8 +12,9 @@
  * @classdesc Icons functions.
  * @example
  * // Icon and messages ID.
- * // 1 = "Building needs Resource"
+ * // 1 = "Building wants Resource" (building.request)
  * // 2 = "Missing outcoming station"
+ * // 3 = %s needs %s (building.consumption)
  */
 var Icons = {
   
