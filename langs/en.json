@@ -2,6 +2,7 @@
   "message-1": "%s wants %s",
   "message-2": "%s needs outcoming station",
   "message-3": "%s needs %s",
+  "message-4": "%s does not find the path",
   "building-1": "Forest",
   "building-2": "Wheat field",
   "building-3": "Sawmill",

@@ -117,8 +117,24 @@ var Main = {
   t : function() {
     var str = arguments[0];
     return jQuery.i18n._(str, arguments[1], arguments[2], arguments[3], arguments[4], arguments[5]);
+  },
+  
+  
+  /**
+   * Show debug log.
+   * @memberof Main
+   * @name debug
+   * @method
+   * @param {string} log - The log string.
+   */
+  debug : function(log, obj) {
+    if (!GameApp.settings.debug.log)
+      return;
+    if (typeof obj !== "undefined")
+      console.log(log, obj);
+    else
+      console.log(log);
   }
-  
-  
+
 }
 

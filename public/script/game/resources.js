@@ -64,7 +64,7 @@ var Resources = {
    * @param {number} type - The resource type.
    */
   create : function (type, building, station) {
-
+    
     var x = station.sprite.x;
     var y = station.sprite.y;
     
@@ -138,11 +138,16 @@ var Resource = function (type) {
  * @method
  */
 Resource.prototype.spawn  = function (x, y) {
+
+  //console.log("spawn", this);
+  
   // Create sprite and add it to "buildings" group.
   this.sprite = phaser_object.groups.resources.create(x, y, 'resource-' + this.type);
   
   // Save item id on the sprite.
   this.sprite.custom_id = this.id;
+  
+  this.sprite.custom_overlap = new Array();
   
   // Initial speed.
   this.sprite.body.velocity.y = 0;
@@ -164,7 +169,7 @@ Resource.prototype.spawn  = function (x, y) {
   
   // Set friction.
   Map.friction(this.sprite);
-  
+
 };
 
 

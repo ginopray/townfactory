@@ -149,6 +149,9 @@ var Production = {
       return;
     var building = Map.findOne(b.custom_id, 'buildings');
     var resource = Map.findOne(r.custom_id, 'resources');
+    
+    //console.log("receive", building, resource);
+    
     // Can this building receive this resource?
     if (
       typeof building.warehouse !== "undefined" &&

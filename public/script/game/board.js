@@ -443,6 +443,25 @@ var Board = {
   
   
   /**
+   * Get the html image of a character.
+   * @memberof Board
+   * @name get_character_image
+   * @method
+   * @param {string} constructor_name - Constructor name: ie "Citizen"
+   * @param {number} type - The character type.
+   * @param {object} vars - Attributes (optional).
+   */
+  get_character_image : function (constructor_name, type, vars) {
+    var subclass = constructor_name.toLowerCase();
+    var html = '<img';
+    if (typeof vars.class !== "undefined")
+      html += ' class="' + vars.class + '"';
+    html += ' src="images/game/characters/' + subclass + '-' + type + '.png" alt="' + Main.t(subclass + '-' + type) + '" title="' + Main.t(subclass + '-' + type) + '" />';
+    return html;
+  },
+  
+  
+  /**
    * Get the html image of a road.
    * @memberof Board
    * @name get_road_image

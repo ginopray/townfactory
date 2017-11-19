@@ -126,8 +126,8 @@ var People = {
  * @property {string} name - Character name.
  * @property {object} action - Character action object.
  * @property {object} action.current - Current action.
- * @property {array} path - His path.
- * @property {number} path_target - Target tile of the path.
+ * @property {array} action.path - His path.
+ * @property {number} action.path_target - Target tile of the path.
  * @property {object|undefined} action.target - Target object.
  * @example
  * // Actions:
@@ -142,7 +142,7 @@ var Character = function () {
   this.id = ++ GameApp.data.indexes.characters;
   
   // Type.
-  this.type = 1;
+  this.type = 0;
   
   // Name.
   this.name = 'Ch-' + this.id;
@@ -150,6 +150,21 @@ var Character = function () {
   // Action.
   this.action = {};
   
+  // Speed
+  this.speed = 200;
+  
+}
+
+
+/**
+ * Get character full name.
+ * @memberof Character
+ * @name fullname
+ * @instance
+ * @method
+ */
+Character.prototype.fullname  = function () {
+  return this.name;
 }
 
 
@@ -178,11 +193,9 @@ Character.prototype.spawn  = function () {
   if (typeof this.subclass === "undefined")
     return;
   
-  // Get the tile coordinates.
-  var x = 1,
-      y = 1;
-  
   // Create sprite and add it to "buildings" group.
+  var x = -1,
+      y = -1;
   this.sprite = phaser_object.groups.characters[this.subclass].create(x, y, this.subclass + '-' + this.type);
   
   // Center anchor.
@@ -207,7 +220,6 @@ Character.prototype.spawn  = function () {
  */
 Character.prototype.new_action  = function () {
   this.cancel_action();
-  
 }
 
 
@@ -232,45 +244,58 @@ Character.prototype.cancel_action  = function () {
  */
 Character.prototype.walk  = function () {
   // No path.
-  if (typeof this.path === "undefined" || this.path === null) {
+  if (typeof this.action.path === "undefined" || this.action.path === null) {
     return;
   }
   // Get current tile.
-  var tile = Map.coord2tile(this.sprite);
+  var tile = Map.coord2tile({x: this.sprite.x, y: this.sprite.y});
   
   // Get current tile in the path.
-  var tile_i = Map.get_path_tile(this.path, tile);
+  var tile_i = Map.get_path_tile(this.action.path, tile);
   if (tile_i === false) {
-    return;
+    if (typeof this.action.path_target === "undefined")
+      tile_i = -1;
+    else {
+      //console.log("salto");
+      return;
+    }
   }
   
   // Get next tile.
   var next_i = (tile_i + 1);
-  var next = this.path[next_i];
+  var next = this.action.path[next_i];
   if (typeof next !== "undefined") {
     
     // Next tile != path_target?
-    if (typeof this.path_target === "undefined" || this.path_target != next_i) {
+    if (typeof this.action.path_target === "undefined" || this.action.path_target != next_i) {
       // New direction!
       var rect = Map.get_tile({x: next.x, y: next.y, w: Map.settings.tileWidth, h: Map.settings.tileHeight});
-      game.physics.arcade.moveToXY(this.sprite, rect.centerX, rect.centerY, 100);
+      game.physics.arcade.moveToXY(this.sprite, rect.centerX, rect.centerY, this.speed);
       
-      this.path_target = next_i;
-      console.log("ora sono in " + tile.x + ":" + tile.y + " -> ", next);
+      this.action.path_target = next_i;
+      //console.log("ora sono in " + tile.x + ":" + tile.y + " -> ", next);
     }
     
   } else {
     // Reached target!
-    this.sprite.body.velocity.x = 0;
-    this.sprite.body.velocity.y = 0;
-    delete this.path;
-    delete this.path_target;
+    this.stop();
     console.log("arrivato!");
   }
   
-  
-  
-  
+}
+
+
+/**
+ * Stop character.
+ * @memberof Character
+ * @name stop
+ * @instance
+ * @method
+ */
+Character.prototype.stop  = function () {
+  this.sprite.body.velocity.x = 0;
+  this.sprite.body.velocity.y = 0;
+  this.cancel_action();
 }
 
 
@@ -346,6 +371,9 @@ Citizen.prototype.spawn  = function () {
   this.sprite.x = this.home.sprite.x;
   this.sprite.y = this.home.sprite.top - 50;
   
+  // Random color.
+  this.sprite.tint = Math.random() * 0xffffff;
+  
 }
 
 
@@ -370,5 +398,7 @@ Citizen.prototype.new_action  = function () {
   // Get path.
   Map.find_path(this, building);
   
+  
+  console.log("new action: " + action);
+  
 }
-

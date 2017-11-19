@@ -21,8 +21,13 @@ var GameApp = {
    * @property {object} defaults.size - World size object.
    * @property {object} defaults.size.width - World width in tiles.
    * @property {object} defaults.size.height - World height in tiles.
+   * @property {object} debug - Debug settings.
+   * @property {boolean} debug.log - Debug log enabled.
    */
   settings : {
+    debug : {
+      log: true,
+    },
     defaults : {
       map : {
         width : 24,

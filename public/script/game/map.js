@@ -192,13 +192,7 @@ var Map = {
     
     // Update resources.
     Resources.update();
-    
-    // Update buildings.
-    Buildings.update();
-    
-    // Update people.
-    People.update();
-    
+        
     // Resources overlapping.
     game.physics.arcade.overlap(
       phaser_object.groups.resources,
@@ -230,8 +224,19 @@ var Map = {
       Production.receive
     );
     
-    var coords = Map.coord2tile({x: game.input.mousePointer.worldX, y: game.input.mousePointer.worldY});
+    // **********************
+    // !!! TO INVESTIGATE !!!
+    // Se metto "Buildings.update()" prima di "collide(resources, buildings)"
+    // allora le risorse collidono con TUTTI i buildings al momento dello spawn.
+    // **********************
+    // Update buildings.
+    Buildings.update();
     
+    // Update people.
+    People.update();
+    
+    
+    var coords = Map.coord2tile({x: game.input.mousePointer.worldX, y: game.input.mousePointer.worldY});
     // Update mouse selection position.
     if (typeof phaser_object.inputs.mouse.selection.tile !== "undefined") {
       phaser_object.inputs.mouse.selection.tile.x = (coords.x - 1) * Map.settings.tileWidth;
@@ -327,22 +332,30 @@ var Map = {
   * Get the map grid with tiles and obstacles.
   * @memberof Map
   * @name path_grid
+  * @param {object} target - Target tile
   * @method
   */
-  path_grid : function () {
+  path_grid : function (target) {
     var ret = new Array();
     for (y = 0; y < GameApp.data.map.height; y ++) {
       var tmp = new Array();
       for (x = 0; x < GameApp.data.map.width; x ++) {
         var obstacle = 0;
-        // Buildings.
-        if (Map.find_by_pos(x, y, 'buildings'))
-          obstacle = 1;
-        // Roads.
-        if (typeof GameApp.data.roads.items[x] !== "undefined" &&
-           typeof GameApp.data.roads.items[x][y] !== "undefined")
-          obstacle = 1;
         
+        // Destination slot always free!
+        if (y == target.y && x == target.x) {
+          // var obstacle remains 0
+          
+        // Check obstacles.
+        } else {
+          // Buildings.
+          if (Map.find_by_pos(x, y, 'buildings'))
+            obstacle = 1;
+          // Roads.
+          if (typeof GameApp.data.roads.items[x] !== "undefined" &&
+             typeof GameApp.data.roads.items[x][y] !== "undefined")
+            obstacle = 1;
+        }
         tmp.push( obstacle );
       }
       ret.push(tmp);
@@ -570,8 +583,8 @@ var Map = {
   * @param {object} r2 - Resource sprite 2.
   */
   resource_overlap : function (r1, r2) {
-    //r1.custom_overlap.push(r2);
-    //r2.custom_overlap.push(r1);
+    if (typeof r1 === "undefined" || typeof r2 === "undefined")
+      return;
     r1.custom_overlap[r2.custom_id] = r2;
     r2.custom_overlap[r1.custom_id] = r1;
   },
@@ -731,15 +744,12 @@ var Map = {
   find_path: function (from, target) {
     
     var from_pos = Map.coord2tile(from.sprite);
-    var target_pos = {x: target.pos_x - 1, y: target.pos_y };
+    var target_pos = {
+      x: target.pos_x,
+      y: target.pos_y
+    };
     
-    var path_grid = Map.path_grid();
-    
-     /* var path_grid = [[0,0,1,0,0],
-                         [1,0,1,0,1],
-	                     [0,0,1,0,0],
-	                     [0,0,1,1,0],
-	                     [0,0,0,0,0]];*/
+    var path_grid = Map.path_grid(target_pos);
     
     var easystar = new EasyStar.js();
     easystar.setIterationsPerCalculation(1000);
@@ -751,14 +761,13 @@ var Map = {
     
     //console.log("qwe", from_pos, target_pos, path_grid);
     
-    var pluto = easystar.findPath(from_pos.x, from_pos.y, target_pos.x, target_pos.y, function( path ) {
-    //easystar.findPath(0, 0, 4, 0, function( path ) {
-      /*if (path === null) {
-        console.log("The path to the destination point was not found.");
+    easystar.findPath(from_pos.x, from_pos.y, target_pos.x, target_pos.y, function( path ) {
+      if (path === null) {
+        //console.log("path not found", target_pos);
       } else {
-        from.path = path;
-      }*/
-      from.path = path;
+        from.action.path = path;
+      }
+      
     });
     
     easystar.calculate();
@@ -780,7 +789,7 @@ var Map = {
       if (path[i].x == tile.x && path[i].y == tile.y)
         return i;
     }
-    console.log("non trovato", tile, path);
+    //console.log("non trovato", tile, path);
     return false;
   },
   

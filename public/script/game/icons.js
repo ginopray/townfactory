@@ -15,6 +15,7 @@
  * // 1 = "Building wants Resource" (building.request)
  * // 2 = "Missing outcoming station"
  * // 3 = %s needs %s (building.consumption)
+ * // 4 = %s does not find the path
  */
 var Icons = {
   
@@ -39,6 +40,7 @@ var Icons = {
         req,
         i;
     
+    // Buildings.
     for (b in GameApp.data.buildings) {
       building = GameApp.data.buildings[b];
       
@@ -63,6 +65,19 @@ var Icons = {
       
     }
   
+    // People.
+    for (var char_subclass in GameApp.data.characters) {
+      for (var c in GameApp.data.characters[char_subclass]) {
+        var char = GameApp.data.characters[char_subclass][c];
+        if (typeof char.action !== "undefined") {
+          // Check path.
+          if (char.action.current == "move" && typeof char.action.path === "undefined") {
+            phaser_object.icons.push(new Icon(4, char));
+          }
+        }
+      }
+    }
+    
     // Check needed resources for production.
     
     // Check outcoming stations for producing factories.
@@ -146,17 +161,27 @@ Icon.prototype.html  = function () {
      ) {
    html += Board.get_building_image(this.ref.type, {class: 'icon'});
   }
-  
-  // Resources icons.
-  if (typeof this.vars.resources !== "undefined") {
-    var res_arr = new Array();
-    for (var r in this.vars.resources) {
-      html += Board.get_resource_image(this.vars.resources[r], {class: 'icon'});
-      res_arr.push( Resources.fullname(this.vars.resources[r]) );
-    }
-    ph2 = res_arr.join(", ");
+  else if (typeof this.ref !== "undefined" && 
+      typeof this.ref.constructor !== "undefined" && 
+      this.ref.constructor.name == "Character" || 
+      this.ref.constructor.name == "Citizen"
+     ) {
+   html += Board.get_character_image(this.ref.constructor.name, this.ref.type, {class: 'icon'});
   }
-
+  
+  // Vars.
+  if (typeof this.vars !== "undefined") {
+    // Resources icons.
+    if (typeof this.vars.resources !== "undefined") {
+      var res_arr = new Array();
+      for (var r in this.vars.resources) {
+        html += Board.get_resource_image(this.vars.resources[r], {class: 'icon'});
+        res_arr.push( Resources.fullname(this.vars.resources[r]) );
+      }
+      ph2 = res_arr.join(", ");
+    }
+  }
+  
   return '<div>' + html + ' ' + Main.t('message-' + this.type, this.ref.fullname(), ph2) + '</div>';
   
 }
