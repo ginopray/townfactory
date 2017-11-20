@@ -136,6 +136,8 @@ var People = {
  * @property {array} action.path - His path.
  * @property {number} action.path_target - Target tile of the path.
  * @property {object|undefined} action.target - Target object.
+ * @property {object} talking - Character talking object.
+ * @property {object} talking.sprite - Talking sprite.
  * @example
  * // Actions:
  * // 1 = move - moving somewhere
@@ -183,12 +185,19 @@ Character.prototype.fullname = function () {
  * @method
  */
 Character.prototype.update = function () {
+  // Action:
   if (this.action.current == "move")
     this.walk();
   else if (this.action.current == "work")
     this.work();
   else if (this.action.current == "sleep")
     this.sleep();
+  
+  // Talking.
+  if (typeof this.talking !== "undefined" && typeof this.talking.sprite !== "undefined") {
+    this.talking.sprite.x = Math.floor(this.sprite.x + this.sprite.width / 2);
+    this.talking.sprite.y = Math.floor(this.sprite.y + this.sprite.height / 2);
+  }
 }
 
 
@@ -219,6 +228,53 @@ Character.prototype.spawn = function () {
   // Save item id on the sprite.
   this.sprite.custom_id = this.id;
   
+}
+
+
+/**
+ * Stop character.
+ * @memberof Character
+ * @name talk
+ * @instance
+ * @method
+ * @param {string} message - The message.
+ */
+Character.prototype.talk = function (message) {
+    
+  this.stop_talk();
+  
+  var style = {
+    font: "16px Arial",
+    fontWeight: 'bold',
+    fill: "#222",
+    wordWrap: true,
+    wordWrapWidth: this.sprite.width,
+    align: "center",
+    backgroundColor: "#f9f9f9"
+  };
+  this.talking = {
+    sprite: game.add.text(0, 0, message, style)
+  }
+  this.talking.sprite.anchor.set(0.5);
+  
+}
+
+
+/**
+ * Stop character.
+ * @memberof Character
+ * @name talk
+ * @instance
+ * @method
+ * @param {string} message - The message.
+ */
+Character.prototype.stop_talk = function () {
+  // Destroy sprite.
+  if (typeof this.talking !== "undefined" && typeof this.talking.sprite !== "undefined") { 
+    this.talking.sprite.destroy();
+  }
+  // Cancel object.
+  this.talking = {};
 }
 
 
@@ -484,7 +540,13 @@ Citizen.prototype.new_action = function (action, vars) {
   }
   
   
-  console.log("new action for " + this.fullname() + ": " + action);
+  //console.log("new action for " + this.fullname() + ": " + action);
+  if (action != "move") {
+    this.talk(action);  
+  } else {
+    this.stop_talk();
+  }
+  
   
 }
 
