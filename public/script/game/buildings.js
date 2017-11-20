@@ -531,7 +531,7 @@ var Village = function (type, pos_x, pos_y) {
   this.new_request();
   
   // Store some resource.
-  this.store(3, 100);
+  this.store(3, 300);
   this.store(6, 100);
 
   

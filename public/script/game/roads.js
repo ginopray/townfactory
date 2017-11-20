@@ -252,7 +252,7 @@ var Roads = {
       // If the other item come from another direction...
       if (item.custom_road.angle != over_item.custom_road.angle) {
         // If opposite direction, stop!
-        if (Roads.check_opposite(over_item, item)) {
+        if (Roads.check_opposite(over_item.custom_road, item.custom_road)) {
           return false;
         // If toward this road: item always have precedence.
         } else if (Roads.check_toward(over_item.custom_road, item.custom_road)) {

@@ -157,7 +157,7 @@ var Character = function () {
   this.action = {};
   
   // Speed
-  this.speed = 200;
+  this.speed = 300;
   
 }
 
@@ -491,7 +491,7 @@ Citizen.prototype.new_action = function (action) {
  * @method
  */
 Citizen.prototype.work = function () {
-  var working_time = 16;
+  var working_time = 1;
   if ((Date.now() - this.action.date_ini) / 1000 > working_time) {
     this.stop_work();
   }

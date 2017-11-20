@@ -332,10 +332,15 @@ var Map = {
   * Get the map grid with tiles and obstacles.
   * @memberof Map
   * @name path_grid
-  * @param {object} target - Target tile
+  * @param {object} obj - Moving object.
+  * @param {object} target - Target object.
   * @method
   */
-  path_grid : function (target) {
+  path_grid : function (obj, target) {
+    // Is there a building?
+    var tile = Map.coord2tile({x: obj.sprite.x, y: obj.sprite.y});
+    var from_building = Map.find_by_pos(tile.x, tile.y, 'buildings');
+    
     var ret = new Array();
     for (y = 0; y < GameApp.data.map.height; y ++) {
       var tmp = new Array();
@@ -343,19 +348,23 @@ var Map = {
         var obstacle = 0;
         
         // Destination slot always free!
-        if (y == target.y && x == target.x) {
+        //if (y == target.y && x == target.x) {
           // var obstacle remains 0
           
         // Check obstacles.
-        } else {
+        //} else {
           // Buildings.
-          if (Map.find_by_pos(x, y, 'buildings'))
-            obstacle = 1;
+          var b = Map.find_by_pos(x, y, 'buildings');
+          if (b) {
+            if (b.id != target.id && b.id != from_building.id)
+              obstacle = 1;
+          }
+            
           // Roads.
           if (typeof GameApp.data.roads.items[x] !== "undefined" &&
              typeof GameApp.data.roads.items[x][y] !== "undefined")
             obstacle = 1;
-        }
+        //}
         tmp.push( obstacle );
       }
       ret.push(tmp);
@@ -737,7 +746,7 @@ var Map = {
    * @memberof Map
    * @name find_path
    * @method
-   * @param {object} from - From object.
+   * @param {object} from - Moving object.
    * @param {object} target - Target object.
    * @return {array} Path array.
    */
@@ -749,7 +758,7 @@ var Map = {
       y: target.pos_y
     };
     
-    var path_grid = Map.path_grid(target_pos);
+    var path_grid = Map.path_grid(from, target);
     
     var easystar = new EasyStar.js();
     easystar.setIterationsPerCalculation(1000);
@@ -763,7 +772,7 @@ var Map = {
     
     easystar.findPath(from_pos.x, from_pos.y, target_pos.x, target_pos.y, function( path ) {
       if (path === null) {
-        //console.log("path not found", target_pos);
+        console.log("path not found", target_pos);
       } else {
         from.action.path = path;
       }
