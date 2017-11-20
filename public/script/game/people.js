@@ -399,8 +399,8 @@ var Citizen = function (type, home) {
   // Spawn!
   this.spawn();
   
-  // New action!
-  this.new_action();
+  // Go work!
+  this.go_work();
   
 }
 Citizen.prototype = new Character('prototype_set');
@@ -484,7 +484,7 @@ Citizen.prototype.new_action = function (action, vars) {
   }
   
   
-  console.log("new action: " + action);
+  console.log("new action for " + this.fullname() + ": " + action);
   
 }
 
@@ -568,10 +568,10 @@ Citizen.prototype.sleep = function () {
  */
 Citizen.prototype.stop_sleep = function () {
   
-  this.new_action();  
+  //this.new_action();
+  this.go_work();
   
 }
-
 
 
 /**
@@ -582,10 +582,26 @@ Citizen.prototype.stop_sleep = function () {
  * @method
  */
 Citizen.prototype.go_home = function () {
-  console.log("go home");
+  //console.log("go home");
   this.new_action("move", {
     target: this.home
   });
 
-  
+}
+
+
+/**
+ * Citizen go work.
+ * @memberof Citizen
+ * @name go_work
+ * @instance
+ * @method
+ */
+Citizen.prototype.go_work = function () {
+  //console.log("go work");
+  var building = Buildings.getRandom(this.home.id);
+  this.new_action("move", {
+    target: building
+  });
+
 }
