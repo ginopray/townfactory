@@ -34,6 +34,7 @@ var People = {
    */
   actions : {
     move: {},
+    work: {},
   },
   
   
@@ -102,10 +103,15 @@ var People = {
     var building = Map.findOne(b.custom_id, 'buildings');
     var character = People.findOne(c.custom_id);
     
-    console.log("entrato", character);
-    
     // Is target?
-    //if ()
+    if (typeof character.action.target !== "undefined") {
+      if (building.id == character.action.target.id) {
+        console.log("entrato!");
+        // Start working.
+        character.start_work(building);
+      }
+      
+    }
     
     return ;
 
@@ -163,7 +169,7 @@ var Character = function () {
  * @instance
  * @method
  */
-Character.prototype.fullname  = function () {
+Character.prototype.fullname = function () {
   return this.name;
 }
 
@@ -175,9 +181,11 @@ Character.prototype.fullname  = function () {
  * @instance
  * @method
  */
-Character.prototype.update  = function () {
+Character.prototype.update = function () {
   if (this.action.current == "move")
     this.walk();
+  else if (this.action.current == "work")
+    this.work();
 }
 
 
@@ -188,7 +196,7 @@ Character.prototype.update  = function () {
  * @instance
  * @method
  */
-Character.prototype.spawn  = function () {
+Character.prototype.spawn = function () {
   
   if (typeof this.subclass === "undefined")
     return;
@@ -218,8 +226,12 @@ Character.prototype.spawn  = function () {
  * @instance
  * @method
  */
-Character.prototype.new_action  = function () {
-  this.cancel_action();
+Character.prototype.new_action = function () {
+  this.action = {
+    date_ini: Date.now()
+  };
+  
+  
 }
 
 
@@ -230,7 +242,7 @@ Character.prototype.new_action  = function () {
  * @instance
  * @method
  */
-Character.prototype.cancel_action  = function () {
+Character.prototype.cancel_action = function () {
   this.action = {};
 }
 
@@ -242,7 +254,7 @@ Character.prototype.cancel_action  = function () {
  * @instance
  * @method
  */
-Character.prototype.walk  = function () {
+Character.prototype.walk = function () {
   // No path.
   if (typeof this.action.path === "undefined" || this.action.path === null) {
     return;
@@ -277,9 +289,8 @@ Character.prototype.walk  = function () {
     }
     
   } else {
-    // Reached target!
-    this.stop();
-    console.log("arrivato!");
+    // Stop walk.
+    this.stop_walk();
   }
   
 }
@@ -292,10 +303,71 @@ Character.prototype.walk  = function () {
  * @instance
  * @method
  */
-Character.prototype.stop  = function () {
+Character.prototype.stop = function () {
   this.sprite.body.velocity.x = 0;
   this.sprite.body.velocity.y = 0;
+  
+}
+
+
+/**
+ * Start work.
+ * @memberof Character
+ * @name start_work
+ * @instance
+ * @method
+ * @param {object} building - Building.
+ */
+Character.prototype.start_work = function (building) {
+ this.action.current = "work";
+}
+
+
+/**
+ * Start walk.
+ * @memberof Character
+ * @name start_walk
+ * @instance
+ * @method
+ */
+Character.prototype.start_walk = function () {
+  // Where?
+  // Select random factory.
+  var building = Buildings.getRandom();
+  this.action.target = building;
+  // Get path.
+  Map.find_path(this, building);
+  // Set current action.
+  this.action.current = "move";
+}
+
+
+/**
+ * Stop walk.
+ * @memberof Character
+ * @name stop_walk
+ * @instance
+ * @method
+ */
+Character.prototype.stop_walk = function () {
+  // Stop sprite.
+  this.stop();
+  
+  // Reached target?
+  var tile = Map.coord2tile({x: this.sprite.x, y: this.sprite.y});
+  var building = Map.find_by_pos(tile.x, tile.y, 'buildings');
+  // I'm in a building?
+  if (building !== false) {
+    // This building is the target?
+    if (building.id == this.action.target.id) {
+      // Work!
+      this.new_action('work');
+      return;
+    }
+  }
+  
   this.cancel_action();
+  
 }
 
 
@@ -304,6 +376,7 @@ Character.prototype.stop  = function () {
  * @name Citizen
  * @class
  * @classdesc Create a Citizen.
+ * @augments Character
  * @see Character
  * @param {number} type - Citizen type.
  * @param {object} home - Home building.
@@ -332,6 +405,9 @@ var Citizen = function (type, home) {
   // Spawn!
   this.spawn();
   
+  // New action!
+  this.new_action();
+  
 }
 Citizen.prototype = new Character('prototype_set');
 Citizen.prototype.constructor = Citizen;
@@ -344,12 +420,12 @@ Citizen.prototype.constructor = Citizen;
  * @instance
  * @method
  */
-Citizen.prototype.update  = function () {
+Citizen.prototype.update = function () {
   Character.prototype.update.call(this);
   
   // Check action.
-  if (typeof this.action.current === "undefined")
-    this.new_action();
+  //if (typeof this.action.current === "undefined")
+    //this.new_action();
 }
 
 
@@ -360,7 +436,7 @@ Citizen.prototype.update  = function () {
  * @instance
  * @method
  */
-Citizen.prototype.spawn  = function () {
+Citizen.prototype.spawn = function () {
   Character.prototype.spawn.call(this);
   
   // Setting the size.
@@ -383,22 +459,53 @@ Citizen.prototype.spawn  = function () {
  * @name new_action
  * @instance
  * @method
+ * @param {string|undefined} action - Action to do.
  */
-Citizen.prototype.new_action  = function () {
+Citizen.prototype.new_action = function (action) {
   Character.prototype.new_action.call(this);
   
-  // Move.
-  var action = 'move';
-  // Where?
-  // Select random factory.
-  var building = Buildings.getRandom();
-  this.action.target = building;
-  this.action.current = action;
+  // Set action.
+  if (typeof action === "undefined") {
+    action = 'move';
+  }
   
-  // Get path.
-  Map.find_path(this, building);
+  // Move.
+  if (action == "move") {
+    this.start_walk();
+    
+  } else if (action == "work") {
+    this.start_work();
+  }
   
   
   console.log("new action: " + action);
   
+}
+
+
+/**
+ * Citizen work (loop).
+ * @memberof Citizen
+ * @name work
+ * @instance
+ * @method
+ */
+Citizen.prototype.work = function () {
+  var working_time = 16;
+  if ((Date.now() - this.action.date_ini) / 1000 > working_time) {
+    this.stop_work();
+  }
+}
+
+
+/**
+ * Citizen stop work.
+ * @memberof Citizen
+ * @name stop_work
+ * @instance
+ * @method
+ */
+Citizen.prototype.stop_work = function () {
+  console.log("mobbasta");
+  this.new_action();
 }

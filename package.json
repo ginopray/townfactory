@@ -1,5 +1,6 @@
 {
   "name": "Townfactory",
+  "title": "Townfactory doc",
   "version": "dev.1.0.x",
   "description": "A test with Phaser.io, jsdoc and github.",
   "author": "Francesco Pampaloni <pampalonifrancesco@gmail.com>"

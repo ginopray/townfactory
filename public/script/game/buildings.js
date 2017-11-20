@@ -506,6 +506,7 @@ Building.prototype.fullname  = function () {
  * @name Village
  * @class
  * @classdesc Create a village.
+ * @augments Building
  * @see Building
  * @property {number} village - always 1.
  * @property {number} capital - 1 if capital, 0 if not.

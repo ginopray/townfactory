@@ -1,5 +1,5 @@
 /**
- * Contains the Actions class.
+ * Contains the user Actions class.
  * @file
  */
 
@@ -7,7 +7,7 @@
  * Actions class.
  * @name Actions
  * @namespace
- * @classdesc Actions class.
+ * @classdesc User actions class.
  */
 var Actions = {
   

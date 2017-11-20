@@ -536,6 +536,7 @@ Road.prototype.remove  = function () {
  * @name Station
  * @class
  * @classdesc Create an input/output station.
+ * @augments Road
  * @see Road
  * @property {string} subclass - Subclass name = "station".
  * @param {number} in_out - 1 = In, 0 = Out.
