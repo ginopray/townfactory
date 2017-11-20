@@ -42,20 +42,26 @@ var Buildings = {
    * @memberof Buildings
    * @name getRandom
    * @method
-   * @param {number} value - The resource value to select.
+   * @param {number} exclude - The building to exclude.
    * @returns {object} The building.
    */
-  getRandom : function () {
+  getRandom : function (exclude) {
     
     // No building found: return false.
     if (GameApp.data.buildings.length == 0)
       return false;
+    var new_array = new Array();
+    for (var b in GameApp.data.buildings) {
+      if (GameApp.data.buildings[b].id == exclude)
+        continue;
+      new_array.push(GameApp.data.buildings[b]);
+    }
     
     // Select random building.
-    var rand_i = Math.floor(Math.random() * GameApp.data.buildings.length);
+    var rand_i = Math.floor(Math.random() * new_array.length);
     
     // Return building.
-    return GameApp.data.buildings[rand_i];
+    return new_array[rand_i];
   },
   
 }

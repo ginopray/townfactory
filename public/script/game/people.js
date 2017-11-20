@@ -35,6 +35,7 @@ var People = {
   actions : {
     move: {},
     work: {},
+    sleep: {}
   },
   
   
@@ -186,6 +187,8 @@ Character.prototype.update = function () {
     this.walk();
   else if (this.action.current == "work")
     this.work();
+  else if (this.action.current == "sleep")
+    this.sleep();
 }
 
 
@@ -311,29 +314,14 @@ Character.prototype.stop = function () {
 
 
 /**
- * Start work.
- * @memberof Character
- * @name start_work
- * @instance
- * @method
- * @param {object} building - Building.
- */
-Character.prototype.start_work = function (building) {
- this.action.current = "work";
-}
-
-
-/**
  * Start walk.
  * @memberof Character
  * @name start_walk
  * @instance
  * @method
  */
-Character.prototype.start_walk = function () {
+Character.prototype.start_walk = function (building) {
   // Where?
-  // Select random factory.
-  var building = Buildings.getRandom();
   this.action.target = building;
   // Get path.
   Map.find_path(this, building);
@@ -360,8 +348,14 @@ Character.prototype.stop_walk = function () {
   if (building !== false) {
     // This building is the target?
     if (building.id == this.action.target.id) {
-      // Work!
-      this.new_action('work');
+      // Home: sleep!
+      if (building.id == this.home.id) {
+        // Sleep!
+        this.new_action('sleep');        
+      } else {
+        // Work!
+        this.new_action('work');
+      }
       return;
     }
   }
@@ -461,8 +455,11 @@ Citizen.prototype.spawn = function () {
  * @method
  * @param {string|undefined} action - Action to do.
  */
-Citizen.prototype.new_action = function (action) {
+Citizen.prototype.new_action = function (action, vars) {
   Character.prototype.new_action.call(this);
+  
+  if (typeof vars === "undefined")
+    vars = {};
   
   // Set action.
   if (typeof action === "undefined") {
@@ -471,15 +468,37 @@ Citizen.prototype.new_action = function (action) {
   
   // Move.
   if (action == "move") {
-    this.start_walk();
-    
+    if (typeof vars.target === "undefined")
+      var target = Buildings.getRandom();
+    else
+      var target = vars.target;
+    this.start_walk(target);
+  
+  // Work.
   } else if (action == "work") {
     this.start_work();
+    
+  // Sleep.
+  } else if (action == "sleep") {
+    this.start_sleep();
   }
   
   
   console.log("new action: " + action);
   
+}
+
+
+/**
+ * Start work.
+ * @memberof Citizen
+ * @name start_work
+ * @instance
+ * @method
+ * @param {object} building - Building.
+ */
+Citizen.prototype.start_work = function (building) {
+ this.action.current = "work";
 }
 
 
@@ -506,6 +525,67 @@ Citizen.prototype.work = function () {
  * @method
  */
 Citizen.prototype.stop_work = function () {
-  console.log("mobbasta");
-  this.new_action();
+
+  this.go_home();
+  
+}
+
+
+/**
+ * Start sleep.
+ * @memberof Citizen
+ * @name start_sleep
+ * @instance
+ * @method
+ * @param {object} building - Building.
+ */
+Citizen.prototype.start_sleep = function () {
+ this.action.current = "sleep";
+}
+
+
+/**
+ * Citizen sleep (loop).
+ * @memberof Citizen
+ * @name sleep
+ * @instance
+ * @method
+ */
+Citizen.prototype.sleep = function () {
+  var sleeping_time = 1;
+  if ((Date.now() - this.action.date_ini) / 1000 > sleeping_time) {
+    this.stop_sleep();
+  }
+}
+
+
+/**
+ * Citizen stop sleep.
+ * @memberof Citizen
+ * @name stop_sleep
+ * @instance
+ * @method
+ */
+Citizen.prototype.stop_sleep = function () {
+  
+  this.new_action();  
+  
+}
+
+
+
+/**
+ * Citizen go home.
+ * @memberof Citizen
+ * @name go_home
+ * @instance
+ * @method
+ */
+Citizen.prototype.go_home = function () {
+  console.log("go home");
+  this.new_action("move", {
+    target: this.home
+  });
+
+  
 }
