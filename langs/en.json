@@ -20,5 +20,6 @@
   "tool-view": "View",
   "tool-road": "Build road",
   "tool-station": "Build station",
+  "tool-subway": "Build subway",
   "tool-remove": "Remove"
 }

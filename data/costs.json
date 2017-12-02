@@ -22,5 +22,17 @@
     "type": 1,
     "requires": 6,
     "amount": 3
+  },
+  {
+    "item": "subway",
+    "type": 1,
+    "requires": 3,
+    "amount": 30
+  },
+  {
+    "item": "subway",
+    "type": 1,
+    "requires": 6,
+    "amount": 12
   }
 ]
