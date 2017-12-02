@@ -359,7 +359,7 @@ Building.prototype.consume  = function () {
       current,
       can_start,
       consumption_time;
-  // What can produce?
+  // What want consume?
   for (var r in this.consumption.resources) {
     resource = this.consumption.resources[r].resource;
     consumption_time = this.consumption.resources[r].time / this.level;
@@ -390,18 +390,16 @@ Building.prototype.consume  = function () {
     if (can_start) {
       //console.log("Can produce: " + resource + "?");
       
-      // Check for needed resources.
-      if (1) {
-        // Start consumption!
-        this.consumption.current[resource] = Date.now();
-        console.log("GNAM!");
-        if (!this.gather(resource, 1)) {
-          console.log("hungry!");
-          this.add_icon(3, {resources: [resource]});
-        } else {
-          this.del_icon(3);
-        }
+      // Start consumption!
+      this.consumption.current[resource] = Date.now();
+      //console.log("GNAM!");
+      if (!this.gather(resource, 1)) {
+        //console.log("hungry!");
+        this.add_icon(3, {resources: [resource]});
+      } else {
+        this.del_icon(3);
       }
+      
     }
   }
   

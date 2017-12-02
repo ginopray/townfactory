@@ -24,15 +24,17 @@ var People = {
    * @property {number} characters.citizen.speed - Citizen speed.
    * @property {number} characters.citizen.working_time - Working time.
    * @property {number} characters.citizen.sleeping_time - Sleeping time.
+   * @property {number} characters.citizen.eating_time - Eating time.
    * @property {number} characters.citizen.efficiency - How much a citizen reduces the working time, in %.
    */
   settings : {
     people_level: 10,
     characters: {
       citizen: {
-        speed: 300,
-        working_time: 10,
-        sleeping_time: 1,
+        speed: 40,
+        working_time: 8,
+        sleeping_time: 6,
+        eating_time: 2,
         efficiency: 15,
       }
     }
@@ -49,7 +51,8 @@ var People = {
   actions : {
     move: {},
     work: {},
-    sleep: {}
+    sleep: {},
+    eat: {}
   },
   
   
@@ -206,6 +209,8 @@ Character.prototype.update = function () {
     this.work();
   else if (this.action.current == "sleep")
     this.sleep();
+  else if (this.action.current == "eat")
+    this.eat();
   
   // Talking.
   if (typeof this.talking !== "undefined" && typeof this.talking.sprite !== "undefined") {
@@ -551,8 +556,12 @@ Citizen.prototype.new_action = function (action, vars) {
   // Sleep.
   } else if (action == "sleep") {
     this.start_sleep();
+
+  // Eat.
+  } else if (action == "eat") {
+    this.start_eat();
   }
-  
+
   
   //console.log("new action for " + this.fullname() + ": " + action);
   if (action != "move") {
@@ -623,7 +632,6 @@ Citizen.prototype.stop_work = function () {
  * @name start_sleep
  * @instance
  * @method
- * @param {object} building - Building.
  */
 Citizen.prototype.start_sleep = function () {
  this.action.current = "sleep";
@@ -654,7 +662,58 @@ Citizen.prototype.sleep = function () {
  */
 Citizen.prototype.stop_sleep = function () {
   
-  //this.new_action();
+  // Eat!
+  this.new_action('eat');
+  
+}
+
+
+/**
+ * Start eat.
+ * @memberof Citizen
+ * @name start_eat
+ * @instance
+ * @method
+ */
+Citizen.prototype.start_eat = function () {
+ this.action.current = "eat";
+}
+
+
+/**
+ * Citizen eat (loop).
+ * @memberof Citizen
+ * @name eat
+ * @instance
+ * @method
+ */
+Citizen.prototype.eat = function () {
+  var eating_time = People.settings.characters.citizen.eating_time;
+  if ((Date.now() - this.action.date_ini) / 1000 > eating_time) {
+    // Eat!
+    var building = this.home;
+    if (!building.gather(4, 1)) {
+      // Restart eating.
+      this.new_action('eat');
+      this.talk(Main.t('Hungry!'));
+    } else {
+      this.stop_talk();
+      this.stop_eat();  
+    }
+    
+  }
+}
+
+
+/**
+ * Citizen stop eat.
+ * @memberof Citizen
+ * @name stop_eat
+ * @instance
+ * @method
+ */
+Citizen.prototype.stop_eat = function () {
+  console.log("end eat");
   this.go_work();
   
 }
