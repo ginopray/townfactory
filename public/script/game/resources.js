@@ -46,7 +46,7 @@ var Resources = {
         if (typeof GameApp.data.resources[r].sprite.custom_ground !== "undefined" && 
             GameApp.data.resources[r].sprite.custom_ground < 0) {
           //GameApp.data.resources[r].sprite.tint = 0xff0000;
-          GameApp.data.resources[r].sprite.alpha = 0.3;
+          GameApp.data.resources[r].sprite.alpha = 0.2;
         } else {
           //GameApp.data.resources[r].sprite.tint = 0xffffff;
           GameApp.data.resources[r].sprite.alpha = 1;

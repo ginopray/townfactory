@@ -682,6 +682,7 @@ Road.prototype.spawn = function () {
   //this.sprite.left = tile.left;
   this.sprite.centerX = tile.centerX;
   this.sprite.centerY = tile.centerY;
+  this.sprite.z = this.ground;
   
   // Physics.
   game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
@@ -693,7 +694,7 @@ Road.prototype.spawn = function () {
   
   // Subway!
   if (this.ground < 0) {
-    this.sprite.alpha = 0.3;
+    this.sprite.alpha = 0.2;
   }
   
 }
