@@ -23,12 +23,34 @@ var Resources = {
     var coords;
     var count = 0;
     for (var r in GameApp.data.resources) {
+      var resource_road_ground;
+      if (typeof GameApp.data.resources[r].sprite.custom_road !== "undefined") {
+        resource_road_ground = GameApp.data.resources[r].sprite.custom_road.custom_ground;
+      }
+      
       coords = Map.coord2tile({x: GameApp.data.resources[r].sprite.centerX, y: GameApp.data.resources[r].sprite.centerY });
+      var find_road = Map.find_road(coords.x, coords.y);//, resource_road_ground
+      
       // Delete resources out of the road.
-      if (!Map.find_road(coords.x, coords.y)) {
+      if (!find_road || 
+          (typeof GameApp.data.resources[r].sprite.custom_road !== "undefined" && 
+           find_road.ground != resource_road_ground && 
+           find_road.group_id != GameApp.data.resources[r].sprite.custom_road.custom_group_id
+          )) {
         GameApp.data.resources[r].delete();
+        
       } else {
+        // Clear resources vs resources overlap.
         GameApp.data.resources[r].sprite.custom_overlap = new Array();
+        // Subway!
+        if (typeof GameApp.data.resources[r].sprite.custom_ground !== "undefined" && 
+            GameApp.data.resources[r].sprite.custom_ground < 0) {
+          //GameApp.data.resources[r].sprite.tint = 0xff0000;
+          GameApp.data.resources[r].sprite.alpha = 0.3;
+        } else {
+          //GameApp.data.resources[r].sprite.tint = 0xffffff;
+          GameApp.data.resources[r].sprite.alpha = 1;
+        }
         count ++;
       }
     }
@@ -108,6 +130,8 @@ var Resources = {
  * @param {number} type - Resource type.
  * @property {number} type - Resource ID.
  * @property {object} sprite - Phaser.io sprite object
+ * @property {array} sprite.custom_overlap - Overlapped resources.
+ * @property {object} sprite.custom_road - Overlapped road.
  */
 var Resource = function (type) {
   
@@ -167,10 +191,23 @@ Resource.prototype.spawn  = function (x, y) {
   // Bounces.
   this.sprite.body.bounce.setTo(0.5, 0.5);
   
-  // Set friction.
-  Map.friction(this.sprite);
+  // Start friction loop.
+  // Map.friction(this.sprite);
+
 
 };
+
+
+/**
+ * Select this resource.
+ * @memberof Resource
+ * @name select
+ * @instance
+ * @method 
+ */
+Resource.prototype.select = function () {
+  console.log("resource", this);
+}
 
 
 /**

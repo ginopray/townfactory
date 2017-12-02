@@ -38,6 +38,7 @@ var GameApp = {
         characters: 0,
         resources: 0,
         roads: 0,
+        roads_groups : 0,
       },
       buildings : [],
       resources : [],
@@ -152,14 +153,19 @@ var GameApp = {
     game.load.image('road', 'images/game/roads/road.png');
     game.load.image('station-1', 'images/game/roads/station-1.png');
     game.load.image('station-0', 'images/game/roads/station-0.png');
+    game.load.image('subway', 'images/game/roads/subway.png');
+    game.load.image('subway-0', 'images/game/roads/subway-0.png');
+    game.load.image('subway-1', 'images/game/roads/subway-1.png');
     // Tools helper.
     game.load.image('helper-road', 'images/game/tools/helper-road.png');
     game.load.image('helper-station', 'images/game/tools/helper-station.png');
+    game.load.image('helper-subway', 'images/game/tools/helper-subway.png');
     game.load.image('helper-station-in', 'images/game/tools/helper-station-1.png');
     game.load.image('helper-station-out', 'images/game/tools/helper-station-0.png');
     game.load.image('helper-remove', 'images/game/tools/helper-remove.png');
     // Load other images.
     game.load.image('selection', 'images/game/selection.png');
+    game.load.image('temp', 'images/game/temp.png');
     
     // File complete (progress bar).
     game.load.onFileComplete.add(function(progress, file_key, success, total_loaded_files, total_files){
@@ -298,6 +304,17 @@ var GameApp = {
         color = obj.color;
       game.debug.geom(obj.tile, color);
     }
+    
+    // Debug.
+    for (var m in phaser_object.debug.geom) {
+      obj = phaser_object.debug.geom[m];
+      if (typeof obj.color === "undefined")
+        color = 'rgba(0, 150, 136, 0.1)';
+      else
+        color = obj.color;
+      game.debug.geom(obj.geom, color);
+    }
+    
   },
   
   
@@ -408,6 +425,29 @@ var GameApp = {
     jQuery('.loading__percentage').text(progress + '%');
 
   },
+  
+  
+  /**
+   * Pause the game.
+   * @memberof GameApp
+   * @name pause
+   * @method
+   */
+  pause : function () {
+    game.paused = true;
+  },
+  
+  
+  /**
+   * Unpause the game.
+   * @memberof GameApp
+   * @name unpause
+   * @method
+   */
+  unpause : function () {
+    game.paused = false;
+  },
+  
   
   
 

@@ -162,6 +162,9 @@ var Production = {
       building.store(resource.type);
       // Delete resource.
       resource.delete();
+    } else {
+      // Stop resource!
+      Roads.stop(r);
     }
   },
   

@@ -88,6 +88,8 @@ var Buildings = {
  * @property {number} consumption.current - Array of current consumption.
  * @property {bool} power_switch - Production active or not.
  * @property {array}  icons - Array of variables about icons.
+ * @property {object} workers  - Workers object.
+ * @property {object} workers.count  - Number of active workers.
  */
 var Building = function (type, pos_x, pos_y) {
   
@@ -137,6 +139,10 @@ var Building = function (type, pos_x, pos_y) {
   this.consumption.current = [];
   this.consumption.resources = Production.get_consumption(type);
 
+  // Workers.
+  this.workers = {
+    count: 0,
+  }
   
 };
 
@@ -259,7 +265,7 @@ Building.prototype.produce  = function () {
   for (var r in this.production.resources) {
     resource = this.production.resources[r].resource;
     requires = this.production.resources[r].requires;
-    production_time = this.production.resources[r].time;
+    production_time = this.get_production_time(this.production.resources[r].time);
     current = this.production.current[resource];
     can_start = true;
     //console.log(this.name, [resource, production_time, current])
@@ -314,6 +320,28 @@ Building.prototype.produce  = function () {
   
 }
 
+
+/**
+ * Get building production time based on level, workers...
+ * @memberof Building
+ * @name get_production_time
+ * @instance
+ * @method
+ */
+Building.prototype.get_production_time  = function (base_time) {
+  var work_count = 1;
+  work_count += this.workers.count;
+  
+  var percentage = People.settings.characters.citizen.efficiency;
+  
+  var new_time = base_time;
+  for (c = 1; c <= work_count; c ++) {
+    new_time = new_time * (100 - percentage) / 100;
+  }
+  
+  return new_time;
+}
+  
 
 /**
  * Consume resources (called by update loop).

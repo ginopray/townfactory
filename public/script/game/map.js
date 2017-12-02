@@ -72,8 +72,6 @@ var Map = {
     phaser_object.groups.layers = {};
     // Base layer
     phaser_object.groups.layers.base = game.add.group();
-    // Icons layer
-    phaser_object.groups.layers.icons = game.add.group();
     
     // Roads.
     phaser_object.groups.roads = game.add.group();
@@ -81,6 +79,9 @@ var Map = {
     phaser_object.groups.buildings = game.add.group();
     // Resources.
     phaser_object.groups.resources = game.add.group();
+    
+    // Icons layer
+    phaser_object.groups.layers.icons = game.add.group();
     
     // Characters
     phaser_object.groups.characters = {};
@@ -114,7 +115,7 @@ var Map = {
         Map.settings.tileWidth,
         Map.settings.tileHeight
       ),
-      color: 'rgba(244, 67, 54, .3)'
+      color: 'rgba(0, 150, 136, 0.1)'
     };
     
     
@@ -197,7 +198,8 @@ var Map = {
     game.physics.arcade.overlap(
       phaser_object.groups.resources,
       phaser_object.groups.resources,
-      Map.resource_overlap
+      Map.resource_overlap,
+      Map.check_resource_overlap
     );
     
     // Resources and roads overlapping.
@@ -205,8 +207,10 @@ var Map = {
       phaser_object.groups.resources,
       phaser_object.groups.roads,
       Roads.flow,
-      Map.full_overlap
+      Map.check_road_overlap
     );
+    //Map.roads_overlap();
+    
     
     // Character overlap building.
     /*
@@ -218,7 +222,7 @@ var Map = {
     */
     // Collisions.
     // Resource collide with building.
-    game.physics.arcade.collide(
+    game.physics.arcade.overlap(
       phaser_object.groups.resources,
       phaser_object.groups.buildings,
       Production.receive
@@ -246,7 +250,34 @@ var Map = {
     // Update helper
     phaser_object.helper.centerX = ((coords.x - 1) * Map.settings.tileWidth) + (Map.settings.tileWidth / 2);
     phaser_object.helper.centerY = ((coords.y - 1) * Map.settings.tileHeight) + (Map.settings.tileHeight / 2);
+    //phaser_object.helper.left = ((coords.x - 1) * Map.settings.tileWidth);
+    //phaser_object.helper.top = ((coords.y - 1) * Map.settings.tileHeight);
     
+  },
+  
+  
+  /**
+   * Roads overlap.
+   * @memberof Map
+   * @name roads_overlap
+   * @method
+   * @deprecated
+   */
+  roads_overlap : function (group1, group2, callback, process) {
+    // Resources.
+    for (var r in GameApp.data.resources) {
+      var resource = GameApp.data.resources[r];
+      // Roads.
+      for (var x in GameApp.data.roads.items) {
+        for (var y in GameApp.data.roads.items[x]) {
+          var road = GameApp.data.roads.items[x][y];
+          // Check road overlap.
+          if (Map.check_road_overlap(resource.sprite, road.sprite))
+            // Flow!
+            Roads.flow(resource.sprite, road.sprite);
+        }
+      }
+    }
   },
   
   
@@ -439,19 +470,72 @@ var Map = {
   
   
   /**
+   * Get array of tiles occupied by an item.
+   * @memberof Map
+   * @name get_item_tiles
+   * @method
+   * @param {number} start_x - X starting position to check.
+   * @param {number} start_y - Y starting position to check.
+   * @param {object} sprite - Sprite.
+   * @return {array} Array of tiles.
+   */
+  get_item_tiles : function (sprite) {
+    var ret = new Array();
+    
+    var rect = sprite.getBounds();
+    rect.centerX = sprite.centerX;
+    rect.centerY = sprite.centerY;
+    
+    var tile = Map.coord2tile({x: rect.left, y: rect.top});
+    
+    var end_x = tile.x + (rect.width / Map.settings.tileWidth) - 1;
+    var end_y = tile.y + (rect.height / Map.settings.tileHeight) - 1;
+    
+    //console.log("x" + tile.x+":"+end_x + " y " + tile.y+":"+end_y);
+    
+    for (var x = tile.x; x <= end_x; x ++) {
+      for (var y = tile.y; y <= end_y; y ++) {
+        ret.push({
+          x: x,
+          y: y
+        });
+      }
+    }
+
+    /*phaser_object.debug.geom[1] = {
+      geom: rect,
+      color: '#ff0000'
+    };*/
+    
+    return ret;
+  },
+  
+  
+  /**
    * Check if a slot is free.
    * @memberof Map
    * @name check_free_slot
    * @method
    * @param {number} x - X position to find.
    * @param {number} y - Y position to find.
+   * @param {obj} obj - The object to build.
    * @return {boolean}
    */
-  check_free_slot : function (x, y) {
+  check_free_slot : function (x, y, obj) {
+    
     var find = Map.find(x, y);
     for (var type in find) {
       if (find[type] !== false) {
-        return false;
+        // Check ground.
+        var ground1 = obj.ground;
+        var ground2 = find[type].ground;
+        if (typeof ground1 === "undefined")
+          ground1 = 0;
+        if (typeof ground2 === "undefined")
+          ground2 = 0;
+        // Return false if same ground.
+        if (ground1 === ground2)
+          return false;
       }
     }
     return true;
@@ -521,10 +605,40 @@ var Map = {
    * @param {number} y - Y position to find.
    * @return {object} The building.
    */
-  find_road : function (x, y) {
-    if (typeof GameApp.data.roads.items[x] === "undefined" || typeof GameApp.data.roads.items[x][y] === "undefined")
+  find_road : function (x, y, ground) {
+    if (typeof GameApp.data.roads.items[x] === "undefined" || 
+        typeof GameApp.data.roads.items[x][y] === "undefined" ||
+        (typeof ground !== "undefined" &&
+        (typeof GameApp.data.roads.items[x][y].ground === "undefined" || GameApp.data.roads.items[x][y].ground != ground))
+        ) {
+      /*if (GameApp.data.roads.items[x] && GameApp.data.roads.items[x][y])
+        console.log("delete ground " + ground, GameApp.data.roads.items[x][y].ground);*/
       return false;
+    }
     return GameApp.data.roads.items[x][y];
+    
+    /*
+    var tile_rect = Map.get_tile({
+      x: x,
+      y: y,
+      w: Map.settings.tileWidth,
+      h: Map.settings.tileHeight
+    });
+    
+    for (var rx in GameApp.data.roads.items) {
+      for (var ry in GameApp.data.roads.items[rx]) {
+        var road = GameApp.data.roads.items[rx][ry];
+
+        var road_rect = road.sprite.getBounds();
+        road_rect.centerX = road.sprite.centerX;
+        road_rect.centerY = road.sprite.centerY;
+        
+        if (road_rect.contains(tile_rect.centerX, tile_rect.centerY))
+          return road;
+      }
+    }
+    return false;*/
+    
   },
   
   
@@ -577,8 +691,64 @@ var Map = {
   full_overlap : function (item, container) {
     var boundsA = item.getBounds();
     var boundsB = container.getBounds();
-    //return boundsB.containsRect(boundsA);
     return boundsB.contains(boundsA.centerX, boundsA.centerY);
+  },
+  
+  
+  /**
+   * Check resources and roads overlap.
+   * @memberof Map
+   * @name check_road_overlap
+   * @method   
+   * @param {object} resource - Resource sprite.
+   * @param {object} road - Road sprite.
+   */
+  check_road_overlap : function (resource, road) {
+    if (!Map.full_overlap(resource, road))
+      return false;
+    // Check ground.
+    // Return true if same ground OR same group_id.
+    if (typeof resource.custom_road !== "undefined" && 
+        resource.custom_ground != road.custom_ground &&
+        resource.custom_road.custom_group_id != road.custom_group_id) {
+      return false;
+    }
+  },
+  
+  
+  /**
+   * Check resource overlap.
+   * @memberof Map
+   * @name check_resource_overlap
+   * @method
+   * @param {object} r1 - Resource 1 sprite.
+   * @param {object} r2 - Resource 2 sprite.
+   */
+  check_resource_overlap : function (r1, r2) {
+    if (typeof r1 === "undefined" || 
+        typeof r2 === "undefined" ||
+        typeof r1.custom_road === "undefined" ||
+        typeof r2.custom_road === "undefined" || 
+        (r1.custom_ground != r2.custom_ground &&
+         r1.custom_road.custom_group_id != r2.custom_road.custom_group_id)
+       )
+      return false;
+    
+    return true;
+  },
+  
+  
+  /**
+   * Check sprites overlapping.
+   * @memberof Map
+   * @name intersects
+   * @method
+   * @param {object} a - Item A.
+   * @param {object} b - Item B.
+   * @return {boolean} Returns true if items are overlapping.
+   */
+  intersects : function (a, b) {
+    return b.intersects(a);
   },
   
 

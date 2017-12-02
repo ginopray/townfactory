@@ -150,6 +150,7 @@ var Board = {
     var html = "";
     var html_production = Board.get_building_production(building);
     var html_request = Board.get_building_request(building.request);
+    var html_workers = Board.get_building_workers(building.workers);
     var html_warehouse = Board.get_building_warehouse(building.warehouse);
     html += '<div>';
     // Building name.
@@ -162,6 +163,10 @@ var Board = {
     if (html_production != "") {
       html += '<div><h3>' + Main.t('Production') + '</h3>' + html_production + '</div>';
       // html += '<div>Active: ' + building.power_switch + '</div>';
+    }
+    // Request info.
+    if (html_workers != "") {
+      html += '<div><h3>' + Main.t('Workers') + '</h3>' + html_workers + '</div>';
     }
     // Request info.
     if (html_request != "") {
@@ -255,6 +260,18 @@ var Board = {
     }
     html += '</div>';
     return html;
+  },
+  
+  
+  /**
+   * Get the information view about building workers.
+   * @memberof Board
+   * @name get_building_workers
+   * @method
+   * @param {object} workers - workers object.
+   */
+  get_building_workers : function (workers) {
+    return "Count: " + workers.count;
   },
   
   

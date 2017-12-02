@@ -38,10 +38,16 @@ var Actions = {
     view: {},
     road: {
       directions: ['right', 'down', 'left', 'up'],
-      dir_angles: [0, 90, -180, -90]
+      dir_angles: [0, 90, -180, -90],
+      width: 1,
+      height: 1,
     },
     station: {
       inherit: "road",
+    },
+    subway: {
+      inherit: "road",
+      width: 3,
     },
     remove: {}
   },
@@ -100,7 +106,7 @@ var Actions = {
       GameApp.data.action.data = {};
     
     // Create helper sprite
-    Actions.set_helper(helper);
+    Actions.set_helper(helper, GameApp.data.action.data);
     
     // Update board.
     jQuery('#tools').children().removeClass('tool--selected');
@@ -115,15 +121,23 @@ var Actions = {
   * @method
   * @param {string} tool - The tool to use.
   */
-  set_helper : function (tool) {
+  set_helper : function (tool, action_data) {
+    
+    var width = action_data.width;
+    if (typeof width === "undefined")
+      width = 1;
+    var height = action_data.height;
+    if (typeof height === "undefined")
+      height = 1;
+    
     if (phaser_object.helper) {
       phaser_object.helper.destroy();
       phaser_object.helper = false;
     }
     if (tool != Actions.settings.default_tool) {
       phaser_object.helper = game.add.sprite(0, 0, 'helper-' + tool);
-      phaser_object.helper.width = Map.settings.helperWidth;
-      phaser_object.helper.height = Map.settings.helperHeight;
+      phaser_object.helper.width = Map.settings.helperWidth * width;
+      phaser_object.helper.height = Map.settings.helperHeight * height;
       phaser_object.helper.anchor.setTo(0.5, 0.5);
       phaser_object.helper.angle = 0;
     }

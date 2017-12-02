@@ -407,7 +407,7 @@
     
 
     
-    <h4 class="name" id=".check_free_slot"><span class="type-signature">(static) </span>check_free_slot<span class="signature">(x, y)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+    <h4 class="name" id=".check_free_slot"><span class="type-signature">(static) </span>check_free_slot<span class="signature">(x, y, obj)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
     
 
     
@@ -494,6 +494,29 @@
         </tr>
 
     
+
+        <tr>
+            
+                <td class="name"><code>obj</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">obj</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The object to build.</td>
+        </tr>
+
+    
     </tbody>
 </table>
 
@@ -531,7 +554,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line441">line 441</a>
+        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line514">line 514</a>
     </li></ul></dd>
     
 
@@ -572,6 +595,322 @@
 </dl>
 
     
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".check_resource_overlap"><span class="type-signature">(static) </span>check_resource_overlap<span class="signature">(r1, r2)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Check resource overlap.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>r1</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Resource 1 sprite.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>r2</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Resource 2 sprite.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line719">line 719</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".check_road_overlap"><span class="type-signature">(static) </span>check_road_overlap<span class="signature">(resource, road)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Check resources and roads overlap.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>resource</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Resource sprite.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>road</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Road sprite.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line698">line 698</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -684,7 +1023,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line425">line 425</a>
+        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line456">line 456</a>
     </li></ul></dd>
     
 
@@ -792,7 +1131,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line305">line 305</a>
+        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line336">line 336</a>
     </li></ul></dd>
     
 
@@ -973,7 +1312,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line461">line 461</a>
+        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line545">line 545</a>
     </li></ul></dd>
     
 
@@ -1176,7 +1515,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line487">line 487</a>
+        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line571">line 571</a>
     </li></ul></dd>
     
 
@@ -1356,7 +1695,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line744">line 744</a>
+        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line914">line 914</a>
     </li></ul></dd>
     
 
@@ -1536,7 +1875,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line515">line 515</a>
+        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line599">line 599</a>
     </li></ul></dd>
     
 
@@ -1716,7 +2055,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line531">line 531</a>
+        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line645">line 645</a>
     </li></ul></dd>
     
 
@@ -1896,7 +2235,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line549">line 549</a>
+        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line663">line 663</a>
     </li></ul></dd>
     
 
@@ -2054,7 +2393,7 @@ Sets a timeout based on Map.settings.friction_rate while sprite exists.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line376">line 376</a>
+        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line407">line 407</a>
     </li></ul></dd>
     
 
@@ -2212,7 +2551,7 @@ Sets a timeout based on Map.settings.friction_rate while sprite exists.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line568">line 568</a>
+        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line682">line 682</a>
     </li></ul></dd>
     
 
@@ -2320,7 +2659,7 @@ Sets a timeout based on Map.settings.friction_rate while sprite exists.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line285">line 285</a>
+        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line316">line 316</a>
     </li></ul></dd>
     
 
@@ -2455,7 +2794,7 @@ Sets a timeout based on Map.settings.friction_rate while sprite exists.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line691">line 691</a>
+        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line861">line 861</a>
     </li></ul></dd>
     
 
@@ -2563,7 +2902,7 @@ Sets a timeout based on Map.settings.friction_rate while sprite exists.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line677">line 677</a>
+        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line847">line 847</a>
     </li></ul></dd>
     
 
@@ -2602,6 +2941,209 @@ Sets a timeout based on Map.settings.friction_rate while sprite exists.
     <dd>
         
 <span class="param-type">number</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".get_item_tiles"><span class="type-signature">(static) </span>get_item_tiles<span class="signature">(start_x, start_y, sprite)</span><span class="type-signature"> &rarr; {array}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Get array of tiles occupied by an item.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>start_x</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">X starting position to check.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>start_y</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Y starting position to check.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>sprite</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Sprite.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line472">line 472</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Array of tiles.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">array</span>
 
 
     </dd>
@@ -2743,7 +3285,7 @@ Sets a timeout based on Map.settings.friction_rate while sprite exists.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line787">line 787</a>
+        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line957">line 957</a>
     </li></ul></dd>
     
 
@@ -2923,7 +3465,7 @@ Sets a timeout based on Map.settings.friction_rate while sprite exists.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line404">line 404</a>
+        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line435">line 435</a>
     </li></ul></dd>
     
 
@@ -3065,6 +3607,186 @@ Sets a timeout based on Map.settings.friction_rate while sprite exists.
     
 
     
+    <h4 class="name" id=".intersects"><span class="type-signature">(static) </span>intersects<span class="signature">(a, b)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Check sprites overlapping.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>a</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Item A.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>b</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Item B.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line741">line 741</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Returns true if items are overlapping.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
     <h4 class="name" id=".path_grid"><span class="type-signature">(static) </span>path_grid<span class="signature">(obj, target)</span><span class="type-signature"></span></h4>
     
 
@@ -3189,7 +3911,7 @@ Sets a timeout based on Map.settings.friction_rate while sprite exists.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line331">line 331</a>
+        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line362">line 362</a>
     </li></ul></dd>
     
 
@@ -3275,7 +3997,7 @@ Sets a timeout based on Map.settings.friction_rate while sprite exists.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line602">line 602</a>
+        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line772">line 772</a>
     </li></ul></dd>
     
 
@@ -3456,7 +4178,95 @@ Set "custom_overlap" property to the sprite.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line585">line 585</a>
+        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line755">line 755</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".roads_overlap"><span class="type-signature">(static) </span>roads_overlap<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Roads overlap.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <dt class="important tag-deprecated">Deprecated:</dt><dd class="yes-def tag-deprecated"><ul class="dummy"><li>Yes</li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line259">line 259</a>
     </li></ul></dd>
     
 
@@ -3542,7 +4352,7 @@ Set "custom_overlap" property to the sprite.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line253">line 253</a>
+        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line284">line 284</a>
     </li></ul></dd>
     
 
@@ -3628,7 +4438,7 @@ Set "custom_overlap" property to the sprite.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line143">line 143</a>
+        <a href="game_map.js.html">game/map.js</a>, <a href="game_map.js.html#line144">line 144</a>
     </li></ul></dd>
     
 
@@ -3672,13 +4482,13 @@ Set "custom_overlap" property to the sprite.
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Building.html">Building</a></li><li><a href="Character.html">Character</a></li><li><a href="Citizen.html">Citizen</a></li><li><a href="Icon.html">Icon</a></li><li><a href="Resource.html">Resource</a></li><li><a href="Road.html">Road</a></li><li><a href="Station.html">Station</a></li><li><a href="Village.html">Village</a></li></ul><h3>Namespaces</h3><ul><li><a href="Actions.html">Actions</a></li><li><a href="Board.html">Board</a></li><li><a href="Buildings.html">Buildings</a></li><li><a href="Database.html">Database</a></li><li><a href="GameApp.html">GameApp</a></li><li><a href="Icons.html">Icons</a></li><li><a href="Main.html">Main</a></li><li><a href="Map.html">Map</a></li><li><a href="People.html">People</a></li><li><a href="Production.html">Production</a></li><li><a href="Resources.html">Resources</a></li><li><a href="Roads.html">Roads</a></li></ul><h3>Global</h3><ul><li><a href="global.html#game">game</a></li><li><a href="global.html#phaser_object">phaser_object</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Building.html">Building</a></li><li><a href="Character.html">Character</a></li><li><a href="Citizen.html">Citizen</a></li><li><a href="Icon.html">Icon</a></li><li><a href="Resource.html">Resource</a></li><li><a href="Road.html">Road</a></li><li><a href="Station.html">Station</a></li><li><a href="Subway.html">Subway</a></li><li><a href="Village.html">Village</a></li></ul><h3>Namespaces</h3><ul><li><a href="Actions.html">Actions</a></li><li><a href="Board.html">Board</a></li><li><a href="Buildings.html">Buildings</a></li><li><a href="Database.html">Database</a></li><li><a href="GameApp.html">GameApp</a></li><li><a href="Icons.html">Icons</a></li><li><a href="Main.html">Main</a></li><li><a href="Map.html">Map</a></li><li><a href="People.html">People</a></li><li><a href="Production.html">Production</a></li><li><a href="Resources.html">Resources</a></li><li><a href="Roads.html">Roads</a></li></ul><h3>Global</h3><ul><li><a href="global.html#game">game</a></li><li><a href="global.html#phaser_object">phaser_object</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Nov 20 2017 18:51:06 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sat Dec 02 2017 10:02:24 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>

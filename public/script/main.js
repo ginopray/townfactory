@@ -45,6 +45,8 @@ var game;
  * @property {object} inputs.mouse.selection - Mouse selection object.
  * @property {object} inputs.keyboard - keyboard data.
  * @property {array} inputs.keyboard.keys - keyboard keys list.
+ * @property {object} debug - Debug object.
+ * @property {array} debug.geom - Debug geometries.
  * @global
  * @example // Creating buildings group:
  * phaser_object.groups.buildings = game.add.group();
@@ -65,7 +67,10 @@ var phaser_object = {
       keys: [],
     }
   },
-  helper: false
+  helper: false,
+  debug: {
+    geom: [],
+  }
 };
 
 

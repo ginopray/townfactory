@@ -19,9 +19,23 @@ var People = {
    * @name settings
    * @type {object}
    * @property {number} people_level - People per village level.
+   * @property {object} characters - Characters settings.
+   * @property {object} characters.citizen - Citizens settings.
+   * @property {number} characters.citizen.speed - Citizen speed.
+   * @property {number} characters.citizen.working_time - Working time.
+   * @property {number} characters.citizen.sleeping_time - Sleeping time.
+   * @property {number} characters.citizen.efficiency - How much a citizen reduces the working time, in %.
    */
   settings : {
     people_level: 10,
+    characters: {
+      citizen: {
+        speed: 300,
+        working_time: 10,
+        sleeping_time: 1,
+        efficiency: 15,
+      }
+    }
   },
   
   
@@ -133,9 +147,9 @@ var People = {
  * @property {string} name - Character name.
  * @property {object} action - Character action object.
  * @property {object} action.current - Current action.
- * @property {array} action.path - His path.
+ * @property {array}  action.path - His path.
  * @property {number} action.path_target - Target tile of the path.
- * @property {object|undefined} action.target - Target object.
+ * @property {object|undefined} action.target - Target object of the action.
  * @property {object} talking - Character talking object.
  * @property {object} talking.sprite - Talking sprite.
  * @example
@@ -160,7 +174,7 @@ var Character = function () {
   this.action = {};
   
   // Speed
-  this.speed = 300;
+  this.speed = People.settings.characters.citizen.speed;
   
 }
 
@@ -223,7 +237,7 @@ Character.prototype.spawn = function () {
   
   // Physics.
   game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
-  this.sprite.body.collideWorldBounds = true;
+  this.sprite.body.collideWorldBounds = false;
   
   // Save item id on the sprite.
   this.sprite.custom_id = this.id;
@@ -327,7 +341,7 @@ Character.prototype.walk = function () {
     if (typeof this.action.path_target === "undefined")
       tile_i = -1;
     else {
-      //console.log("salto");
+      // Out of path (cutting path with diagonals).
       return;
     }
   }
@@ -407,10 +421,10 @@ Character.prototype.stop_walk = function () {
       // Home: sleep!
       if (building.id == this.home.id) {
         // Sleep!
-        this.new_action('sleep');        
+        this.new_action('sleep', {building: building});        
       } else {
         // Work!
-        this.new_action('work');
+        this.new_action('work', {building: building});
       }
       return;
     }
@@ -532,7 +546,7 @@ Citizen.prototype.new_action = function (action, vars) {
   
   // Work.
   } else if (action == "work") {
-    this.start_work();
+    this.start_work(vars.building);
     
   // Sleep.
   } else if (action == "sleep") {
@@ -561,6 +575,14 @@ Citizen.prototype.new_action = function (action, vars) {
  */
 Citizen.prototype.start_work = function (building) {
  this.action.current = "work";
+ // Set target building.
+ this.action.target = building;
+ // Increment workers count.
+ building.workers.count ++;
+  
+ // Move sprite
+ this.sprite.left = building.sprite.left + ((building.workers.count - 1) * (Map.settings.character.citizen.width / 2));
+ this.sprite.centerY = building.sprite.bottom;
 }
 
 
@@ -572,7 +594,7 @@ Citizen.prototype.start_work = function (building) {
  * @method
  */
 Citizen.prototype.work = function () {
-  var working_time = 1;
+  var working_time = People.settings.characters.citizen.working_time;
   if ((Date.now() - this.action.date_ini) / 1000 > working_time) {
     this.stop_work();
   }
@@ -587,7 +609,9 @@ Citizen.prototype.work = function () {
  * @method
  */
 Citizen.prototype.stop_work = function () {
-
+  // Decrease workers count..
+  this.action.target.workers.count --;
+  // New action: go home!
   this.go_home();
   
 }
@@ -614,7 +638,7 @@ Citizen.prototype.start_sleep = function () {
  * @method
  */
 Citizen.prototype.sleep = function () {
-  var sleeping_time = 1;
+  var sleeping_time = People.settings.characters.citizen.sleeping_time;
   if ((Date.now() - this.action.date_ini) / 1000 > sleeping_time) {
     this.stop_sleep();
   }

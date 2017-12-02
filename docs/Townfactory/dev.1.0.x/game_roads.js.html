@@ -39,7 +39,40 @@
  * @namespace
  * @classdesc Roads functions.
  */
-var Roads = {  
+var Roads = {
+  
+  /**
+   * People settings.
+   * @memberof Roads
+   * @name settings
+   * @type {object}
+   * @property {object} road - Road settings.
+   * @property {object} road.base - Default road settings.
+   * @property {number} road.base.speed - Default road speed.
+   * @property {number} road.base.width - Default road width.
+   * @property {number} road.base.height - Default road height.
+   * @property {number} road.subclass.property - Each subclass can override any property.
+   * @property {object} characters.citizen - Citizens settings.
+   * @property {number} characters.citizen.speed - Citizen speed.
+   * @property {number} characters.citizen.working_time - Working time.
+   * @property {number} characters.citizen.sleeping_time - Sleeping time.
+   * @property {number} characters.citizen.efficiency - How much a citizen reduces the working time, in %.
+   */
+  settings : {
+    road: {
+      base: {
+        speed: 80,
+        width: 1,
+        height: 1,
+      },
+      station: {
+      },
+      subway: {
+        width: 3,
+      },
+    }
+  },
+  
   
   /**
    * Init Roads.
@@ -64,24 +97,46 @@ var Roads = {
     if (GameApp.data.action.locked === true) {
       return;
     }
-    
-    // Check for free space.
-    if (!Map.check_free_slot(tile.x, tile.y)) {
-      return;
-    }
-    
+        
     var item = "road";
     var type = GameApp.data.action.data.type;
+    // Default settings.
+    //var settings = {};
+    //Object.assign(settings, Roads.settings.road.base);
     
-    if (GameApp.data.action.subclass == "station") {
-      item = "station";
-      
+    // Is a subclass?
+    if (typeof GameApp.data.action.subclass !== "undefined") {
+      item = GameApp.data.action.subclass;
+      // Subclass settings.
+      /*for (var d in Roads.settings.road[item]) {
+        settings[d] = Roads.settings.road[item][d];
+      }*/
+    }
+
+    
+    // Find tiles to check by helper.
+    var slots = Map.get_item_tiles(phaser_object.helper);
+    
+    /*for (var s in slots) {
+      // Check for free space.
+      if (!Map.check_free_slot(slots[s].x, slots[s].y)) {
+        return;
+      }
+    }*/
+    
+    /*if (!Map.check_free_slot(tile.x, tile.y)) {
+      return;
+    }*/
+    
+    // Check build station.
+    if (item == "station") {
       // Check for right position and get input-output.
       var in_out = Roads.check_build_station(tile, GameApp.data.action.data.direction);
       if (in_out === false) {
         return;
       }
     }
+
     
     // Check resources.
     var requires = Production.get_item_costs(item, type);
@@ -92,21 +147,75 @@ var Roads = {
     
     GameApp.data.action.locked = true;
     
-    // Create station...
-    if (item == "station") {    
-      var road = new Station(type, tile.x, tile.y, GameApp.data.action.data.direction, in_out);
+    var to_append = new Array();
+    
+    // Get new "group of road" id.
+    var group_id = ++ GameApp.data.indexes.roads_groups;
+    
+    // Create element for each tile occupied by the road.
+    for (var s in slots) {
+      /*if (slots[s].x == tile.x &amp;&amp; slots[s].y == tile.y)
+        continue;*/            
       
-    // or create a road...
-    } else {
-      var road = new Road(type, tile.x, tile.y, GameApp.data.action.data.direction);
+      // Create station...
+      if (item == "station") {    
+        var road = new Station(type, slots[s].x, slots[s].y, GameApp.data.action.data.direction, in_out);
+
+      // Create station...
+      } else if (item == "subway") {
+        
+        // First and last tile: set in_out.
+        // In tile.
+        if (
+          (s == 0 &amp;&amp; (GameApp.data.action.data.direction == "right" || GameApp.data.action.data.direction == "down")) ||
+          (s == slots.length - 1 &amp;&amp; (GameApp.data.action.data.direction == "left" || GameApp.data.action.data.direction == "up"))
+        ) {
+          var road = new Subway(type, slots[s].x, slots[s].y, GameApp.data.action.data.direction, 1);
+        // Out tile.
+        } else if (
+          (s == slots.length - 1 &amp;&amp; (GameApp.data.action.data.direction == "right" || GameApp.data.action.data.direction == "down")) ||
+          (s == 0 &amp;&amp; (GameApp.data.action.data.direction == "left" || GameApp.data.action.data.direction == "up"))
+        ) {
+          var road = new Subway(type, slots[s].x, slots[s].y, GameApp.data.action.data.direction, 0);
+        // Central tile.
+        } else {
+          var road = new Subway(type, slots[s].x, slots[s].y, GameApp.data.action.data.direction);
+        }
+
+      // Create a regular road.
+      } else {
+        var road = new Road(type, slots[s].x, slots[s].y, GameApp.data.action.data.direction);
+      }
+      
+      // Set the id of the group.
+      road.group_id = group_id;
+            
+      // Check free slot.
+      if (!Map.check_free_slot(slots[s].x, slots[s].y, road)) {
+        GameApp.data.action.locked = false;
+        return;
+      }
+      
+      // Prepare array.
+      to_append.push({
+        x: slots[s].x,
+        y: slots[s].y,
+        road: road
+      });
+    
     }
     
-    // ...and append it to GameApp.data.roads.
-    if (typeof GameApp.data.roads.items[tile.x] === "undefined")
-      GameApp.data.roads.items[tile.x] = new Array();
-    GameApp.data.roads.items[tile.x][tile.y] = road;
-    // Spawn!
-    road.spawn();
+    // Create roads!
+    for (var i in to_append) {
+      var r = to_append[i];
+      // Append road to GameApp.data.roads.
+      if (typeof GameApp.data.roads.items[r.x] === "undefined")
+        GameApp.data.roads.items[r.x] = new Array();
+      GameApp.data.roads.items[r.x][r.y] = r.road;
+
+      // Spawn!
+      r.road.spawn();
+    }
     
     GameApp.data.action.locked = false;
     
@@ -134,12 +243,17 @@ var Roads = {
   tool_init : function () {
     var ret = {
       type: 1,
-      direction: Actions.tools.road.directions[0]
+      direction: Actions.tools.road.directions[0],
     };
-    if (typeof GameApp.data.action.subclass !== "undefined" &amp;&amp;
-       GameApp.data.action.subclass == "station") {
-      ret.subclass = "station";
+    // Default settings.
+    Object.assign(ret, Actions.tools.road);
+    
+    // Subclass.
+    if (typeof GameApp.data.action.subclass !== "undefined") {
+      ret.subclass = GameApp.data.action.subclass;
+      Object.assign(ret, Actions.tools[ret.subclass]);
     }
+
     return ret;
   },
   
@@ -226,39 +340,64 @@ var Roads = {
    * @param {object} item - Sprite to move.
    */
   flow : function (item, road) {
+    
     // Set current overlapping road.
     item.custom_road = road;
     
-    //console.log('angle: ' + road.angle + ', muovo: ' + item.key, {road: road, item: item});
-    var speed = 100;
-    var pad = 10;
+    // Set the ground!
+    if (road.custom_downstair == 1)
+      item.custom_ground = road.custom_ground - 1;
+    else
+      item.custom_ground = road.custom_ground;
+        
+    var speed = road.custom_speed;
+    var pad = 2;
     var angle = road.angle;
-    // Move item toward the center of the road.
-    // Left-right.
-    if (road.angle == 0 || Math.abs(road.angle) == 180) {
-      if (item.centerY &lt; road.centerY - pad) {
-        angle = 90;
-      } else if (item.centerY > (road.centerY + pad)) {
-        angle = -90;
-      }
-      //item.centerY = road.centerY;
-    // Up-Down.
-    } else {
-      if (item.centerX &lt; road.centerX - pad) {
-        angle = 0;
-      } else if (item.centerX > (road.centerX + pad)) {
-        angle = 180;
-      }
-      //item.centerX = road.centerX;
-    }
-    
-    // Always set angle...
-    
-    // ...but move if precedence.
+        
+    // Check precedence.
     if (Roads.check_precedence(item, road)) {
+      
+      // Move item toward the center of the road.
+      // Left-right.
+      if (road.angle == 0 || Math.abs(road.angle) == 180) {
+        if (item.centerY &lt; road.centerY - pad) {
+          angle = 90;
+        } else if (item.centerY > (road.centerY + pad)) {
+          angle = -90;
+        }
+        //item.centerY = road.centerY;
+
+      // Up-Down.
+      } else {
+        if (item.centerX &lt; road.centerX - pad) {
+          angle = 0;
+        } else if (item.centerX > (road.centerX + pad)) {
+          angle = 180;
+        }
+        //item.centerX = road.centerX;
+
+      }
+
       // Set angle and speed.
       game.physics.arcade.velocityFromAngle(angle, speed, item.body.velocity);
+    } else {
+      // Stop resource!
+      Roads.stop(item);
     }
+  },
+  
+  
+  /**
+   * Stop item.
+   * @memberof Roads
+   * @name stop
+   * @instance
+   * @method
+   * @param {object} sprite - The sprite to stop.
+   */
+  stop : function (sprite) {
+    sprite.body.velocity.x = 0;
+    sprite.body.velocity.y = 0;
   },
   
   
@@ -268,7 +407,8 @@ var Roads = {
    * @name check_precedence
    * @instance
    * @method
-   * @param {object} sprite - The sprite to check.
+   * @param {object} item - The sprite to check.
+   * @param {object} road - The road.
    */
   check_precedence : function (item, road) {
     var over_item;
@@ -292,18 +432,38 @@ var Roads = {
       if (road.angle == 0) {
         if (item.x &lt; over_item.x)
           return false;
+        // Facing: precedence to the right.
+        else if (item.x == over_item.x &amp;&amp; item.custom_road.custom_id == over_item.custom_road.custom_id) {
+          if (item.y &lt; over_item.y)
+            return false;
+        }
       // Down.
       } else if (road.angle == 90) {
         if (item.y &lt; over_item.y)
           return false;
+        // Facing: precedence to the right.
+        else if (item.y == over_item.y &amp;&amp; item.custom_road.custom_id == over_item.custom_road.custom_id) {
+          if (item.x > over_item.x)
+            return false;
+        }
       // Left.
       } else if (Math.abs(road.angle) == 180) {
         if (item.x > over_item.x)
           return false;
+        // Facing: precedence to the right.
+        else if (item.x == over_item.x &amp;&amp; item.custom_road.custom_id == over_item.custom_road.custom_id) {
+          if (item.y > over_item.y)
+            return false;
+        }
       // Up.
       } else if (road.angle == -90 || road.angle == 270) {
         if (item.y > over_item.y)
           return false;
+        // Facing: precedence to the right.
+        else if (item.y == over_item.y &amp;&amp; item.custom_road.custom_id == over_item.custom_road.custom_id) {
+          if (item.x &lt; over_item.x)
+            return false;
+        }
       }
     }
     return true;
@@ -445,8 +605,6 @@ var Roads = {
     
     return false;
   },
-
-  
   
 };
 
@@ -467,18 +625,27 @@ var Roads = {
  * @property {number} pos_x - x (tile) position.
  * @property {number} pos_y - y (tile) position.
  * @property {string} direction - up/down/left/right.
+ * @property {number} ground - ground level. Default = 0
  */
 var Road = function (type, pos_x, pos_y, direction) {
   
   if (typeof type === "undefined")
     return;
   
+  // Default settings.
+  this.set_defaults(Roads.settings.road.base);
+  
   // Set item ID.
   this.id = ++ GameApp.data.indexes.roads;
+  // Type.
   this.type = type;
+  // Position (in tiles).
   this.pos_x = pos_x;
   this.pos_y = pos_y;
+  // Direction.
   this.direction = direction;
+  // Ground.
+  this.ground = 0;
   
 };
 
@@ -490,14 +657,19 @@ var Road = function (type, pos_x, pos_y, direction) {
  * @instance
  * @method
  */
-Road.prototype.spawn  = function () {
+Road.prototype.spawn = function () {
   
   var img;
   // Road image.
-  if (this.subclass == "station") {
-    img = "station-" + this.in_out;
+  if (typeof this.subclass !== "undefined") {
+    img = this.subclass;
+    
   } else {
     img = "road";
+  }
+  
+  if (typeof this.in_out !== "undefined") {
+    img += '-' + this.in_out;
   }
   
   // Get the tile coordinates.
@@ -508,9 +680,34 @@ Road.prototype.spawn  = function () {
   
   // Save item id on the sprite.
   this.sprite.custom_id = this.id;
+  // Save group_id
+  this.sprite.custom_group_id = this.group_id;
   // Save map (tile) coordinates.
   this.sprite.custom_pos_x = this.pos_x;
   this.sprite.custom_pos_y = this.pos_y;
+  // Save speed.
+  this.sprite.custom_speed = this.speed;
+  // Save ground.
+  this.sprite.custom_ground = this.ground;
+  // Save in_out.
+  this.sprite.custom_in_out = this.in_out;
+  this.sprite.custom_downstair = this.downstair;
+  
+  // Set direction angle.
+  var direction_index = Actions.tools.road.directions.indexOf(this.direction);
+  this.sprite.angle = Actions.tools.road.dir_angles[direction_index];
+  
+  // Center anchor.
+  this.sprite.anchor.setTo(0.5, 0.5);
+  
+  // Setting the size.
+  this.sprite.width = Map.settings.tileWidth;// * this.width;
+  this.sprite.height = Map.settings.tileHeight;// * this.height;
+  // Position.
+  //this.sprite.top = tile.top;
+  //this.sprite.left = tile.left;
+  this.sprite.centerX = tile.centerX;
+  this.sprite.centerY = tile.centerY;
   
   // Physics.
   game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
@@ -520,18 +717,10 @@ Road.prototype.spawn  = function () {
   this.sprite.body.checkCollision.right = false;
   this.sprite.body.immovable = true;
   
-  // Center anchor.
-  this.sprite.anchor.setTo(0.5, 0.5);
-  
-  // Setting the size.
-  this.sprite.width = Map.settings.tileWidth;
-  this.sprite.height = Map.settings.tileHeight;
-  this.sprite.top = tile.top;
-  this.sprite.left = tile.left;
-  
-  // Set direction angle.
-  var direction_index = Actions.tools.road.directions.indexOf(this.direction);
-  this.sprite.angle = Actions.tools.road.dir_angles[direction_index];
+  // Subway!
+  if (this.ground &lt; 0) {
+    this.sprite.alpha = 0.3;
+  }
   
 }
 
@@ -543,7 +732,7 @@ Road.prototype.spawn  = function () {
  * @instance
  * @method
  */
-Road.prototype.remove  = function () {
+Road.prototype.remove = function () {
   //console.log("REMOVE ROAD!", this);
   if (typeof GameApp.data.roads.items[this.pos_x] === "undefined" ||
       typeof GameApp.data.roads.items[this.pos_x][this.pos_y] === "undefined")
@@ -557,6 +746,18 @@ Road.prototype.remove  = function () {
 }
 
 
+/**
+ * Set defaults.
+ * @memberof Road
+ * @name set_defaults
+ * @instance
+ * @method
+ */
+Road.prototype.set_defaults = function (settings) {
+
+  Object.assign(this, settings);
+
+}
 
 
 /**
@@ -567,8 +768,8 @@ Road.prototype.remove  = function () {
  * @augments Road
  * @see Road
  * @property {string} subclass - Subclass name = "station".
- * @param {number} in_out - 1 = In, 0 = Out.
- * @property {number} in_out - 1 = In, 0 = Out.
+ * @param {number} in_out - In or Out station. 1 = In, 0 = Out.
+ * @property {number} in_out - In or Out station. 1 = In, 0 = Out.
  */
 var Station = function (type, pos_x, pos_y, direction, in_out) {
   // Call the parent constructor.
@@ -580,12 +781,56 @@ var Station = function (type, pos_x, pos_y, direction, in_out) {
   // Input or output.
   this.in_out = in_out;
   
+  // Station settings.
+  this.set_defaults(Roads.settings.road[this.subclass]);
+  
 }
 // Inherit Road
 Station.prototype = new Road();
 Station.prototype.constructor = Station;
 
-</code></pre>
+
+
+
+
+/**
+ * Subway class (children of Road).
+ * @name Subway
+ * @class
+ * @classdesc Create a subway.
+ * @augments Road
+ * @see Road
+ * @property {string} subclass - Subclass name = "subway".
+ * @param {number|undefined} in_out - In or Out tile. 1 = In, 0 = Out.
+ * @property {number|undefined} in_out - In or Out tile. 1 = In, 0 = Out.
+ */
+var Subway = function (type, pos_x, pos_y, direction, in_out) {
+  // Call the parent constructor.
+  Road.call(this, type, pos_x, pos_y, direction);
+  
+  // Define road as station.
+  this.subclass = "subway";
+  
+  // Subway settings.
+  this.set_defaults(Roads.settings.road[this.subclass]);
+  
+  // Input or output.
+  if (typeof in_out !== "undefined") {
+    this.in_out = in_out;
+    
+    if (in_out == 1)
+      this.downstair = 1;
+    
+  // Regular subway tile: ground = -1.
+  } else {
+    this.ground = -1;
+  }
+  
+  
+}
+// Inherit Road
+Subway.prototype = new Road();
+Subway.prototype.constructor = Subway;</code></pre>
         </article>
     </section>
 
@@ -595,13 +840,13 @@ Station.prototype.constructor = Station;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Building.html">Building</a></li><li><a href="Character.html">Character</a></li><li><a href="Citizen.html">Citizen</a></li><li><a href="Icon.html">Icon</a></li><li><a href="Resource.html">Resource</a></li><li><a href="Road.html">Road</a></li><li><a href="Station.html">Station</a></li><li><a href="Village.html">Village</a></li></ul><h3>Namespaces</h3><ul><li><a href="Actions.html">Actions</a></li><li><a href="Board.html">Board</a></li><li><a href="Buildings.html">Buildings</a></li><li><a href="Database.html">Database</a></li><li><a href="GameApp.html">GameApp</a></li><li><a href="Icons.html">Icons</a></li><li><a href="Main.html">Main</a></li><li><a href="Map.html">Map</a></li><li><a href="People.html">People</a></li><li><a href="Production.html">Production</a></li><li><a href="Resources.html">Resources</a></li><li><a href="Roads.html">Roads</a></li></ul><h3>Global</h3><ul><li><a href="global.html#game">game</a></li><li><a href="global.html#phaser_object">phaser_object</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Building.html">Building</a></li><li><a href="Character.html">Character</a></li><li><a href="Citizen.html">Citizen</a></li><li><a href="Icon.html">Icon</a></li><li><a href="Resource.html">Resource</a></li><li><a href="Road.html">Road</a></li><li><a href="Station.html">Station</a></li><li><a href="Subway.html">Subway</a></li><li><a href="Village.html">Village</a></li></ul><h3>Namespaces</h3><ul><li><a href="Actions.html">Actions</a></li><li><a href="Board.html">Board</a></li><li><a href="Buildings.html">Buildings</a></li><li><a href="Database.html">Database</a></li><li><a href="GameApp.html">GameApp</a></li><li><a href="Icons.html">Icons</a></li><li><a href="Main.html">Main</a></li><li><a href="Map.html">Map</a></li><li><a href="People.html">People</a></li><li><a href="Production.html">Production</a></li><li><a href="Resources.html">Resources</a></li><li><a href="Roads.html">Roads</a></li></ul><h3>Global</h3><ul><li><a href="global.html#game">game</a></li><li><a href="global.html#phaser_object">phaser_object</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Nov 20 2017 18:51:06 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sat Dec 02 2017 10:02:23 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>
