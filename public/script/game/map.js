@@ -910,7 +910,7 @@ var Map = {
     
     easystar.findPath(from_pos.x, from_pos.y, target_pos.x, target_pos.y, function( path ) {
       if (path === null) {
-        console.log("path not found", target_pos);
+        //console.log("path not found", target_pos);
       } else {
         from.action.path = path;
       }

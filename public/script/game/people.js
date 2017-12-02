@@ -713,7 +713,7 @@ Citizen.prototype.eat = function () {
  * @method
  */
 Citizen.prototype.stop_eat = function () {
-  console.log("end eat");
+  
   this.go_work();
   
 }
