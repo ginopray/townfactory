@@ -209,7 +209,6 @@ var Map = {
       Roads.flow,
       Map.check_road_overlap
     );
-    //Map.roads_overlap();
     
     
     // Character overlap building.
@@ -254,32 +253,7 @@ var Map = {
     //phaser_object.helper.top = ((coords.y - 1) * Map.settings.tileHeight);
     
   },
-  
-  
-  /**
-   * Roads overlap.
-   * @memberof Map
-   * @name roads_overlap
-   * @method
-   * @deprecated
-   */
-  roads_overlap : function (group1, group2, callback, process) {
-    // Resources.
-    for (var r in GameApp.data.resources) {
-      var resource = GameApp.data.resources[r];
-      // Roads.
-      for (var x in GameApp.data.roads.items) {
-        for (var y in GameApp.data.roads.items[x]) {
-          var road = GameApp.data.roads.items[x][y];
-          // Check road overlap.
-          if (Map.check_road_overlap(resource.sprite, road.sprite))
-            // Flow!
-            Roads.flow(resource.sprite, road.sprite);
-        }
-      }
-    }
-  },
-  
+    
   
   /**
    * Initialize the keyboard.
@@ -376,26 +350,20 @@ var Map = {
     for (y = 0; y < GameApp.data.map.height; y ++) {
       var tmp = new Array();
       for (x = 0; x < GameApp.data.map.width; x ++) {
-        var obstacle = 0;
-        
-        // Destination slot always free!
-        //if (y == target.y && x == target.x) {
-          // var obstacle remains 0
-          
-        // Check obstacles.
-        //} else {
-          // Buildings.
-          var b = Map.find_by_pos(x, y, 'buildings');
-          if (b) {
-            if (b.id != target.id && b.id != from_building.id)
-              obstacle = 1;
-          }
-            
-          // Roads.
-          if (typeof GameApp.data.roads.items[x] !== "undefined" &&
-             typeof GameApp.data.roads.items[x][y] !== "undefined")
+        var obstacle = 0;        
+
+        // Buildings.
+        var b = Map.find_by_pos(x, y, 'buildings');
+        if (b) {
+          if (b.id != target.id && b.id != from_building.id)
             obstacle = 1;
-        //}
+        }
+
+        // Roads.
+        var road = Map.find_road(x, y, 0);
+        if (road)
+          obstacle = 1;
+
         tmp.push( obstacle );
       }
       ret.push(tmp);
@@ -603,41 +571,41 @@ var Map = {
    * @method
    * @param {number} x - X position to find.
    * @param {number} y - Y position to find.
+   * @param {number} z - Ground level.
    * @return {object} The building.
    */
-  find_road : function (x, y, ground) {
-    if (typeof GameApp.data.roads.items[x] === "undefined" || 
-        typeof GameApp.data.roads.items[x][y] === "undefined" ||
-        (typeof ground !== "undefined" &&
-        (typeof GameApp.data.roads.items[x][y].ground === "undefined" || GameApp.data.roads.items[x][y].ground != ground))
+  find_road : function (x, y, z) {
+    /*if (typeof GameApp.data.roads[x] === "undefined" || 
+        typeof GameApp.data.roads[x][y] === "undefined" ||
+        (typeof z !== "undefined" &&
+        (typeof GameApp.data.roads[x][y].ground === "undefined" || GameApp.data.roads[x][y].ground != z))
         ) {
-      /*if (GameApp.data.roads.items[x] && GameApp.data.roads.items[x][y])
-        console.log("delete ground " + ground, GameApp.data.roads.items[x][y].ground);*/
       return false;
     }
-    return GameApp.data.roads.items[x][y];
+    return GameApp.data.roads[x][y];*/
     
-    /*
-    var tile_rect = Map.get_tile({
-      x: x,
-      y: y,
-      w: Map.settings.tileWidth,
-      h: Map.settings.tileHeight
-    });
-    
-    for (var rx in GameApp.data.roads.items) {
-      for (var ry in GameApp.data.roads.items[rx]) {
-        var road = GameApp.data.roads.items[rx][ry];
-
-        var road_rect = road.sprite.getBounds();
-        road_rect.centerX = road.sprite.centerX;
-        road_rect.centerY = road.sprite.centerY;
-        
-        if (road_rect.contains(tile_rect.centerX, tile_rect.centerY))
-          return road;
+    var max_ground = false;
+    var ret = new Array();
+    for (var r in GameApp.data.roads) {
+      var road = GameApp.data.roads[r];
+      if (road.pos_x == x &&
+          road.pos_y == y && 
+          (!z ||
+           z === road.ground ||
+           (road.downstair == 1 && z === road.ground - 1) ||
+           (road.upstair == 1   && z === road.ground - 1)
+          )
+         ) {
+        ret[road.ground] = road;
+        if (max_ground === false || road.ground > max_ground)
+          max_ground = road.ground;
       }
     }
-    return false;*/
+    // Return the top ground road.
+    if (max_ground !== false)
+      return ret[max_ground];
+    else
+      return false;
     
   },
   

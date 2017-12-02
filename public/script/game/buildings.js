@@ -455,11 +455,14 @@ Building.prototype.get_station  = function (in_out) {
   for (var i in borders) {
     x = borders[i].x;
     y = borders[i].y;
-    if (typeof GameApp.data.roads.items[x] !== "undefined" && 
-        typeof GameApp.data.roads.items[x][y] !== "undefined" &&
-       GameApp.data.roads.items[x][y].subclass == "station" &&
-       GameApp.data.roads.items[x][y].in_out == in_out) {
-      return GameApp.data.roads.items[x][y];
+    
+    var find_road = Map.find_road(x, y);
+    if (!find_road)
+      continue;
+    
+    if (find_road.subclass == "station" &&
+        find_road.in_out == in_out) {
+      return find_road;
     }
   }
   return false;

@@ -29,7 +29,7 @@ var Resources = {
       }
       
       coords = Map.coord2tile({x: GameApp.data.resources[r].sprite.centerX, y: GameApp.data.resources[r].sprite.centerY });
-      var find_road = Map.find_road(coords.x, coords.y);//, resource_road_ground
+      var find_road = Map.find_road(coords.x, coords.y, GameApp.data.resources[r].sprite.custom_ground);//, resource_road_ground
       
       // Delete resources out of the road.
       if (!find_road || 

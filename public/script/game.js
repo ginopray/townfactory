@@ -42,11 +42,9 @@ var GameApp = {
       },
       buildings : [],
       resources : [],
+      roads : [],
       action : {},
       selection : {},
-      roads : {
-        items: []
-      },
       characters : {
         citizen: []
       }
@@ -69,8 +67,7 @@ var GameApp = {
   * @property {array} resources - Array containing resources objects.
   * @property {object} characters - Characters container.
   * @property {array} characters.citizen - Array containing citizens.
-  * @property {object} roads - Roads data.
-  * @property {array} roads.items - Array containing all road items. Ie. GameApp.data.roads.items[x][y] = new Road();
+  * @property {object} roads - Array containing roads objects.
   * @property {object} map - Map game data.
   * @property {object} map.width - The width of the map (in tiles).
   * @property {number} map.height - The height of the map (in tiles).

@@ -181,10 +181,12 @@ var Roads = {
     for (var i in to_append) {
       var r = to_append[i];
       // Append road to GameApp.data.roads.
-      if (typeof GameApp.data.roads.items[r.x] === "undefined")
-        GameApp.data.roads.items[r.x] = new Array();
-      GameApp.data.roads.items[r.x][r.y] = r.road;
-
+      /*if (typeof GameApp.data.roads[r.x] === "undefined")
+        GameApp.data.roads[r.x] = new Array();
+      GameApp.data.roads[r.x][r.y] = r.road;*/
+      
+      GameApp.data.roads.push(r.road);
+      
       // Spawn!
       r.road.spawn();
     }
@@ -705,15 +707,29 @@ Road.prototype.spawn = function () {
  * @method
  */
 Road.prototype.remove = function () {
-  //console.log("REMOVE ROAD!", this);
-  if (typeof GameApp.data.roads.items[this.pos_x] === "undefined" ||
-      typeof GameApp.data.roads.items[this.pos_x][this.pos_y] === "undefined")
-    return;
-  
-  // Remove sprite.
-  this.sprite.destroy();
-  // Remove element from game.
-  delete GameApp.data.roads.items[this.pos_x][this.pos_y];
+  var gid = this.group_id;
+  var torem = new Array();
+  // Search all the roads of the group.
+  for (var i in GameApp.data.roads) {
+    if (GameApp.data.roads[i].group_id == gid) {
+      // Save the ID of the roads to remove.
+      torem.push(GameApp.data.roads[i].id);
+    } 
+  }
+  // For each id to remove...
+  for (var tr in torem) {
+    var id = torem[tr];
+    // ...find it on the roads array.
+    for (var i in GameApp.data.roads) {
+      if (GameApp.data.roads[i].id == id) {
+        // Remove sprite.
+        if (GameApp.data.roads[i].sprite)
+          GameApp.data.roads[i].sprite.destroy();
+        // Remove element.
+        GameApp.data.roads.splice(i, 1);
+      }
+    }
+  }
   
 }
 
@@ -792,6 +808,8 @@ var Subway = function (type, pos_x, pos_y, direction, in_out) {
     
     if (in_out == 1)
       this.downstair = 1;
+    else if (in_out == 0)
+      this.upstair = 1;
     
   // Regular subway tile: ground = -1.
   } else {
