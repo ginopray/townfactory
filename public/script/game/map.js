@@ -497,13 +497,14 @@ var Map = {
         // Check ground.
         var ground1 = obj.ground;
         var ground2 = find[type].ground;
-        if (typeof ground1 === "undefined")
+        if (!ground1)
           ground1 = 0;
-        if (typeof ground2 === "undefined")
+        if (!ground2)
           ground2 = 0;
         // Return false if same ground.
         if (ground1 === ground2)
           return false;
+        
       }
     }
     return true;

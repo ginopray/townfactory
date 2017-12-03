@@ -88,18 +88,7 @@ var Roads = {
     
     // Find tiles to check by helper.
     var slots = Map.get_item_tiles(phaser_object.helper);
-    
-    /*for (var s in slots) {
-      // Check for free space.
-      if (!Map.check_free_slot(slots[s].x, slots[s].y)) {
-        return;
-      }
-    }*/
-    
-    /*if (!Map.check_free_slot(tile.x, tile.y)) {
-      return;
-    }*/
-    
+        
     // Check build station.
     if (item == "station") {
       // Check for right position and get input-output.
@@ -107,14 +96,6 @@ var Roads = {
       if (in_out === false) {
         return;
       }
-    }
-
-    
-    // Check resources.
-    var requires = Production.get_item_costs(item, type);
-    if (!Production.can_produce(GameApp.capital, requires)) {
-      console.log("non hai le risorse!", GameApp.capital, requires);
-      return;
     }
     
     GameApp.data.action.locked = true;
@@ -175,6 +156,13 @@ var Roads = {
         road: road
       });
     
+    }
+    
+    // Check resources.
+    var requires = Production.get_item_costs(item, type);
+    if (!Production.can_produce(GameApp.capital, requires)) {
+      //console.log("non hai le risorse!", GameApp.capital, requires);
+      return;
     }
     
     // Create roads!

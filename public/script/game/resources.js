@@ -32,11 +32,11 @@ var Resources = {
       var find_road = Map.find_road(coords.x, coords.y, GameApp.data.resources[r].sprite.custom_ground);//, resource_road_ground
       
       // Delete resources out of the road.
-      if (!find_road || 
+      if (!find_road/* || 
           (typeof GameApp.data.resources[r].sprite.custom_road !== "undefined" && 
            find_road.ground != resource_road_ground && 
            find_road.group_id != GameApp.data.resources[r].sprite.custom_road.custom_group_id
-          )) {
+          )*/) {
         GameApp.data.resources[r].delete();
         
       } else {
