@@ -199,11 +199,9 @@ var Actions = {
         GameApp.data.action.tool != Actions.settings.default_tool &&
        GameApp.data.action.tool != "") {
       Actions.set('');
-    // Cancel selections.
+    // Cancel selection.
     } else {
-      for (var s in GameApp.data.selection) {
-        GameApp.data.selection[s].deselect();
-      }
+      Map.deselect();
     }
   },
     

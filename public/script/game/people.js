@@ -164,6 +164,9 @@ var Character = function () {
   if (arguments[0] === 'prototype_set')
     return;
   
+  // Set entity.
+  this.entity = 'Character';
+  
   // Set item ID.
   this.id = ++ GameApp.data.indexes.characters;
   
@@ -171,7 +174,7 @@ var Character = function () {
   this.type = 0;
   
   // Name.
-  this.name = 'Ch-' + this.id;
+  this.name = 'Character #' + this.id;
   
   // Action.
   this.action = {};
@@ -246,6 +249,12 @@ Character.prototype.spawn = function () {
   
   // Save item id on the sprite.
   this.sprite.custom_id = this.id;
+  
+  // Info onclick.
+  this.sprite.inputEnabled = true;
+  this.sprite.events.onInputDown.add(function(){
+    Map.select(this);
+  }, this);
   
 }
 
@@ -469,7 +478,7 @@ var Citizen = function (type, home) {
   this.home = home;
   
   // Name.
-  this.name = 'Cz-' + this.id;
+  this.name = 'Citizen #' + this.id;
 
   // Spawn!
   this.spawn();

@@ -150,6 +150,9 @@ var Resource = function (type) {
   // Set defaults!
   Object.assign(this, default_resource[0]);
   
+  // Set entity.
+  this.entity = 'Resource';
+  
   // Set item ID.
   this.id = ++ GameApp.data.indexes.buildings;
   

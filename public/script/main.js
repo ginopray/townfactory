@@ -26,7 +26,6 @@ var game;
  * Contains groups and other Phaser.io objects.
  * @name phaser_object
  * @property {object} sprites - Various sprites.
- * @property {object} sprites.selection - Current selection sprite.
  * @property {object} groups - Phaser groups.
  * @property {object} groups.layers - Layers groups container.
  * @property {object} groups.layers.base - Base layer group.
@@ -131,6 +130,7 @@ var Main = {
    * @name debug
    * @method
    * @param {string} log - The log string.
+   * @param {object} obj - An obj.
    */
   debug : function(log, obj) {
     if (!GameApp.settings.debug.log)
@@ -139,6 +139,35 @@ var Main = {
       console.log(log, obj);
     else
       console.log(log);
+  },
+  
+  
+  /**
+   * Show obj info.
+   * @memberof Main
+   * @name debug_obj
+   * @method
+   * @param {object} obj - The obj.
+   */
+  debug_obj : function(obj) {
+    var ret = "";
+    for (var a in obj) {
+      if (typeof obj[a] === "function")
+        continue;
+      
+      ret += a + ': ';
+      if (typeof obj[a] === "object" || typeof obj[a] === "array") {
+        ret += '\n';
+        for (var b in obj[a]) {
+          if (typeof obj[a][b] === "function")
+            continue;
+          ret += '* ' + b + ': ' + obj[a][b] + '\n';
+        }
+      } else {
+        ret += obj[a] + '\n';
+      }
+    }
+    return ret;
   }
 
 }

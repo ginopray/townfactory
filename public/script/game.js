@@ -44,7 +44,7 @@ var GameApp = {
       resources : [],
       roads : [],
       action : {},
-      selection : {},
+      //selection : {}, <-- selection must be undefined!
       characters : {
         citizen: []
       }
@@ -75,8 +75,6 @@ var GameApp = {
   * @property {string} action.tool - Current selected tool: view, build road....
   * @property {object} action.vars - Action data object. Each tool has his data set. (ie. "road" tool can have "direction" property)
   * @property {object} selection - Current selection.
-  * @property {object} selection.building - Current selected building.
-  * @property {object} selection.road - Current selected road.
   * @property {object} capital - Reference to Capital.
   */
   data : {},

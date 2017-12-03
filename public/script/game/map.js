@@ -243,11 +243,16 @@ var Map = {
       phaser_object.inputs.mouse.selection.tile.y = (coords.y - 1) * Map.settings.tileHeight;
     }
     
-    // Update helper
+    // Update helper.
     phaser_object.helper.centerX = ((coords.x - 1) * Map.settings.tileWidth) + (Map.settings.tileWidth / 2);
     phaser_object.helper.centerY = ((coords.y - 1) * Map.settings.tileHeight) + (Map.settings.tileHeight / 2);
-    //phaser_object.helper.left = ((coords.x - 1) * Map.settings.tileWidth);
-    //phaser_object.helper.top = ((coords.y - 1) * Map.settings.tileHeight);
+    
+    // Update selection sprite.
+    if (GameApp.data.selection) {
+      phaser_object.sprites.selection.centerX = GameApp.data.selection.sprite.centerX;
+      phaser_object.sprites.selection.centerY = GameApp.data.selection.sprite.centerY;
+    }
+    
     
   },
     
@@ -908,7 +913,8 @@ var Map = {
     
     easystar.findPath(from_pos.x, from_pos.y, target_pos.x, target_pos.y, function( path ) {
       if (path === null) {
-        //console.log("path not found", target_pos);
+        console.log("path not found", target_pos);
+        from.talk(Main.t('Lost!'));
       } else {
         from.action.path = path;
       }
@@ -938,6 +944,54 @@ var Map = {
     return false;
   },
   
+  
+  /**
+   * Select an item.
+   * @memberof Map
+   * @name select
+   * @method
+   * @param {object} item - Selected item.
+   */
+  select: function (item) {
+
+    Map.deselect();
+
+    // Set current selection.
+    GameApp.data.selection = item;
+    
+    // Set selection sprite.
+    var width = (item.width ? item.width : 1) * Map.settings.tileWidth;
+    var height = (item.height ? item.height : 1) * Map.settings.tileHeight;
+    var sprite = phaser_object.groups.layers.icons.create(item.sprite.x, item.sprite.y, 'selection');  
+    sprite.anchor.setTo(0.5, 0.5);
+    sprite.width = width;
+    sprite.height = height;
+    sprite.tint = 0x861b1e;
+    
+    // Set global var.
+    phaser_object.sprites.selection = sprite;  
+  },
+
+
+  /**
+   * Cancel selection.
+   * @memberof Map
+   * @name deselect
+   * @method
+   */
+  deselect: function () {
+    // Cancel selection.
+    if (GameApp.data.selection) {
+      delete GameApp.data.selection;
+    }
+
+    // Cancel selection sprite.
+    if (phaser_object.sprites.selection) {
+      phaser_object.sprites.selection.destroy();  
+      delete phaser_object.sprites.selection;
+    }
+  },
+
     
 };
 

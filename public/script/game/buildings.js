@@ -105,6 +105,9 @@ var Building = function (type, pos_x, pos_y) {
   // Set defaults!
   Object.assign(this, default_building[0]);
   
+  // Set entity.
+  this.entity = 'Building';
+  
   // Set item ID.
   this.id = ++ GameApp.data.indexes.buildings;
   
@@ -148,59 +151,13 @@ var Building = function (type, pos_x, pos_y) {
 
 
 /**
- * Select a building.
- * @memberof Building
- * @name select
- * @instance
- * @method
- */
-Building.prototype.select  = function () {
-  
-  this.deselect();
-  
-  // Set current selection.
-  GameApp.data.selection.building = this;
-  // Set selection sprite.
-  var width = this.width * Map.settings.tileWidth;
-  var height = this.height * Map.settings.tileHeight;
-  var sprite = phaser_object.groups.layers.icons.create(this.sprite.x, this.sprite.y, 'selection');  
-  sprite.anchor.setTo(0.5, 0.5);
-  sprite.width = width;
-  sprite.height = height;
-  sprite.tint = 0x861b1e;
-  // Set global var.
-  phaser_object.sprites.selection = sprite;
-}
-
-
-/**
- * Deselect a building.
- * @memberof Building
- * @name deselect
- * @instance
- * @method
- */
-Building.prototype.deselect  = function () {
-  // Cancel selection.
-  if (typeof GameApp.data.selection.building !== "undefined") {
-    delete GameApp.data.selection.building;
-  }
-  // Cancel selection sprite.
-  if (typeof phaser_object.sprites.selection !== "undefined") {
-    phaser_object.sprites.selection.destroy();  
-    delete phaser_object.sprites.selection;
-  }
-}
-
-
-/**
  * Add the building to the map.
  * @memberof Building
  * @name spawn
  * @instance
  * @method
  */
-Building.prototype.spawn  = function () {
+Building.prototype.spawn = function () {
   
   // Get building size.
   // this.width and this.height aqe expressed in tiles.
@@ -234,10 +191,10 @@ Building.prototype.spawn  = function () {
   this.sprite.body.immovable = true;
   
   
-  // Log building info onclick.
+  // Building info onclick.
   this.sprite.inputEnabled = true;
   this.sprite.events.onInputDown.add(function(){
-    this.select();
+    Map.select(this);
   }, this);
   
 };
@@ -250,7 +207,7 @@ Building.prototype.spawn  = function () {
  * @instance
  * @method
  */
-Building.prototype.produce  = function () {
+Building.prototype.produce = function () {
   // Is building active?
   if (this.power_switch == 0)
     return;
@@ -328,7 +285,7 @@ Building.prototype.produce  = function () {
  * @instance
  * @method
  */
-Building.prototype.get_production_time  = function (base_time) {
+Building.prototype.get_production_time = function (base_time) {
   var work_count = 1;
   work_count += this.workers.count;
   
@@ -350,7 +307,7 @@ Building.prototype.get_production_time  = function (base_time) {
  * @instance
  * @method
  */
-Building.prototype.consume  = function () {
+Building.prototype.consume = function () {
   // Is building active?
   if (this.power_switch == 0)
     return;
@@ -414,7 +371,7 @@ Building.prototype.consume  = function () {
  * @method
  * @see Icons
  */
-Building.prototype.add_icon  = function (icon_type, vars) {
+Building.prototype.add_icon = function (icon_type, vars) {
   if (typeof this.icons[icon_type] === "undefined") {
     if (typeof vars === "undefined")
       vars = {};
@@ -431,7 +388,7 @@ Building.prototype.add_icon  = function (icon_type, vars) {
  * @instance
  * @method
  */
-Building.prototype.del_icon  = function (icon_type) {
+Building.prototype.del_icon = function (icon_type) {
   if (typeof this.icons[icon_type] !== "undefined")
     this.icons.splice(icon_type, 1);
 }
@@ -445,7 +402,7 @@ Building.prototype.del_icon  = function (icon_type) {
  * @method
  * @param {number} in_out - 1|0 0 = incoming station, 1 = outcoming station
  */
-Building.prototype.get_station  = function (in_out) {
+Building.prototype.get_station = function (in_out) {
   // Search a road near the building.
   var borders = Map.get_border_tiles(this);
   var x,
@@ -476,7 +433,7 @@ Building.prototype.get_station  = function (in_out) {
  * @param {number} resource - Resource type.
  * @return {array}
  */
-Building.prototype.store  = function (resource, amount) {
+Building.prototype.store = function (resource, amount) {
   
   if (typeof this.warehouse[resource] === "undefined" || typeof this.warehouse[resource] === "undefined")
     return;
@@ -502,7 +459,7 @@ Building.prototype.store  = function (resource, amount) {
  * @param {number} amount - Amount of resources to take.
  * @return {boolean} false if not enough resources in the warehouse.
  */
-Building.prototype.gather  = function (resource, amount) {
+Building.prototype.gather = function (resource, amount) {
   
   if (typeof this.warehouse === "undefined" ||
       typeof this.warehouse[resource] === "undefined" || 
@@ -525,7 +482,7 @@ Building.prototype.gather  = function (resource, amount) {
  * @param {object} resource - Resource object.
  * @return {string} The name
  */
-Building.prototype.fullname  = function () {
+Building.prototype.fullname = function () {
   var str = Main.t('building-' + this.type);
   if (str == 'building-' + this.type)
     str = Main.t(this.name);
@@ -585,7 +542,7 @@ Village.prototype.constructor = Village;
  * @param {object} resource - Resource object.
  * @return {string} The name
  */
-Village.prototype.new_request  = function () {
+Village.prototype.new_request = function () {
   
   var resource = Resources.getRandom({value: {value: this.level, operator: '>'}});
   

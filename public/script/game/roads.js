@@ -597,6 +597,9 @@ var Road = function (type, pos_x, pos_y, direction) {
   // Default settings.
   this.set_defaults(Roads.settings.road.base);
   
+  // Set entity.
+  this.entity = 'Road';
+  
   // Set item ID.
   this.id = ++ GameApp.data.indexes.roads;
   // Type.

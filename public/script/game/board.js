@@ -72,16 +72,11 @@ var Board = {
    */
   update : function () {
     // Update info about current mouse selection.
-    Board.info_selection();
+    Board.info_mouse();
     Board.info_resources();
     
-    document.getElementById('info-building').innerHTML = Board.info_building();
-    
-    // Debug:
-    /*var debug = "";
-    debug += "Buildings: " + GameApp.data.buildings.length + "<br />";
-    debug += "Resources: " + GameApp.data.resources.length + "<br />";    
-    jQuery('#debug').html(debug);*/
+    document.getElementById('info-selection').innerHTML = Board.info_selection();
+
   },
   
 
@@ -109,12 +104,12 @@ var Board = {
   
   
   /**
-   * Update the information view about current selection.
+   * Update the information view about current mouse selection.
    * @memberof Board
-   * @name info_selection
+   * @name info_mouse
    * @method
    */
-  info_selection : function () {
+  info_mouse : function () {
     // Get tile coordinates.
     var coords = Map.coord2tile({x: phaser_object.inputs.mouse.selection.tile.x, y: phaser_object.inputs.mouse.selection.tile.y});
     // Get items on the map.
@@ -129,23 +124,38 @@ var Board = {
       html += ' ' + Board.get_road_image(roads.roads, {class: 'icon'});
     }
     html += '</div>';
-    //jQuery('#info-selection').html(html);
-    document.getElementById('info-selection').innerHTML = html;
+    document.getElementById('info-mouse').innerHTML = html;
   },
   
   
   /**
-   * Update the information view about building.
+   * Selected item info (loop).
+   * @memberof Board
+   * @name info_selection
+   * @method
+   */
+  info_selection : function () {
+    var item = GameApp.data.selection;
+    if (!item)
+      return "";
+    else if (item.entity == "Building")
+      return Board.info_building();
+    else if (item.entity == "Character")
+      return Board.info_character();
+  },
+  
+  
+  /**
+   * Selected building info (loop).
    * @memberof Board
    * @name info_building
    * @method
-   * @param {object|false} building - Building object. If false: clear info box.
    */
   info_building : function () {
-    if (typeof GameApp.data.selection.building === "undefined")
+    if (!GameApp.data.selection)
       return "";
     
-    var building = GameApp.data.selection.building;
+    var building = GameApp.data.selection;
     
     var html = "";
     var html_production = Board.get_building_production(building);
@@ -180,6 +190,36 @@ var Board = {
     html += '</div>';
    
     return html;
+  },
+  
+  
+  /**
+   * Selected character info (loop).
+   * @memberof Board
+   * @name info_character
+   * @method
+   */
+  info_character : function () {
+    if (!GameApp.data.selection)
+      return "";
+    
+    var character = GameApp.data.selection;
+    
+    var html = "";
+    
+    html += '<div>';
+    
+    // Building name.
+    html += '<h2>' + character.fullname() + '</h2>';
+    // Image.
+    html += '<div>' + Board.get_character_image(character.constructor.name, character.type, {class: 'icon'}) + '</div>';
+    
+    html += '<div>Current action: ' + character.action.current + '</div>';
+      
+    html += '</div>';
+    
+    return html;
+    
   },
   
   
@@ -473,7 +513,7 @@ var Board = {
     var html = '<img';
     if (typeof vars.class !== "undefined")
       html += ' class="' + vars.class + '"';
-    html += ' src="images/game/characters/' + subclass + '-' + type + '.png" alt="' + Main.t(subclass + '-' + type) + '" title="' + Main.t(subclass + '-' + type) + '" />';
+    html += ' src="images/board/characters/' + subclass + '-' + type + '.png" alt="' + Main.t(subclass + '-' + type) + '" title="' + Main.t(subclass + '-' + type) + '" />';
     return html;
   },
   
