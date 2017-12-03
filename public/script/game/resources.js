@@ -43,8 +43,10 @@ var Resources = {
         // Clear resources vs resources overlap.
         GameApp.data.resources[r].sprite.custom_overlap = new Array();
         // Subway!
-        if (typeof GameApp.data.resources[r].sprite.custom_ground !== "undefined" && 
-            GameApp.data.resources[r].sprite.custom_ground < 0) {
+        /*if (typeof GameApp.data.resources[r].sprite.custom_ground !== "undefined" && 
+            GameApp.data.resources[r].sprite.custom_ground < 0) {*/
+        if (typeof GameApp.data.resources[r].sprite.custom_road !== "undefined" && 
+            GameApp.data.resources[r].sprite.custom_road.custom_ground < 0) {
           //GameApp.data.resources[r].sprite.tint = 0xff0000;
           GameApp.data.resources[r].sprite.alpha = 0.2;
         } else {
@@ -91,7 +93,7 @@ var Resources = {
     var y = station.sprite.y;
     
     var resource = new Resource(type);
-    resource.spawn(x, y);
+    resource.spawn(x, y, station);
     // Append new resource to GameApp.data.resources.
     GameApp.data.resources.push(
       resource
@@ -160,18 +162,23 @@ var Resource = function (type) {
  * @name spawn
  * @instance
  * @method
+ * @param {number} x - X position
+ * @param {number} y - Y position
+ * @param {object|undefined} road - Starting road.
  */
-Resource.prototype.spawn  = function (x, y) {
-
-  //console.log("spawn", this);
+Resource.prototype.spawn  = function (x, y, road) {
   
   // Create sprite and add it to "buildings" group.
   this.sprite = phaser_object.groups.resources.create(x, y, 'resource-' + this.type);
   
   // Save item id on the sprite.
   this.sprite.custom_id = this.id;
-  
   this.sprite.custom_overlap = new Array();
+  // Set overlapping road.
+  if (road) {
+    this.sprite.custom_road = road.sprite;
+    this.sprite.custom_ground = road.ground;
+  }
   
   // Initial speed.
   this.sprite.body.velocity.y = 0;

@@ -591,7 +591,7 @@ Citizen.prototype.start_work = function (building) {
   
  // Move sprite
  this.sprite.left = building.sprite.left + ((building.workers.count - 1) * (Map.settings.character.citizen.width / 2));
- this.sprite.centerY = building.sprite.bottom;
+ this.sprite.bottom = building.sprite.bottom;
 }
 
 

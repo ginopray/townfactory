@@ -72,17 +72,14 @@ var Map = {
     phaser_object.groups.layers = {};
     // Base layer
     phaser_object.groups.layers.base = game.add.group();
-    
     // Roads.
     phaser_object.groups.roads = game.add.group();
     // Buildings.
     phaser_object.groups.buildings = game.add.group();
     // Resources.
     phaser_object.groups.resources = game.add.group();
-    
     // Icons layer
     phaser_object.groups.layers.icons = game.add.group();
-    
     // Characters
     phaser_object.groups.characters = {};
     phaser_object.groups.characters.citizen = game.add.group();
@@ -698,7 +695,7 @@ var Map = {
         typeof r2 === "undefined" ||
         typeof r1.custom_road === "undefined" ||
         typeof r2.custom_road === "undefined" || 
-        (r1.custom_ground != r2.custom_ground &&
+        (r1.custom_road.custom_ground != r2.custom_road.custom_ground &&
          r1.custom_road.custom_group_id != r2.custom_road.custom_group_id)
        )
       return false;
