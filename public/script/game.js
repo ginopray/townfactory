@@ -102,6 +102,8 @@ var GameApp = {
     
     // Set locale.
     jQuery.i18n.locale = 'en';
+    
+    game.desiredFps = 3;
 
   },
 

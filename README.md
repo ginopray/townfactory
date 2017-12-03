@@ -20,6 +20,16 @@ Browse "docs/Townfactory/<em>version-name</em>/index.html" for documentation
 
 <h2>Version log:</h2>
 <ul>
+<li>dev.1.0.4
+  <ul>
+  <li>Added subway and some feature.</li>
+  </ul>
+</li>
+<li>dev.1.0.3
+  <ul>
+  <li>Fixed performance bugs and added characters.</li>
+  </ul>
+</li>
 <li>dev.1.0.2
   <ul>
   <li>+ buildings consumption, village requests, game messages, road costs, population count.</li>
