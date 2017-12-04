@@ -105,35 +105,7 @@ var People = {
     }
     return false;
   },
-  
-  
-  /**
-   * Building receive character.
-   * @memberof People
-   * @name enter_building
-   * @method
-   * @param {object} c - The character sprite received.
-   * @param {object} b - The building sprite that receives the character.
-   */
-  enter_building : function (c, b) {
-    if (typeof c === "undefined" || typeof b === "undefined" || c == null || b == null)
-      return;
-    var building = Map.findOne(b.custom_id, 'buildings');
-    var character = People.findOne(c.custom_id);
-    
-    // Is target?
-    if (typeof character.action.target !== "undefined") {
-      if (building.id == character.action.target.id) {
-        console.log("entrato!");
-        // Start working.
-        character.start_work(building);
-      }
-      
-    }
-    
-    return ;
 
-  },
   
 }
 
@@ -403,9 +375,12 @@ Character.prototype.stop = function () {
  * @name start_walk
  * @instance
  * @method
+ * @param {object} building - The target building.
  */
 Character.prototype.start_walk = function (building) {
-  // Where?
+  // Leave the building
+  this.leave();
+  // Where to go?
   this.action.target = building;
   // Get path.
   Map.find_path(this, building);
@@ -430,12 +405,16 @@ Character.prototype.stop_walk = function () {
   var building = Map.find_by_pos(tile.x, tile.y, 'buildings');
   // I'm in a building?
   if (building !== false) {
+    // Enter building.
+    this.enter(building);
+    
     // This building is the target?
     if (building.id == this.action.target.id) {
       // Home: sleep!
       if (building.id == this.home.id) {
         // Sleep!
-        this.new_action('sleep', {building: building});        
+        this.new_action('sleep', {building: building});
+      
       } else {
         // Work!
         this.new_action('work', {building: building});
@@ -446,6 +425,47 @@ Character.prototype.stop_walk = function () {
   
   this.cancel_action();
   
+}
+
+
+/**
+ * Enter in a building.
+ * @memberof Character
+ * @name enter
+ * @instance
+ * @method
+ * @param {object} building - The building.
+ */
+Character.prototype.enter = function (building) {
+  
+  // Move the sprite.
+  this.sprite.left = building.sprite.left + ((building.workers.count) * (this.sprite.width / 2));
+  this.sprite.bottom = building.sprite.bottom;
+  
+  // Set character building.
+  this.building = building;
+
+  // Increment workers count.
+  building.workers.count ++;
+  
+}
+
+
+/**
+ * Leave a building.
+ * @memberof Character
+ * @name leave
+ * @instance
+ * @method 
+ */
+Character.prototype.leave = function () {
+  if (!this.building)
+    return;
+
+  // Decrement workers count.
+  this.building.workers.count --;
+  
+  this.building = undefined;  
 }
 
 
@@ -479,7 +499,7 @@ var Citizen = function (type, home) {
   
   // Name.
   this.name = 'Citizen #' + this.id;
-
+  
   // Spawn!
   this.spawn();
   
@@ -595,12 +615,7 @@ Citizen.prototype.start_work = function (building) {
  this.action.current = "work";
  // Set target building.
  this.action.target = building;
- // Increment workers count.
- building.workers.count ++;
   
- // Move sprite
- this.sprite.left = building.sprite.left + ((building.workers.count - 1) * (Map.settings.character.citizen.width / 2));
- this.sprite.bottom = building.sprite.bottom;
 }
 
 
@@ -627,8 +642,6 @@ Citizen.prototype.work = function () {
  * @method
  */
 Citizen.prototype.stop_work = function () {
-  // Decrease workers count..
-  this.action.target.workers.count --;
   // New action: go home!
   this.go_home();
   
@@ -644,6 +657,7 @@ Citizen.prototype.stop_work = function () {
  */
 Citizen.prototype.start_sleep = function () {
  this.action.current = "sleep";
+  
 }
 
 
@@ -686,6 +700,7 @@ Citizen.prototype.stop_sleep = function () {
  */
 Citizen.prototype.start_eat = function () {
  this.action.current = "eat";
+  
 }
 
 
@@ -705,6 +720,7 @@ Citizen.prototype.eat = function () {
       // Restart eating.
       this.new_action('eat');
       this.talk(Main.t('Hungry!'));
+      
     } else {
       this.stop_talk();
       this.stop_eat();  
@@ -752,10 +768,47 @@ Citizen.prototype.go_home = function () {
  * @method
  */
 Citizen.prototype.go_work = function () {
-  //console.log("go work");
-  var building = Buildings.getRandom(this.home.id);
+  
+  // Get a job!
+  if (!this.job)
+    this.new_job();
+  
+  // Set action.
   this.new_action("move", {
-    target: building
+    target: this.job.building
   });
 
 }
+
+
+/**
+ * Citizen get new job.
+ * @memberof Citizen
+ * @name get_job
+ * @instance
+ * @method
+ */
+Citizen.prototype.new_job = function () {
+  
+  var building = Buildings.getRandom(this.home.id);
+  this.set_job(building);
+  
+}
+
+
+/**
+ * Set a job for a Citizen.
+ * @memberof Citizen
+ * @name set_job
+ * @instance
+ * @method
+ * @param {object} building - Where to work.
+ */
+Citizen.prototype.set_job = function (building) {
+  this.job = {
+    name: Main.t('job-' + building.type),
+    building: building
+  }
+}
+
+

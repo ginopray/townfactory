@@ -207,17 +207,7 @@ var Map = {
       Map.check_road_overlap
     );
     
-    
-    // Character overlap building.
-    /*
-    game.physics.arcade.overlap(
-      phaser_object.groups.characters.citizen,
-      phaser_object.groups.buildings,
-      People.enter_building
-    );
-    */
-    // Collisions.
-    // Resource collide with building.
+    // Resources overlapping buildings.
     game.physics.arcade.overlap(
       phaser_object.groups.resources,
       phaser_object.groups.buildings,
@@ -226,8 +216,8 @@ var Map = {
     
     // **********************
     // !!! TO INVESTIGATE !!!
-    // Se metto "Buildings.update()" prima di "collide(resources, buildings)"
-    // allora le risorse collidono con TUTTI i buildings al momento dello spawn.
+    // If i place "Buildings.update()" before "overlap(resources, buildings)"
+    // than the resources start overlapping ALL the buildings immediately after the spawn!
     // **********************
     // Update buildings.
     Buildings.update();
@@ -505,6 +495,9 @@ var Map = {
           ground2 = 0;
         // Return false if same ground.
         if (ground1 === ground2)
+          return false;
+        // Return false if subways overlap.
+        else if (obj.subclass == "subway" && find[type].subclass == "subway")
           return false;
         
       }

@@ -98,7 +98,7 @@ img {
 .board {
   position: relative;
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
 }
 .board-command {
   cursor: pointer;
@@ -107,14 +107,28 @@ img {
   text-decoration: underline;
 }
 
+
 .map-container {
-  flex-basis: 70%;
+  flex-basis: 74%;
   flex-grow: 1;
-  position: relative;
+  position: relative;  
 }
+.map-canvas-container {
+  
+}
+.menu {
+  height: 54px;
+  display: flex;
+  justify-content: space-between;
+  background: #f9f9f9;
+  border-right: 1px solid #eee;
+}
+
+
 .sidebar {
-  flex-basis: 30%;
+  flex-basis: 26%;
   flex-grow: 1;
+  padding: .6em;
 }
 .sidebar__section {
   padding-bottom: 1em;

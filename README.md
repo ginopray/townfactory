@@ -22,7 +22,7 @@ Browse "docs/Townfactory/<em>version-name</em>/index.html" for documentation
 <ul>
 <li>dev.1.0.4
   <ul>
-  <li>Added subway and some feature.</li>
+  <li>Added subway and fixed engine.</li>
   </ul>
 </li>
 <li>dev.1.0.3

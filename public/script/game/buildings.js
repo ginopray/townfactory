@@ -401,6 +401,7 @@ Building.prototype.del_icon = function (icon_type) {
  * @instance
  * @method
  * @param {number} in_out - 1|0 0 = incoming station, 1 = outcoming station
+ * @return {object|false} Returns the station object.
  */
 Building.prototype.get_station = function (in_out) {
   // Search a road near the building.
@@ -431,7 +432,6 @@ Building.prototype.get_station = function (in_out) {
  * @instance
  * @method
  * @param {number} resource - Resource type.
- * @return {array}
  */
 Building.prototype.store = function (resource, amount) {
   
@@ -457,7 +457,7 @@ Building.prototype.store = function (resource, amount) {
  * @method
  * @param {number} resource - Resource type.
  * @param {number} amount - Amount of resources to take.
- * @return {boolean} false if not enough resources in the warehouse.
+ * @return {boolean} - Returns false if not enough resources in the warehouse.
  */
 Building.prototype.gather = function (resource, amount) {
   
@@ -474,12 +474,11 @@ Building.prototype.gather = function (resource, amount) {
 
 
 /**
- * Get translated name.
+ * Get the full translated name of a Building.
  * @memberof Building
  * @name fullname
  * @instance
  * @method
- * @param {object} resource - Resource object.
  * @return {string} The name
  */
 Building.prototype.fullname = function () {
@@ -524,6 +523,7 @@ var Village = function (type, pos_x, pos_y) {
   
   // Store some resource.
   this.store(3, 300);
+  this.store(4, 10);
   this.store(6, 100);
 
   

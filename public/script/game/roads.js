@@ -313,7 +313,7 @@ var Roads = {
       item.custom_ground = road.custom_ground;
         
     var speed = road.custom_speed;
-    var pad = 2;
+    var pad = 4;
     var angle = road.angle;
         
     // Check precedence.
@@ -587,7 +587,7 @@ var Roads = {
  * @property {number} pos_x - x (tile) position.
  * @property {number} pos_y - y (tile) position.
  * @property {string} direction - up/down/left/right.
- * @property {number} ground - ground level. Default = 0
+ * @property {number} ground - Ground level, or "z index". Default = 0
  */
 var Road = function (type, pos_x, pos_y, direction) {
   
@@ -747,8 +747,8 @@ Road.prototype.set_defaults = function (settings) {
  * @classdesc Create an input/output station.
  * @augments Road
  * @see Road
- * @property {string} subclass - Subclass name = "station".
  * @param {number} in_out - In or Out station. 1 = In, 0 = Out.
+ * @property {string} subclass - Subclass name = "station".
  * @property {number} in_out - In or Out station. 1 = In, 0 = Out.
  */
 var Station = function (type, pos_x, pos_y, direction, in_out) {
@@ -780,9 +780,11 @@ Station.prototype.constructor = Station;
  * @classdesc Create a subway.
  * @augments Road
  * @see Road
- * @property {string} subclass - Subclass name = "subway".
  * @param {number|undefined} in_out - In or Out tile. 1 = In, 0 = Out.
+ * @property {string} subclass - Subclass name = "subway".
  * @property {number|undefined} in_out - In or Out tile. 1 = In, 0 = Out.
+ * @property {number|undefined} downstair - 1 = Is downstair.
+ * @property {number|undefined} upstair - 1 = Is upstair. 
  */
 var Subway = function (type, pos_x, pos_y, direction, in_out) {
   // Call the parent constructor.

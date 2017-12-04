@@ -76,7 +76,7 @@ var phaser_object = {
 // Document ready: create the game with Phaser.
 jQuery(document).ready(function(){
   var container_w = jQuery('#map-container').width();
-  var container_h = jQuery('#map-container').outerHeight();
+  var container_h = jQuery('#map-container').outerHeight() - jQuery('.menu').outerHeight();
   game = new Phaser.Game(container_w, container_h, Phaser.CANVAS, 'map-canvas', // Phaser.AUTO
     {
       init:     GameApp.init,

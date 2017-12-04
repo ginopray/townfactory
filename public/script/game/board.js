@@ -213,7 +213,13 @@ var Board = {
     html += '<h2>' + character.fullname() + '</h2>';
     // Image.
     html += '<div>' + Board.get_character_image(character.constructor.name, character.type, {class: 'icon'}) + '</div>';
-    
+    // Job.
+    if (character.job) {
+      html += '<div>';
+      html += Main.t('Job') + ': ';
+      html += Main.t(character.job.name);
+      html += '</div>';
+    }
     html += '<div>Current action: ' + character.action.current + '</div>';
       
     html += '</div>';
